@@ -1,22 +1,23 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Ticket } from '../tickets/ticket.entity';
 
+@Entity()
 export class Movie {
-  @ApiProperty({ description: 'Título do filme' })
-  @IsNotEmpty({ message: 'Título do filme é mandatório' })
-  @IsString({ message: 'Título deve ser do tipo String' })
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   title: string;
 
-  @ApiProperty({ description: 'Descrição do filme' })
-  @IsNotEmpty({ message: 'Descrição do filme é mandatória' })
-  @IsString({ message: 'Descrição deve ser do tipo String' })
+  @Column()
   description: string;
 
-  @ApiProperty({ description: 'Data de lançamento do filme' })
-  @IsNotEmpty({ message: 'Data de lançamento é mandatória' })
+  @Column({ type: 'date' })
   launchdate: Date;
 
-  @ApiProperty({ description: 'Datas em que o filme será apresentado' })
-  @IsNotEmpty()
+  @Column('simple-array')
   showtimes: Date[];
+
+  @OneToMany(() => Ticket, ticket => ticket.movie)
+  tickets: Ticket[];
 }

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { TicketsController } from './tickets.controller';
-// import { DbService } from '../db/db.service';
 import { DBModule } from '../db/db.module';
 
 @Module({
@@ -9,4 +8,4 @@ import { DBModule } from '../db/db.module';
   providers: [TicketsService],
   controllers: [TicketsController]
 })
-export class TicketsModule {}
+export class TicketsModule { }

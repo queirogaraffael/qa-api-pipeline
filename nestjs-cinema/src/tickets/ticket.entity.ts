@@ -1,28 +1,23 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, Min, Max } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Movie } from '../movies/movie.entity';
 
+@Entity()
 export class Ticket {
-  @ApiProperty({ description: 'ID do filme' })
-  movieId: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @ApiProperty({ description: 'ID do usuário' })
+  @Column()
   userId: string;
 
-  @ApiProperty({ description: 'Número do assento' })
-  @IsNotEmpty({ message: 'Número do assento é mandatório' })
-  @IsNumber()
-  @Min(0, { message: 'Valor do assento deve ser maior ou igual a 0' })
-  @Max(99, { message: 'Valor do assento deve ser menor ou igual a 100' })
+  @Column()
   seatNumber: number;
 
-  @ApiProperty({ description: 'Preço do ingresso' })
-  @IsNotEmpty({ message: 'Preço do ingresso é mandatório' })
-  @IsNumber()
-  @Min(0, { message: 'Preço deve ser maior ou igual a 0' })
-  @Max(60, { message: 'Preço deve ser menor ou igual a 60' })
+  @Column()
   price: number;
 
-  @ApiProperty({ description: 'Data de apresentação' })
-  @IsNotEmpty({ message: 'Data de apresentação é mandatória'})
+  @Column({ type: 'date' })
   showtime: Date;
+
+  @ManyToOne(() => Movie, movie => movie.tickets)
+  movie: Movie;
 }

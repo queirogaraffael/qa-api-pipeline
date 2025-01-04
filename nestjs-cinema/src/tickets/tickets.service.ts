@@ -1,56 +1,43 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';  
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Ticket } from './ticket.entity';
-import { DbService } from '../db/db.service';
 
 @Injectable()
 export class TicketsService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    @InjectRepository(Ticket)  
+    private readonly ticketRepository: Repository<Ticket>,
+  ) {}
 
-  async create(ticket: Ticket): Promise<Ticket> {
-    return new Promise((resolve, reject) => {
-      this.dbService.getTicketDatastore().insert(ticket, (err, newDoc) => {
-        if (err) reject(err);
-        resolve(newDoc);
-      });
-    });
+  // Método para criar um ingresso
+  async create(ticket: Partial<Ticket>) {
+    return this.ticketRepository.save(ticket);
   }
 
-  async findAll(): Promise<Ticket[]> {
-    return new Promise((resolve, reject) => {
-      this.dbService.getTicketDatastore().find({}, (err, docs) => {
-        if (err) reject(err);
-        resolve(docs);
-      });
-    });
+  // Método para encontrar todos os ingressos
+  async findAll() {
+    return this.ticketRepository.find();
   }
 
-  async findOne(id: string): Promise<Ticket> {
-    return new Promise((resolve, reject) => {
-      this.dbService.getTicketDatastore().findOne({ id }, (err, doc) => {
-        if (err) reject(err);
-        if (!doc) throw new NotFoundException(`Ticket with ID ${id} not found.`);
-        resolve(doc);
-      });
-    });
+  // Método para encontrar um ingresso por ID
+  async findOne(id: number) {
+    return this.ticketRepository.findOne({ where: { id } });  // Alterado para usar 'where'
   }
 
-  async update(id: string, ticket: Ticket): Promise<Ticket> {
-    return new Promise((resolve, reject) => {
-      this.dbService.getTicketDatastore().update({ id }, ticket, {}, (err, numReplaced) => {
-        if (err) reject(err);
-        if (numReplaced === 0) throw new NotFoundException(`Ticket with ID ${id} not found.`);
-        resolve(ticket);
-      });
-    });
+  // Método para atualizar um ingresso
+  async update(id: number, ticket: Partial<Ticket>) {
+    await this.ticketRepository.update(id, ticket);
+    return this.ticketRepository.findOne({ where: { id } });  // Alterado para usar 'where'
   }
 
-  async remove(id: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.dbService.getTicketDatastore().remove({ id }, {}, (err, numRemoved) => {
-        if (err) reject(err);
-        if (numRemoved === 0) throw new NotFoundException(`Ticket with ID ${id} not found.`);
-        resolve();
-      });
-    });
+  // Método para deletar um ingresso
+  async remove(id: number) {
+    const ticket = await this.ticketRepository.findOne({ where: { id } });  // Alterado para usar 'where'
+    if (ticket) {
+      await this.ticketRepository.remove(ticket);
+      return ticket;
+    }
+    return null;
   }
 }
