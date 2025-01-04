@@ -3,14 +3,14 @@ import { AuthService } from './auth.service';
 import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('login')
-@Controller('login')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @ApiOperation({ summary: 'Realiza login do usuário' }) 
+  @ApiOperation({ summary: 'Realiza login do usuário' })
   @ApiResponse({ status: 200, description: 'Login realizado com sucesso.' })
-  @ApiResponse({ status: 401, description: 'Credenciais inválidas.' }) 
+  @ApiResponse({ status: 401, description: 'Credenciais inválidas.' })
   @ApiBody({
     description: 'Dados necessários para autenticação',
     schema: {

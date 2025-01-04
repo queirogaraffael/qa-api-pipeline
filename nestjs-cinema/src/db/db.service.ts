@@ -5,10 +5,12 @@ import * as Datastore from 'nedb';
 export class DbService implements OnModuleInit {
   private movies: Datastore;
   private tickets: Datastore;
+  private users: Datastore;
 
   onModuleInit() {
     this.movies = new Datastore({ filename: './movies.db', autoload: true });
     this.tickets = new Datastore({ filename: './tickets.db', autoload: true });
+    this.users = new Datastore({ filename: './users.db', autoload: true });
   }
 
   getMovieDatastore() {
@@ -17,5 +19,9 @@ export class DbService implements OnModuleInit {
 
   getTicketDatastore() {
     return this.tickets;
+  }
+
+  getUserDatastore() {
+    return this.users;
   }
 }

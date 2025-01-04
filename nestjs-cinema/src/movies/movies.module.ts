@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { MoviesController } from './movies.controller';
-import { DBModule } from '../db/db.module';  // Certifique-se de que o caminho está correto
+import { DBModule } from '../db/db.module';
 
 @Module({
-  imports: [DBModule],  // DBModule está sendo importado corretamente
+  imports: [DBModule], 
   providers: [MoviesService],
   controllers: [MoviesController]
 })

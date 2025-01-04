@@ -8,24 +8,20 @@ import { CreateUserDto } from './CreateUserDto';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.userRepository.create(createUserDto);
-    return this.userRepository.save(user);
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
   }
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  async findOneById(id: string): Promise<User> {
-    return this.userRepository.findOneBy({ id });
-  }
-
-  async findOneByEmail(email: string): Promise<User> {
-    return this.userRepository.findOneBy({ email });
+  async findOneById(id: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async updateUser(id: string, updateUserDto: Partial<CreateUserDto>): Promise<User> {
@@ -35,5 +31,9 @@ export class UserService {
 
   async deleteUser(id: string): Promise<void> {
     await this.userRepository.delete(id);
+  }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
   }
 }

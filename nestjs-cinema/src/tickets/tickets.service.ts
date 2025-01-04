@@ -10,30 +10,29 @@ export class TicketsService {
     private readonly ticketRepository: Repository<Ticket>,
   ) {}
 
-  // Método para criar um ingresso
+
   async create(ticket: Partial<Ticket>) {
     return this.ticketRepository.save(ticket);
   }
 
-  // Método para encontrar todos os ingressos
   async findAll() {
     return this.ticketRepository.find();
   }
 
-  // Método para encontrar um ingresso por ID
+
   async findOne(id: number) {
-    return this.ticketRepository.findOne({ where: { id } });  // Alterado para usar 'where'
+    return this.ticketRepository.findOne({ where: { id } }); 
   }
 
-  // Método para atualizar um ingresso
+
   async update(id: number, ticket: Partial<Ticket>) {
     await this.ticketRepository.update(id, ticket);
-    return this.ticketRepository.findOne({ where: { id } });  // Alterado para usar 'where'
+    return this.ticketRepository.findOne({ where: { id } }); 
   }
 
-  // Método para deletar um ingresso
+
   async remove(id: number) {
-    const ticket = await this.ticketRepository.findOne({ where: { id } });  // Alterado para usar 'where'
+    const ticket = await this.ticketRepository.findOne({ where: { id } });  
     if (ticket) {
       await this.ticketRepository.remove(ticket);
       return ticket;
