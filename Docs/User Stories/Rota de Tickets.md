@@ -1,7 +1,7 @@
 # User Story: API de Reservas de Cinema
 
-Sendo um cliente que deseja assistir a um filme no cinema,  
-Gostaria de poder reservar ingressos pela API de Tickets  
+Sendo um cliente autenticado que deseja assistir a um filme no cinema,
+Gostaria de poder reservar ingressos pela API de Tickets
 Para garantir meu lugar na sessão desejada.
 
 ---
@@ -29,13 +29,15 @@ Para garantir meu lugar na sessão desejada.
 
 ## Criterios de aceitação - Teste Funcionais
 
+- Autenticação: Todas as requisições devem ser autenticadas utilizando um token Bearer válido.
 - Deve ser possível criar reservas de ingressos com os campos: movieId, userId, seatNumber (0-99), price (0-60), showtime.
 - O assento "seatNumber (0-99)" deve estar disponível para a reserva.
-- Deve ser possível listar tickets com paginação opcional (page e limit).
+- Deve ser possível listar tickets com paginação (page e limit).
 - Deve ser possível buscar um ticket específico por ID.
 - Deve ser possível atualizar tickets existentes.
 - Deve ser possível excluir tickets existentes.
 - Chamadas com dados inválidos devem ser rejeitadas com mensagens apropriadas.
+- Chamadas com dados inválidos ou tokens de autenticação ausentes/invalidos devem ser rejeitadas com mensagens apropriadas.
 - Tickets devem conter um ID único para identificação.
 
 ---

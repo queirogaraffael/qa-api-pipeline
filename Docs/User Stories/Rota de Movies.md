@@ -34,15 +34,13 @@ Para poder criar, listar, atualizar e excluir filmes disponíveis
 
 - O administrador deverá ser capaz de criar um filme com os campos obrigatórios e título único;  
 - Não deverá ser possível criar um filme com título já existente;  
-- O sistema deverá atribuir um **ID único** para cada filme criado;  
-- Ao listar filmes, o sistema deve retornar uma lista paginada com até 20 filmes por página;  
+- Deve ser possível listar filmes com paginação (page e limit).
 - O sistema deve retornar detalhes completos do filme ao consultar um filme pelo ID;  
 - Se o filme não existir, deverá ser retornado **status 404 Not Found**;  
 - O administrador poderá atualizar o filme com os dados fornecidos e o sistema deverá validar os dados enviados;  
 - O sistema deverá retornar **status 200 OK** com os dados atualizados após a atualização do filme;  
 - O administrador poderá excluir filmes, e o sistema deverá verificar se o filme existe antes de realizar a exclusão;  
 - Após a exclusão, o sistema deverá retornar **status 204 No Content**;  
-- Os testes executados deverão conter evidências.
 
 ---
 

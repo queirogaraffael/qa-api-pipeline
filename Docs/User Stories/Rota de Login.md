@@ -1,9 +1,8 @@
 # User Story: Autenticação de Usuários na API
 
-**Sendo um administrador de um cinema com cadastro já realizado**  
-Gostaria de poder me autenticar na API de Cinema  
-Para poder cadastrar, editar, atualizar e excluir os filmes disponíveis
-
+**Sendo um usuário ou administrador de um cinema com cadastro já realizado**
+Gostaria de poder me autenticar na API de Cinema
+Para acessar as funcionalidades correspondentes ao meu perfil (reservar tickets ou gerenciar filmes).
 ---
 
 ## Definition of Ready (DoR)
@@ -33,13 +32,14 @@ Para poder cadastrar, editar, atualizar e excluir os filmes disponíveis
 
 ## Criterios de aceitação - Teste Funcionais
 
-- Usuários não cadastrados não deverão conseguir autenticar;  
-- Usuários com senha inválida não deverão conseguir autenticar;  
-- No caso de não autenticação, deverá ser retornado um status code 401 (Unauthorized);  
-- Usuários existentes e com a senha correta deverão ser autenticados;  
-- A autenticação deverá gerar um token Bearer;  
-- O token deverá permitir acesso às rotas protegidas da API de filmes (cadastrar, editar, atualizar, excluir);  
-- Os testes executados deverão conter evidências;  
+- Usuários não cadastrados não deverão conseguir autenticar.
+- Usuários com senha inválida não deverão conseguir autenticar.
+- No caso de não autenticação, deverá ser retornado um status code 401 (Unauthorized).
+- Usuários existentes e com a senha correta deverão ser autenticados.
+- A autenticação deverá gerar um token Bearer.
+- O token deverá permitir:
+    - Para administradores: acesso às rotas protegidas da API de filmes (cadastrar, editar, atualizar, excluir).
+    - Para usuários comuns: acesso às rotas protegidas da API de tickets (criar, listar, buscar, atualizar, excluir reservas).
 
 ## Criterios de aceitação - Testes Não Funcionais
 

@@ -1,8 +1,8 @@
-## User Story
+## User Story :  Cadastro e Gerenciamento de Usuários na API
 
-**Sendo um administrador de um cinema**  
-Gostaria de poder me cadastrar na API de Cinema  
-Para poder gerenciar os filmes e realizar vendas de ingressos
+**Sendo um administrador ou um usuário comum de um cinema**
+Gostaria de poder me cadastrar e gerenciar meu perfil na API de Cinema
+Para acessar as funcionalidades de acordo com meu perfil (gerenciar filmes ou reservar tickets).
 
 ---
 
@@ -32,14 +32,19 @@ Para poder gerenciar os filmes e realizar vendas de ingressos
 
 ## Criterios de aceitação - Teste Funcionais
 
-- Os usuários deverão possuir os campos NOME, E-MAIL, PASSWORD e ADMINISTRADOR;  
-- Não deverá ser possível fazer ações e chamadas para usuários inexistentes;  
-- Não deve ser possível criar um usuário com e-mail já utilizado;  
-- Caso não seja encontrado usuário com o ID informado no PUT, um novo usuário deverá ser criado;  
-- Não deve ser possível cadastrar usuário com e-mail já utilizado utilizando PUT;  
-- Os testes executados deverão conter evidências;  
-- Os e-mails devem seguir um padrão válido de e-mail para o cadastro;  
-- As senhas devem possuír no mínimo 5 caracteres e no máximo 10 caracteres;  
+- Os usuários deverão possuir os campos: nome, email, password e administrador (true/false).
+- O endpoint de cadastro estará aberto e não requer autenticação.
+- Não deverá ser possível cadastrar um usuário com email já utilizado.
+- Deve ser possível listar usuarios com paginação (page e limit).
+- Os emails devem seguir um padrão válido para cadastro.
+- As senhas devem possuir no mínimo 5 caracteres e no máximo 10 caracteres.
+- Todos os endpoints, exceto o de cadastro, deverão estar protegidos por autenticação via token Bearer válido.
+- Apenas administradores poderão acessar o endpoint de "ver todos os usuários".
+- Caso o ID informado no endpoint PUT não exista, um novo usuário deverá ser criado.
+- Não deve ser possível cadastrar ou editar um usuário com email já utilizado utilizando PUT.
+- Não deverá ser possível fazer ações e chamadas para usuários inexistentes.
+
+
 
 ---
 
