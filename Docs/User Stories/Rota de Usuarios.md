@@ -44,8 +44,6 @@ Para acessar as funcionalidades de acordo com meu perfil (gerenciar filmes ou re
 - Não deve ser possível cadastrar ou editar um usuário com email já utilizado utilizando PUT.
 - Não deverá ser possível fazer ações e chamadas para usuários inexistentes.
 
-
-
 ---
 
 ## Criterios de aceitação - Testes Não Funcionais
