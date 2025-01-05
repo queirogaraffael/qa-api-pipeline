@@ -11,12 +11,19 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findOneByEmail(email); 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user; 
-      return result;
+    const user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado');
     }
-    return null;
+
+    const passwordMatches = await bcrypt.compare(password, user.password);
+    if (!passwordMatches) {
+      throw new UnauthorizedException('Senha incorreta');
+    }
+
+    const { password: _, ...result } = user;
+    return result;
   }
 
   async login(user: any) {
