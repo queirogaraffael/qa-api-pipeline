@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Cinema API')
     .setDescription('API para gerenciar tickets de cinema')
     .setVersion('1.0')
+    .addBearerAuth() 
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

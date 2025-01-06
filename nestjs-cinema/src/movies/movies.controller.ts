@@ -1,16 +1,24 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMovieDto } from './dtos/CreateMovieDto';
 import { UpdateMovieDto } from './dtos/UpdateMovieDto';
 import { MovieDto } from './dtos/MovieDto';
+import {  UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard'; 
+
 
 @ApiTags('movies')
 @Controller('movies')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) { }
 
   @Post()
+  @Roles('adm')
   @ApiOperation({ summary: 'Cria um novo filme' })
   @ApiResponse({ status: 201, description: 'Filme criado com sucesso', type: MovieDto })
   @ApiResponse({ status: 400, description: 'Erro ao criar o filme' })
@@ -62,6 +70,7 @@ export class MoviesController {
   }
 
   @Put(':id')
+  @Roles('adm')
   @ApiOperation({ summary: 'Atualiza um filme pelo ID' })
   @ApiResponse({ status: 200, description: 'Filme atualizado', type: UpdateMovieDto })
   @ApiResponse({ status: 404, description: 'Filme não encontrado para atualização' })
@@ -75,6 +84,7 @@ export class MoviesController {
   }
 
   @Delete(':id')
+  @Roles('adm')
   @ApiOperation({ summary: 'Deleta um filme pelo ID' })
   @ApiResponse({ status: 204, description: 'Filme deletado com sucesso' })
   @ApiResponse({ status: 404, description: 'Filme não encontrado para exclusão' })

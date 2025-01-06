@@ -1,12 +1,17 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { Ticket } from './ticket.entity';
-import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+
 
 @ApiTags('tickets')
 @Controller('tickets')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class TicketsController {
-  constructor(private readonly ticketsService: TicketsService) {}
+  constructor(private readonly ticketsService: TicketsService) { }
 
   @Post()
   @ApiOperation({ summary: 'Criar um novo ticket' })
@@ -29,7 +34,7 @@ export class TicketsController {
   @ApiResponse({ status: 400, description: 'Requisição inválida.' })
   @ApiResponse({ status: 404, description: 'Ticket não encontrado' })
   findOne(@Param('id') id: string) {
-    return this.ticketsService.findOne(parseInt(id)); 
+    return this.ticketsService.findOne(parseInt(id));
   }
 
   @Put(':id')
@@ -38,7 +43,7 @@ export class TicketsController {
   @ApiResponse({ status: 400, description: 'Requisição inválida.' })
   @ApiResponse({ status: 404, description: 'Ticket não encontrado' })
   update(@Param('id') id: string, @Body() ticket: Ticket) {
-    return this.ticketsService.update(parseInt(id), ticket); 
+    return this.ticketsService.update(parseInt(id), ticket);
   }
 
   @Delete(':id')
@@ -47,6 +52,6 @@ export class TicketsController {
   @ApiResponse({ status: 400, description: 'Requisição inválida.' })
   @ApiResponse({ status: 404, description: 'Ticket não encontrado' })
   remove(@Param('id') id: string) {
-    return this.ticketsService.remove(parseInt(id)); 
+    return this.ticketsService.remove(parseInt(id));
   }
 }

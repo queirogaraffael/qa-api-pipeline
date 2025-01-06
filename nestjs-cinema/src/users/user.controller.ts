@@ -1,7 +1,11 @@
 import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './CreateUserDto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import {  UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard'; 
 
 @ApiTags('users')
 @Controller('users')
@@ -29,6 +33,9 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista todos os usuários' })
   @ApiResponse({ status: 200, description: 'Lista retornada com sucesso.' })
   async findAll() {
@@ -36,6 +43,8 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Busca um usuário pelo ID' })
   @ApiResponse({ status: 200, description: 'Usuário encontrado.' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
@@ -45,6 +54,8 @@ export class UserController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Atualiza informações de um usuário pelo ID' })
   @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso.' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
@@ -66,6 +77,8 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Remove um usuário pelo ID' })
   @ApiResponse({ status: 200, description: 'Usuário removido com sucesso.' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
