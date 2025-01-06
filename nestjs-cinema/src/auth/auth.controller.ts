@@ -12,12 +12,12 @@ import { LoginResponse } from './dtos/login-response.dto';
 import { EmailNotFoundException } from '../exceptions/email-not-found.exception';
 import { InvalidPasswordException } from '../exceptions/invalid-password.exception';
 
-@ApiTags('auth')
-@Controller('auth')
+@ApiTags('login')
+@Controller('login')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  @Post('login')
+  @Post()
   @HttpCode(200)
   @ApiOperation({
     summary: 'Realizar login',
