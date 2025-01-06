@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateMovieDto } from './dtos/CreateMovieDto';
 import { UpdateMovieDto } from './dtos/UpdateMovieDto';
 import { MovieDto } from './dtos/MovieDto';
@@ -31,30 +31,45 @@ export class MoviesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Obtém todos os filmes com paginação' })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de filmes paginada',
-    schema: {
-      example: {
-        data: [
-          {
-            id: 1,
-            title: 'Filme Exemplo',
-            description: 'Descrição do Filme',
-            launchdate: '2023-01-01',
-            showtimes: ['2023-01-01T14:00:00Z', '2023-01-01T18:00:00Z'],
-          },
-        ],
-        total: 10,
-        page: 1,
-        lastPage: 1,
-      },
+@ApiOperation({ summary: 'Obtém todos os filmes com paginação' })
+@ApiResponse({
+  status: 200,
+  description: 'Lista de filmes paginada',
+  schema: {
+    example: {
+      data: [
+        {
+          id: 1,
+          title: 'Filme Exemplo',
+          description: 'Descrição do Filme',
+          launchdate: '2023-01-01',
+          showtimes: ['2023-01-01T14:00:00Z', '2023-01-01T18:00:00Z'],
+        },
+      ],
+      total: 10,
+      page: 1,
+      lastPage: 1,
     },
-  })
-  async findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
-    return this.moviesService.findAll({ page, limit });
-  }
+  },
+})
+@ApiQuery({
+  name: 'page',
+  required: false,
+  description: 'Número da página',
+  type: Number,
+  example: 1,
+})
+@ApiQuery({
+  name: 'limit',
+  required: false,
+  description: 'Número de itens por página',
+  type: Number,
+  example: 10,
+})
+async findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+  return this.moviesService.findAll({ page, limit });
+}
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtém um filme pelo ID' })

@@ -1,7 +1,7 @@
-import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './CreateUserDto';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiQuery } from '@nestjs/swagger';
 import {  UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
 import { Roles } from '../auth/roles.decorator';
@@ -36,11 +36,44 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Lista todos os usuários' })
-  @ApiResponse({ status: 200, description: 'Lista retornada com sucesso.' })
-  async findAll() {
-    return this.userService.findAll();
+  @ApiOperation({ summary: 'Lista todos os usuários com paginação' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuários paginada',
+    schema: {
+      example: {
+        data: [
+          {
+            id: 1,
+            username: 'usuarioExemplo',
+            email: 'usuario@exemplo.com',
+            createdAt: '2023-01-01T12:00:00Z',
+          },
+        ],
+        total: 50,
+        page: 1,
+        lastPage: 5,
+      },
+    },
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página',
+    type: Number,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Número de usuários por página',
+    type: Number,
+    example: 10,
+  })
+  async findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+    return this.userService.findAll({ page, limit });
   }
+  
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)

@@ -21,8 +21,21 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findAll({ page, limit }: { page: number; limit: number }): Promise<{ data: User[]; total: number; page: number; lastPage: number }> {
+    const pageNum = Number(page) || 1; 
+    const limitNum = Number(limit) || 10; 
+  
+    const [users, total] = await this.userRepository.findAndCount({
+      skip: (pageNum - 1) * limitNum, 
+      take: limitNum, 
+    });
+  
+    return {
+      data: users,
+      total,
+      page: pageNum,
+      lastPage: Math.ceil(total / limitNum), 
+    };
   }
 
   async findOneById(id: string): Promise<User | null> {
