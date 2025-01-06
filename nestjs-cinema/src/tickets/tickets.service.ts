@@ -10,8 +10,19 @@ export class TicketsService {
     private readonly ticketRepository: Repository<Ticket>,
   ) {}
 
-
   async create(ticket: Partial<Ticket>) {
+    const existingTicket = await this.ticketRepository.findOne({
+      where: {
+        seatNumber: ticket.seatNumber,
+        showtime: ticket.showtime,
+        movie: { id: ticket.movie.id },
+      },
+    });
+
+    if (existingTicket) {
+      throw new Error('Assento já ocupado para este filme e showtime');
+    }
+
     return this.ticketRepository.save(ticket);
   }
 
@@ -33,12 +44,22 @@ export class TicketsService {
     return this.ticketRepository.findOne({ where: { id } }); 
   }
 
-
   async update(id: number, ticket: Partial<Ticket>) {
+    const existingTicket = await this.ticketRepository.findOne({
+      where: {
+        seatNumber: ticket.seatNumber,
+        showtime: ticket.showtime,
+        movie: { id: ticket.movie.id },
+      },
+    });
+
+    if (existingTicket && existingTicket.id !== id) {
+      throw new Error('Assento já ocupado para este filme e showtime');
+    }
+
     await this.ticketRepository.update(id, ticket);
     return this.ticketRepository.findOne({ where: { id } }); 
   }
-
 
   async remove(id: number) {
     const ticket = await this.ticketRepository.findOne({ where: { id } });  
