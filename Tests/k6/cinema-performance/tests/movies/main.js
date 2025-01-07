@@ -1,7 +1,7 @@
-import { createMovie, getMovies, putMovie, deleteMovie } from './movies.js';
-import { responseTimeConfig } from './responseTimes.js';
+import { createMovie, getMovies, putMovie, deleteMovie } from '../../scenarios/movies.js';
+import { responseTimeConfig } from '../../support/config/movies/responseTimes.js';
 import { stagesConfig } from './config.js';
-import { login, loadUserData } from './users.js';
+import { login, loadUserData } from '../../scenarios/users.js';
 
 const stage = __ENV.STAGE || 'stage1';
 const TEST_CASE = __ENV.TEST_CASE || 'default';
