@@ -21,51 +21,17 @@ export class MoviesService extends BaseRest {
         const response = this.post('', movieData, headers);
 
         this.checks.checkStatusCode(response, 201, 'POST /movies response has status 201');
-        check(response, {
-            'POST /movies response time is within limit': (r) => r.timings.duration <= maxResponseTime,
-            'POST /movies response body contains movie ID': (r) => JSON.parse(r.body).id !== undefined,
-        });
+        this.checks.checkResponseTime(response, maxResponseTime, 'POST /movies response time is within limit');
+        this.checks.checkResponseBodyContains(response, 'id', 'POST /movies response body contains movie ID');
 
         return { id: JSON.parse(response.body).id, title: uniqueTitle };
-    }
-
-    getMovies(maxResponseTime, headers) {
-        let allMovies = [];
-        let page = 1;
-        let hasNextPage = true;
-        const limit = 10;
-
-        while (hasNextPage) {
-            const response = this.get(`?page=${page}&limit=${limit}`, headers);
-
-            this.checks.checkStatusCode(response, 200, 'GET /movies response has status 200');
-            check(response, {
-                'GET /movies response time is <= maxResponseTime': (r) => r.timings.duration <= maxResponseTime,
-            });
-
-            const data = response.json();
-
-            if (Array.isArray(data.data)) {
-                allMovies = allMovies.concat(data.data);
-                hasNextPage = data.page < data.lastPage;
-            } else {
-                console.error('Resposta da API não contém um array de filmes em "data".');
-                hasNextPage = false;
-            }
-
-            page++;
-        }
-
-        return allMovies;
     }
 
     getMovies(maxResponseTime, headers) {
         const response = this.get('', headers);
 
         this.checks.checkStatusCode(response, 200, 'GET /movies response has status 200');
-        check(response, {
-            'GET /movies response time is <= maxResponseTime': (r) => r.timings.duration <= maxResponseTime,
-        });
+        this.checks.checkResponseTime(response, maxResponseTime, 'GET /movies response time is <= maxResponseTime');
 
         return response.json();
     }
@@ -81,9 +47,7 @@ export class MoviesService extends BaseRest {
         const response = this.put(`/${movieId}`, updatedData, headers);
 
         this.checks.checkStatusCode(response, 200, 'PUT /movies response has status 200');
-        check(response, {
-            'PUT /movies response time is <= maxResponseTime': (r) => r.timings.duration <= maxResponseTime,
-        });
+        this.checks.checkResponseTime(response, maxResponseTime, 'PUT /movies response time is <= maxResponseTime');
 
         return response;
     }
@@ -92,9 +56,7 @@ export class MoviesService extends BaseRest {
         const response = this.delete(`/${movieId}`, headers);
 
         this.checks.checkStatusCode(response, 200, 'DELETE /movies response has status 200');
-        check(response, {
-            'DELETE /movies response time is <= maxResponseTime': (r) => r.timings.duration <= maxResponseTime,
-        });
+        this.checks.checkResponseTime(response, maxResponseTime, 'DELETE /movies response time is <= maxResponseTime');
 
         return response;
     }
