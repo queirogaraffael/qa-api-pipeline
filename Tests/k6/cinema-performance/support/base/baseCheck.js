@@ -38,4 +38,18 @@ export class BaseChecks {
             },
         });
     }
+
+    checkTokenReceived(response, message = 'Token recebido na resposta') {
+        check(response, {
+            [message]: (r) => {
+                try {
+                    const body = r.json();
+                    return body && body.access_token;
+                } catch (e) {
+                    console.error('Erro ao acessar token na resposta:', e);
+                    return false;
+                }
+            },
+        });
+    }
 }

@@ -9,14 +9,10 @@ export class AuthService extends BaseRest {
     login(email, password) {
         const payload = { email, password };
 
-        const response = this.post('', payload, {
-            'Content-Type': 'application/json',
-        });
+        const response = this.post('', payload, {});
 
         this.checks.checkStatusCode(response, 200, 'POST /login response has status 200');
-        check(response, {
-            'Token recebido': (r) => !!r.json('access_token'),
-        });
+        this.checks.checkTokenReceived(response, 'POST /login token recebido');
 
         if (response.status === 200) {
             const body = response.json();
@@ -24,15 +20,6 @@ export class AuthService extends BaseRest {
         } else {
             console.error(`Erro ao autenticar ${email}: ${response.status} - ${response.body}`);
             return null;
-        }
-    }
-
-    loadUserData() {
-        try {
-            return JSON.parse(open('./data/users.json'));
-        } catch (error) {
-            console.error('Erro ao carregar dados de usuários:', error);
-            return [];
         }
     }
 }
