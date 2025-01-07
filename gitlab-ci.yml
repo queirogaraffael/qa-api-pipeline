@@ -1,0 +1,86 @@
+stages:
+  - setup
+  - postman
+  - performance
+  - deploy
+  - shutdown
+
+start_api:
+  stage: setup
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker-compose up 
+    - >
+      MAX_RETRIES=12
+      RETRY_COUNT=0
+      while ! curl -s http://localhost:3000/ || [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -ne 200 ]]; do
+        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+          echo "A API não ficou pronta a tempo. Saindo..."
+          exit 1
+        fi
+        echo "Aguardando a API... Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES"
+        RETRY_COUNT=$((RETRY_COUNT+1))
+        sleep 5
+      done
+    - echo "A API está pronta!"
+  only:
+    - main
+
+postman_tests:
+  stage: postman
+  image: postman/newman
+  script:
+    - cd Tests/postman
+
+  artifacts:
+    paths:
+      - Tests/postman/reports
+      - Tests/Postman/allure-report
+  only:
+    - main
+
+performance_tests:
+  stage: performance
+  image: grafana/k6
+  script:
+    - cd Tests/k6
+
+  artifacts:
+    paths:
+      - Tests/k6/reports
+  allow_failure: true
+  only:
+    - main
+
+deploy_api:
+  stage: deploy
+  image: node:20
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no $EC2_SSH_COMMAND << EOF
+        if lsof -t -i :3000; then
+          echo "Port 3000 is in use. Killing the process..."
+          kill -9 $(lsof -t -i :3000)
+        fi
+        
+        cd /path/to/your/deploy/directory
+        git pull origin main 
+        npm install         
+        npm run start       
+      EOF
+  only:
+    - main 
+
+shutdown_api:
+  stage: shutdown
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker-compose down
+  only:
+    - main
