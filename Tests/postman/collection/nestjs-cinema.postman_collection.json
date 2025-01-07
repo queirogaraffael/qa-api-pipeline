@@ -1,0 +1,762 @@
+{
+	"info": {
+		"_postman_id": "8a7c521d-fdf2-4793-8231-da52cc7f5dc7",
+		"name": "nestjs-cinema",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25319040"
+	},
+	"item": [
+		{
+			"name": "US 001: [API] - Login",
+			"item": [
+				{
+					"name": "GP-001 - Cenários de autenticação bem-sucedida",
+					"item": [
+						{
+							"name": "CT-001 - Autenticar usuário com sucesso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-002 - Autenticar administrador com sucesso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-002 - Cenários de autenticação falha",
+					"item": [
+						{
+							"name": "CT-003 - Autenticar usuário com email não cadastrado",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-004 - Autenticar usuário com senha incorreta",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-005 - Autenticar usuário com dados ausentes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-003 - Cenários de autorização com token",
+					"item": [
+						{
+							"name": "CT-006 - Usuário comum acessando rota protegida de tickets",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-007 - Administrador acessando rota protegida de filmes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-008 - Acesso a rota protegida sem token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-009 - Acesso a rota protegida com token inválido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "US 002: [API]- Usuarios",
+			"item": [
+				{
+					"name": "GP-004 - Cadastro de Usuários",
+					"item": [
+						{
+							"name": "CT-010 - Cadastro de usuário com dados válidos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-011 - Cadastro de usuário com email já utilizado",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-012 - Cadastro de usuário com email inválido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-013 - Cadastro de usuário com senha fora do padrão",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-005 - Listagem de Usuários",
+					"item": [
+						{
+							"name": "CT-014 - Listagem de usuários com paginação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-015 - Tentativa de listar usuários sem autenticação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-015 - Buscar Usuário",
+					"item": [
+						{
+							"name": "CT-037 - Buscar usuário por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-038 - Tentativa de buscar usuário sem autenticação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-006 - Atualização de Usuários",
+					"item": [
+						{
+							"name": "CT-016 - Atualização de usuário com ID inexistente",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-017 - Tentativa de editar usuário com email já utilizado",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "US 003: [API] - Movies",
+			"item": [
+				{
+					"name": "GP-007 - Cenários para a criação de filmes",
+					"item": [
+						{
+							"name": "CT-018 - Criar filme com sucesso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-019 - Criar filme com dados inválidos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-008 - Cenários para listagem de filmes",
+					"item": [
+						{
+							"name": "CT-020 - Listar todos os filmes com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-021 - Listar filme por ID com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-022 - Listar filme por ID inexistente",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-009 - Cenários para atualização de filmes",
+					"item": [
+						{
+							"name": "CT-023 - Atualizar filme com sucesso",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-024 - Atualizar filme inexistente",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-010 - Cenários para exclusão de filmes",
+					"item": [
+						{
+							"name": "CT-025 - Excluir filme com sucesso",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-026 - Excluir filme inexistente",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "c",
+									"host": [
+										"c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-039 - Tentar excluir filme com tickets associados",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "CT-039 - Tentar excluir filme com tickets associados",
+									"host": [
+										"CT-039 - Tentar excluir filme com tickets associados"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "US 004: [API] - Tickets",
+			"item": [
+				{
+					"name": "GP-011 - Cenários para criação de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-027 -  Criar reserva de ingresso com sucesso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-028 - Criar reserva com assento indisponível",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-029 - Criar reserva com dados inválidos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-012 - Cenários para listagem de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-030 - Listar reservas de ingressos com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-031 - Buscar reserva por ID com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-032 - Buscar reserva por ID inexistente",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-013 - Cenários para atualização de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-033 - Atualizar reserva de ingresso com sucesso",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-034 - Atualizar reserva inexistente",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-014 - Cenários para exclusão de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-035 - Excluir reserva de ingresso com sucesso",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-036 - Excluir reserva inexistente",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
