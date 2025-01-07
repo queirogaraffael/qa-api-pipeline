@@ -75,3 +75,11 @@ Feature: Gerenciamento de Filmes na API de Cinema
     When o administrador envia uma requisição DELETE para a rota "http://localhost:3000/movies/inexistente123"
     Then o sistema deve retornar o status code 404
     And a mensagem de resposta deve ser "Filme não encontrado."
+
+    Scenario: CT-039 - Tentar excluir filme com tickets associados
+    Given que o usuário está autenticado como "admin"
+    And o filme com "id": "xyz789" existe
+    And o filme com "id": "xyz789" tem tickets associados
+    When o administrador envia uma requisição DELETE para a rota "http://localhost:3000/movies/xyz789"
+    Then o sistema deve retornar o status code 400
+    And a mensagem de resposta deve ser "Não é possível excluir o filme, pois ele tem tickets associados."

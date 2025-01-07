@@ -50,6 +50,20 @@ Feature: Cadastro e Gerenciamento de Usuários
     Then devo receber um status code 401 (Não autorizado)
     And uma mensagem indicando que a autenticação é necessária.
 
+  # GP-015 - Buscar Usuário
+
+  Scenario: CT-037 - Buscar usuário por ID
+    Given que sou um administrador autenticado com um token válido
+    When envio uma solicitação GET para o endpoint de busca de usuário com o ID "123"
+    Then devo receber os dados do usuário com o ID especificado
+    And o status code 200 (OK).
+
+  Scenario: CT-038 - Tentativa de buscar usuário sem autenticação
+    Given que não sou um administrador ou não estou autenticado
+    When envio uma solicitação GET para o endpoint de busca de usuário com o ID "123"
+    Then devo receber um status code 401 (Não autorizado)
+    And uma mensagem indicando que a autenticação é necessária.
+
   # GP-006 - Atualização de Usuários
 
   Scenario: CT-016 - Atualização de usuário com ID inexistente
