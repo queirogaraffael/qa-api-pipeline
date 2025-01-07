@@ -1,7 +1,3 @@
-// Environment Configuration
-export const BASE_URL = 'http://localhost:3000';
-
-// Configuration for the test stages
 export const stagesConfig = {
     stage1: [
         { duration: '1s', target: 30 },

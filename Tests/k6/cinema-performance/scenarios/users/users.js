@@ -1,30 +1,40 @@
-import http from 'k6/http';
-import { check } from 'k6';
-import { BASE_URL } from './config.js';
+import { BaseRest } from '../../services/BaseRest.js';
+import { BaseChecks } from './baseChecks.js';
+import { ENDPOINTS } from '../support/config/Endpoints.js';
 
-// Função para realizar login e obter o token
-export function login(email, password) {
-    const payload = JSON.stringify({ email, password });
-
-    const response = http.post(`${BASE_URL}/login`, payload, {
-        headers: { 'Content-Type': 'application/json' },
-    });
-
-    check(response, {
-        'Login realizado com sucesso': (r) => r.status === 200,
-        'Token recebido': (r) => !!r.json('access_token'),
-    });
-
-    if (response.status === 200) {
-        const body = JSON.parse(response.body);
-        return body.access_token; // Retorna apenas o token
-    } else {
-        console.error(`Erro ao autenticar ${email}: ${response.status} - ${response.body}`);
-        return null;
+export class AuthService extends BaseRest {
+    constructor() {
+        super(ENDPOINTS.LOGIN);
+        this.checks = new BaseChecks();
     }
-}
 
-// Função para carregar massa de dados
-export function loadUserData() {
-    return JSON.parse(open('./data/users.json'));
+    login(email, password) {
+        const payload = { email, password };
+
+        const response = this.post('', payload, {
+            'Content-Type': 'application/json',
+        });
+
+        this.checks.checkStatusCode(response, 200, 'POST /login response has status 200');
+        check(response, {
+            'Token recebido': (r) => !!r.json('access_token'),
+        });
+
+        if (response.status === 200) {
+            const body = response.json();
+            return body.access_token;
+        } else {
+            console.error(`Erro ao autenticar ${email}: ${response.status} - ${response.body}`);
+            return null;
+        }
+    }
+
+    loadUserData() {
+        try {
+            return JSON.parse(open('./data/users.json'));
+        } catch (error) {
+            console.error('Erro ao carregar dados de usuários:', error);
+            return [];
+        }
+    }
 }

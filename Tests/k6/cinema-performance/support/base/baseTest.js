@@ -1,4 +1,4 @@
-export { ENDPOINTS } from './constantes.js'
+export { ENDPOINTS, ENVIRONMENTS } from './constants.js'
 export { handleSummary as importedHandleSummary } from '../../services/summary.js';
-export { BaseChecks } from './baseChecks.js'
-export { BaseRest } from '../services/baseRest.js';
+export { BaseChecks } from './baseCheck.js';
+export { BaseRest } from '../../services/BaseRest.js';

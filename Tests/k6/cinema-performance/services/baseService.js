@@ -1,6 +1,6 @@
 import { EnvironmentConfig, ENVIRONMENTS } from '../support/config/Environment.js'
 
-const ENVIRONMENT = ENVIRONMENTS.TESTE;
+const ENVIRONMENT = ENVIRONMENTS.AWS;
 const DEFAULT_BASE_URI = EnvironmentConfig.getEnvironment(ENVIRONMENT).url;
 
 export class BaseService {
