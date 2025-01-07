@@ -1,6 +1,4 @@
-import { BaseRest } from '../../services/BaseRest.js';
-import { BaseChecks } from './baseChecks.js';
-import { ENDPOINTS } from '../support/config/Endpoints.js';
+import { BaseChecks, ENDPOINTS, BaseRest } from '../../support/base/baseTest.js';
 
 export class AuthService extends BaseRest {
     constructor() {

@@ -1,7 +1,7 @@
 import { MoviesService } from '../../scenarios/movies/movies.js';
 import { responseTimeConfig } from '../../support/config/movies/responseTimes.js';
-import { stagesConfig } from './config.js';
-import { login, loadUserData } from '../../scenarios/users.js';
+import { stagesConfig } from '../../support/config/movies/config.js';
+import { AuthService } from '../../scenarios/login/login.js';
 
 const stage = __ENV.STAGE || 'stage1';
 const maxResponseTimes = responseTimeConfig[stage];
@@ -10,14 +10,16 @@ export let options = {
     stages: stagesConfig[stage],
 };
 
+let authService = new AuthService();
+
 // Carrega os dados dos usuários
-const users = loadUserData();
+const users = authService.loadUserData();
 
 // Setup: Autentica um usuário específico
 export function setup() {
     const selectedUser = users[0]; // Seleciona apenas o primeiro usuário
-    const token = login(selectedUser.email, selectedUser.password);
-    
+    const token = authService.login(selectedUser.email, selectedUser.password);
+
     if (!token) {
         throw new Error(`Falha ao autenticar o usuário: ${selectedUser.email}`);
     }

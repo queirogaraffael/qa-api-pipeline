@@ -1,6 +1,4 @@
-import { BaseRest } from '../../services/BaseRest.js';
-import { BaseChecks } from './baseChecks.js';
-import { ENDPOINTS } from '../support/config/Endpoints.js';
+import { BaseChecks, ENDPOINTS, BaseRest } from '../../support/base/baseTest.js';
 
 export class MoviesService extends BaseRest {
     constructor() {
@@ -69,7 +67,7 @@ export class MoviesService extends BaseRest {
             'GET /movies response time is <= maxResponseTime': (r) => r.timings.duration <= maxResponseTime,
         });
 
-        return response.json(); 
+        return response.json();
     }
 
     updateMovie(movieId, maxResponseTime, headers) {

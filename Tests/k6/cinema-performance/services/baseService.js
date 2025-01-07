@@ -1,4 +1,5 @@
-import { EnvironmentConfig, ENVIRONMENTS } from '../support/config/Environment.js'
+import { EnvironmentConfig } from '../support/config/Environment.js'
+import { ENVIRONMENTS } from '../support/base/constants.js';
 
 const ENVIRONMENT = ENVIRONMENTS.AWS;
 const DEFAULT_BASE_URI = EnvironmentConfig.getEnvironment(ENVIRONMENT).url;
