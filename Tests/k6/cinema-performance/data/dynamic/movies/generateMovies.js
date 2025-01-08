@@ -1,7 +1,7 @@
 const { faker } = require('@faker-js/faker/locale/pt_BR');
 const fs = require('fs');
 
-const quantidade = process.argv[2] || 10;
+const quantidade = process.argv[2] || 20;
 
 const filmes = [];
 

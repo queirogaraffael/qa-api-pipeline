@@ -1,55 +1,28 @@
 import { check } from 'k6';
 
 export class BaseChecks {
-    checkStatusCode(response, expectedStatus = 200, message = `Status esperado ${expectedStatus}`) {
+    checkStatusCode(response, expectedStatus = 200, message = `Status esperado ${expectedStatus}`, tags = {}) {
         check(response, {
             [message]: (r) => r && r.status === expectedStatus,
-        });
+        }, tags);
     }
 
-    checkResponseCreated(response, message = 'Status da resposta é 201 (Criado)') {
-        this.checkStatusCode(response, 201, message);
+    checkResponseCreated(response, message = 'Status da resposta é 201 (Criado)', tags = {}) {
+        this.checkStatusCode(response, 201, message, tags);
     }
 
-    checkResponseDeleted(response, message = 'Status da resposta é 200 (Deletado)') {
-        this.checkStatusCode(response, 200, message);
+    checkResponseDeleted(response, message = 'Status da resposta é 200 (Deletado)', tags = {}) {
+        this.checkStatusCode(response, 200, message, tags);
     }
 
-    checkLoginSuccess(response, message = 'Login bem-sucedido com status 200') {
-        this.checkStatusCode(response, 200, message);
+    checkLoginSuccess(response, message = 'Login bem-sucedido com status 200', tags = {}) {
+        this.checkStatusCode(response, 200, message, tags);
     }
 
-    checkResponseTime(response, maxResponseTime, message = 'Response time is within the limit') {
+    checkResponseTime(response, maxResponseTime, message = 'Response time is within the limit', tags = {}) {
         check(response, {
             [message]: (r) => r.timings.duration <= maxResponseTime,
-        });
+        }, tags);
     }
 
-    checkResponseBodyContains(response, key, message = `Response body contains ${key}`) {
-        check(response, {
-            [message]: (r) => {
-                try {
-                    const body = JSON.parse(r.body);
-                    return body && body[key] !== undefined;
-                } catch (e) {
-                    console.error('Failed to parse response body', e);
-                    return false;
-                }
-            },
-        });
-    }
-
-    checkTokenReceived(response, message = 'Token recebido na resposta') {
-        check(response, {
-            [message]: (r) => {
-                try {
-                    const body = r.json();
-                    return body && body.access_token;
-                } catch (e) {
-                    console.error('Erro ao acessar token na resposta:', e);
-                    return false;
-                }
-            },
-        });
-    }
 }
