@@ -10,7 +10,7 @@ export class BaseRest extends BaseService {
     post(endpoint, body, headers = {}, params = {}) {
         let uri = this.base_uri + endpoint;
         let options = this.buildOptions(headers, params);
-        return http.post(uri, JSON.stringify(body), options);
+        return http.post(uri, body, options);
     }
 
     get(endpoint, headers = {}, params = {}) {
@@ -22,7 +22,7 @@ export class BaseRest extends BaseService {
     put(endpoint, body, headers = {}, params = {}) {
         let uri = this.base_uri + endpoint;
         let options = this.buildOptions(headers, params);
-        return http.put(uri, JSON.stringify(body), options);
+        return http.put(uri, body, options);
     }
 
     delete(endpoint, headers = {}, params = {}) {

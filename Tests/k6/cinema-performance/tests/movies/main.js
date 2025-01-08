@@ -1,62 +1,114 @@
-import { MoviesService } from '../../scenarios/movies/movies.js';
-import { responseTimeConfig } from '../../support/config/movies/responseTimes.js';
-import { stagesConfig } from '../../support/config/movies/config.js';
-import { AuthService } from '../../scenarios/login/login.js';
+import { check } from 'k6';
+import { SharedArray } from 'k6/data';
+import { MoviesService } from '../../scenarios/movies/movieScenarios.js';
+import { ENVIRONMENTS } from '../../support/base/constants.js';
 
-const stage = __ENV.STAGE || 'stage1';
-const maxResponseTimes = responseTimeConfig[stage];
+const moviesService = new MoviesService(ENVIRONMENTS.LOCAL);
 
-export let options = {
-    stages: stagesConfig[stage],
+const data = new SharedArray('Movies', function () {
+    const jsonData = JSON.parse(open('../../data/dynamic/movies/movies.json'));
+    return jsonData.movies;
+});
+
+export const options = {
+    scenarios: {
+        load_test: {
+            executor: 'constant-arrival-rate',
+            rate: 50, // 50 requisições por segundo
+            timeUnit: '1s', 
+            duration: '1m', // Teste executa por 1 minuto
+            preAllocatedVUs: 50,
+            maxVUs: 100,
+            exec: 'loadTest', // Nome da função
+        },
+        stress_test: {
+            executor: 'ramping-arrival-rate',
+            startRate: 10, // Começa com 10 requisições por segundo
+            timeUnit: '1s',
+            stages: [
+                { target: 100, duration: '2m' }, // Escala para 100 requisições/seg em 2 minutos
+                { target: 200, duration: '2m' }, // Escala para 200 requisições/seg em 2 minutos
+                { target: 0, duration: '1m' }, // Finaliza reduzindo para 0 requisições
+            ],
+            preAllocatedVUs: 200,
+            maxVUs: 300,
+            exec: 'stressTest',
+        },
+        peak_test: {
+            executor: 'per-vu-iterations',
+            vus: 100,
+            iterations: 1000, // Cada VU executa 1000 iterações
+            maxDuration: '2m', // Tempo máximo de execução
+            exec: 'peakTest',
+        },
+        resilience_test: {
+            executor: 'shared-iterations',
+            vus: 50, // 50 usuários virtuais
+            iterations: 500, // 500 iterações no total
+            maxDuration: '3m', // Tempo máximo de execução
+            exec: 'resilienceTest',
+        },
+    },
 };
 
-let authService = new AuthService();
-
-// Carrega os dados dos usuários
-const users = authService.loadUserData();
-
-// Setup: Autentica um usuário específico
-export function setup() {
-    const selectedUser = users[0]; // Seleciona apenas o primeiro usuário
-    const token = authService.login(selectedUser.email, selectedUser.password);
-
-    if (!token) {
-        throw new Error(`Falha ao autenticar o usuário: ${selectedUser.email}`);
-    }
-
-    return { token };
+export function loadTest() {
+    executeFlow();
 }
 
-// Fluxo completo: Criação → Listagem → Atualização → Exclusão
-export default function ({ token }) {
-    const authHeaders = { Authorization: `Bearer ${token}` };
-    const moviesService = new MoviesService();
+export function stressTest() {
+    executeFlow();
+}
 
-    console.log('🛠️ Executando fluxo completo de filme.');
+export function peakTest() {
+    executeFlow();
+}
 
-    // 🟢 Criação
-    const newMovie = moviesService.createMovie(maxResponseTimes.createMovie, authHeaders);
-    if (!newMovie || !newMovie.id) {
-        console.error('Erro ao criar filme. ID não encontrado.');
-        return;
-    }
-    console.log(`✅ Filme criado: ${newMovie.title} (ID: ${newMovie.id})`);
+export function resilienceTest() {
+    executeFlow();
+}
 
-    // 🔵 Listagem
-    const movies = moviesService.getMovies(maxResponseTimes.getMovies, authHeaders);
-    const movie = movies.find((m) => m.title === newMovie.title);
+function executeFlow() {
+    const maxResponseTime = 500; // Tempo máximo de resposta em ms
+    const headers = { 'Content-Type': 'application/json' };
 
-    if (movie) {
-        console.log(`🔍 Filme encontrado: ${movie.title} (ID: ${movie._id})`);
+    // 1. Criar um filme
+    const movieData = data[__ITER % data.length]; // Seleciona um filme da massa de dados
+    const createdMovie = moviesService.createMovie(movieData, maxResponseTime, headers);
 
-        // 🟡 Atualização
-        moviesService.updateMovie(movie._id, maxResponseTimes.putMovie, authHeaders);
-        console.log(`🔄 Filme atualizado: ${movie.title} (ID: ${movie._id})`);
+    check(createdMovie, {
+        'Filme criado com sucesso': () => createdMovie.id !== undefined,
+    });
 
-        // 🔴 Exclusão
-        moviesService.deleteMovie(movie._id, maxResponseTimes.deleteMovie, authHeaders);
-        console.log(`🗑️ Filme deletado: ${movie.title} (ID: ${movie._id})`);
-    } else {
-        console.error(`❌ Filme "${newMovie.title}" não encontrado na listagem.`);
-    }
+    // 2. Buscar o filme pelo ID
+    const fetchedMovie = moviesService.getMovieById(createdMovie.id, maxResponseTime, headers);
+
+    check(fetchedMovie, {
+        'Filme buscado com sucesso pelo ID': () => fetchedMovie.id === createdMovie.id,
+        'Título está correto': () => fetchedMovie.title === movieData.title,
+    });
+
+    // 3. Atualizar o filme
+    const updatedData = {
+        title: `${movieData.title} - Atualizado`,
+        description: `${movieData.description} - Atualizado`,
+        releaseYear: 2025,
+    };
+    const updatedResponse = moviesService.updateMovie(createdMovie.id, updatedData, maxResponseTime, headers);
+
+    check(updatedResponse, {
+        'Filme atualizado com sucesso': () => updatedResponse.status === 200,
+    });
+
+    const updatedMovie = moviesService.getMovieById(createdMovie.id, maxResponseTime, headers);
+    check(updatedMovie, {
+        'Título do filme atualizado corretamente': () => updatedMovie.title === updatedData.title,
+        'Descrição do filme atualizada corretamente': () => updatedMovie.description === updatedData.description,
+    });
+
+    // 4. Deletar o filme
+    const deleteResponse = moviesService.deleteMovie(createdMovie.id, maxResponseTime, headers);
+
+    check(deleteResponse, {
+        'Filme deletado com sucesso': () => deleteResponse.status === 200,
+    });
 }

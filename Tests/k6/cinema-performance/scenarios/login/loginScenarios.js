@@ -9,7 +9,7 @@ export class AuthService extends BaseRest {
     login(email, password) {
         const payload = { email, password };
 
-        const response = this.post('', payload, {});
+        const response = this.post(ENDPOINTS.LOGIN, payload, null, null);
 
         this.checks.checkStatusCode(response, 200, 'POST /login response has status 200');
         this.checks.checkTokenReceived(response, 'POST /login token recebido');

@@ -6,6 +6,6 @@ export const ENDPOINTS = {
 };
 
 export const ENVIRONMENTS = {
-    LOCAL: "LOCAL",
+    LOCAL: "http://localhost:3000",
     AWS: "AWS"
 };
