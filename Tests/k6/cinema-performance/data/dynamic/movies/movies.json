@@ -1,0 +1,94 @@
+{
+  "movies": [
+    {
+      "title": "assumenda mollitia impedit",
+      "description": "Facilis fugiat laboriosam adipisci voluptatibus laborum reiciendis.",
+      "launchdate": "2025-08-04T11:08:30.093Z",
+      "showtimes": [
+        "2025-01-08T23:47:51.642Z",
+        "2025-01-09T07:40:17.824Z"
+      ]
+    },
+    {
+      "title": "est harum et",
+      "description": "Dicta iste corrupti sunt dolor iusto aliquam.",
+      "launchdate": "2025-09-29T05:16:53.768Z",
+      "showtimes": [
+        "2025-01-09T06:05:31.015Z",
+        "2025-01-09T02:49:30.039Z"
+      ]
+    },
+    {
+      "title": "ducimus aliquid commodi",
+      "description": "Adipisci ratione rerum.",
+      "launchdate": "2025-05-08T16:49:00.463Z",
+      "showtimes": [
+        "2025-01-08T23:19:03.731Z",
+        "2025-01-09T15:33:43.515Z"
+      ]
+    },
+    {
+      "title": "voluptas non assumenda",
+      "description": "Ratione ullam molestiae iste.",
+      "launchdate": "2025-01-10T23:41:24.683Z",
+      "showtimes": [
+        "2025-01-09T01:14:23.201Z",
+        "2025-01-09T04:39:27.041Z"
+      ]
+    },
+    {
+      "title": "incidunt odio optio",
+      "description": "Minima iste itaque consectetur accusamus veritatis animi.",
+      "launchdate": "2025-04-19T13:47:53.127Z",
+      "showtimes": [
+        "2025-01-08T19:27:47.469Z",
+        "2025-01-09T06:37:50.200Z"
+      ]
+    },
+    {
+      "title": "alias magnam quis",
+      "description": "Praesentium cumque tempore minima.",
+      "launchdate": "2025-01-26T22:58:23.880Z",
+      "showtimes": [
+        "2025-01-09T01:09:42.979Z",
+        "2025-01-08T17:13:07.476Z"
+      ]
+    },
+    {
+      "title": "debitis nobis quam",
+      "description": "Impedit totam fugiat quos.",
+      "launchdate": "2025-05-06T22:37:39.008Z",
+      "showtimes": [
+        "2025-01-09T13:32:00.494Z",
+        "2025-01-08T16:36:15.596Z"
+      ]
+    },
+    {
+      "title": "eum deleniti quae",
+      "description": "Consequuntur porro accusamus rerum illo soluta.",
+      "launchdate": "2025-07-05T21:17:10.792Z",
+      "showtimes": [
+        "2025-01-08T23:05:40.484Z",
+        "2025-01-09T02:34:03.222Z"
+      ]
+    },
+    {
+      "title": "quae occaecati architecto",
+      "description": "Commodi in cumque.",
+      "launchdate": "2025-10-06T08:42:57.400Z",
+      "showtimes": [
+        "2025-01-08T20:58:18.023Z",
+        "2025-01-09T12:30:54.663Z"
+      ]
+    },
+    {
+      "title": "sequi beatae eveniet",
+      "description": "Suscipit magni eveniet accusamus rem doloribus molestias rerum.",
+      "launchdate": "2025-05-05T01:05:04.810Z",
+      "showtimes": [
+        "2025-01-08T20:43:39.669Z",
+        "2025-01-09T05:49:52.888Z"
+      ]
+    }
+  ]
+}
