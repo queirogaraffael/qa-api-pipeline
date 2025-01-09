@@ -74,7 +74,8 @@ Durante os testes com o Postman e k6 na AWS, alguns riscos podem surgir. Abaixo 
 
 ---
 
-## 9. Cobertura de testes
+## 9. Testes exploratórios
+Os testes exploratórios são fundamentais porque permitem explorar o sistema de forma dinâmica, sem a limitação de roteiros pré-definidos. Essa abordagem estimula a criatividade e o pensamento crítico, ajudando a identificar defeitos inesperados que podem passar despercebidos em testes tradicionais baseados em scripts. Além disso, os testes exploratórios permitem identificar rapidamente problemas na documentação do Swagger, garantindo maior alinhamento entre a implementação e a descrição das APIs. Essa flexibilidade também facilita a adaptação a mudanças nos requisitos ou funcionalidades, otimizando o tempo e os recursos. Ao mesmo tempo, essa prática oferece um entendimento mais profundo do sistema, contribuindo para melhorar a qualidade geral do produto. **O arquivo de testes exploratórios estará disponível no repositório para consulta detalhada.**
 
 ---
 
