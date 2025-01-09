@@ -30,31 +30,38 @@ Para poder criar, listar, atualizar e excluir filmes disponíveis
 
 ---
 
-## Criterios de aceitação - Teste Funcionais
+Requisitos Funcionais:
 
-- O administrador deverá ser capaz de criar um filme com os campos obrigatórios e título único;  
-- Não deverá ser possível criar um filme com título já existente;  
-- Deve ser possível listar filmes com paginação (page e limit).
-- O sistema deve retornar detalhes completos do filme ao consultar um filme pelo ID;  
-- Se o filme não existir, deverá ser retornado **status 404 Not Found**;  
-- O administrador poderá atualizar o filme com os dados fornecidos e o sistema deverá validar os dados enviados;  
-- O sistema deverá retornar **status 200 OK** com os dados atualizados após a atualização do filme;  
-- O administrador poderá excluir filmes, e o sistema deverá verificar se o filme existe antes de realizar a exclusão;  
-- Após a exclusão, o sistema deverá retornar **status 204 No Content**;  
+1. Criando um Novo Filme:
+- O usuário administrador da API envia uma solicitação POST para o endpoint /movies com os detalhes do filme.
+- O sistema valida os campos obrigatórios e a unicidade do título.
+- Se as validações passarem, o sistema cria o filme e atribui um ID único.
+- O sistema retorna uma resposta de sucesso com o status 201 Created, incluindo o ID do filme.
+2. Obtendo a Lista de Filmes:
+- O usuário envia uma solicitação GET para o endpoint /movies.
+- O sistema retorna uma lista de todos os filmes cadastrados com detalhes.
+3. Obtendo Detalhes de um Filme por ID:
+- O usuário envia uma solicitação GET para o endpoint /movies/{id}, onde {id} é o ID do filme desejado.
+- O sistema verifica a existência do filme e retorna seus detalhes.
+- Se o filme não existir, o sistema retorna uma resposta de erro com o status 404 Not Found.
+4. Atualizando os Detalhes de um Filme por ID:
+- O usuário administrador da API envia uma solicitação PUT para o endpoint /movies/{id}, onde {id} é o ID do filme a ser atualizado.
+- O sistema verifica a existência do filme, permite a atualização de campos específicos e valida os dados.
+- Se todas as validações passarem, o sistema atualiza os detalhes do filme.
+- O sistema retorna uma resposta de sucesso com o status 200 OK e os detalhes atualizados do filme.
+5. Excluindo um Filme por ID:
+- O usuário administrador da API envia uma solicitação DELETE para o endpoint /movies/{id}, onde {id} é o ID do filme a ser excluído.
+- O sistema verifica a existência do filme e o remove permanentemente do banco de dados.
+- O sistema retorna uma resposta de sucesso com o status 204 No Content.
 
----
+Requisitos Não Funcionais de Performance:
 
-## Criterios de aceitação - Testes Não Funcionais
-
-- A API deverá processar pelo menos **100 solicitações por segundo** para criação de filmes, com tempo médio de resposta até **200ms**;  
-- A API deverá retornar uma listagem de filmes com tempo médio de resposta até **100ms** para até **20 filmes por página**;  
-- A API deverá retornar detalhes de um filme com tempo médio de resposta até **50ms**;  
-- Para atualizações, a API deverá processar pelo menos **50 solicitações por segundo**, com tempo médio de resposta até **300ms**;  
-- Para exclusões, a API deverá processar pelo menos **30 solicitações por segundo**, com tempo médio de resposta até **400ms**;  
-- A API deverá manter uma taxa de sucesso de 99% em cenários de alto volume de requisições;  
-- O uso de recursos (CPU, memória) não deverá exceder 80% durante a execução de testes de carga, pico e estresse;  
-- Durante testes de estresse, a API deverá ser capaz de lidar com picos de requisições sem falhas críticas;  
-- O desempenho da API deverá ser monitorado em diferentes cenários de rede (latência alta, baixa banda) e garantir resiliência;  
-- Os testes de durabilidade deverão garantir que a API mantenha a performance estável durante períodos de execução contínua de 24 horas ou mais;  
-- As métricas de desempenho (tempo de resposta, taxa de sucesso, uso de recursos) deverão ser monitoradas e relatadas em gráficos claros e legíveis;  
-- O ambiente de testes deverá ser configurado e validado para garantir que as métricas de desempenho sejam consistentes com os resultados esperados.
+- A API deve ser capaz de processar pelo menos 100 solicitações de criação de filmes por segundo.
+- O tempo médio de resposta para a criação de um novo filme não deve exceder 200 milissegundos.
+- A API deve ser capaz de responder a solicitações GET de listagem de filmes em menos de 100 milissegundos.
+- A lista de filmes deve ser paginada, com no máximo 20 filmes por página.
+- A API deve ser capaz de responder a solicitações GET de detalhes de um filme em menos de 50 milissegundos.
+- A API deve ser capaz de processar pelo menos 50 solicitações de atualização de filmes por segundo.
+- O tempo médio de resposta para a atualização dos detalhes de um filme não deve exceder 300 milissegundos.
+- A API deve ser capaz de processar pelo menos 30 solicitações de exclusão de filmes por segundo.
+- O tempo médio de resposta para a exclusão de um filme não deve exceder 400 milissegundos.

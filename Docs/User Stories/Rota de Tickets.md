@@ -27,26 +27,23 @@ Para garantir meu lugar na sessão desejada.
 
 ---
 
-## Criterios de aceitação - Teste Funcionais
+Requisitos Funcionais:
 
-- Autenticação: Todas as requisições devem ser autenticadas utilizando um token Bearer válido.
-- Deve ser possível criar reservas de ingressos com os campos: movieId, userId, seatNumber (0-99), price (0-60), showtime.
-- O assento "seatNumber (0-99)" deve estar disponível para a reserva.
-- Deve ser possível listar tickets com paginação (page e limit).
-- Deve ser possível buscar um ticket específico por ID.
-- Deve ser possível atualizar tickets existentes.
-- Deve ser possível excluir tickets existentes.
-- Chamadas com dados inválidos devem ser rejeitadas com mensagens apropriadas.
-- Chamadas com dados inválidos ou tokens de autenticação ausentes/invalidos devem ser rejeitadas com mensagens apropriadas.
-- Tickets devem conter um ID único para identificação.
+- O usuário envia uma solicitação POST para o endpoint /tickets com os seguintes detalhes do ingresso:
+- ID do Filme (movieId) - Identifica o filme para o qual o ingresso está sendo reservado.
+- ID do Usuário (userId) - Identifica o usuário que está fazendo a reserva.
+- Número do Assento (seatNumber) - O número do assento que o usuário deseja reservar.
+- Preço do Ingresso (price) - O preço do ingresso para o filme.
+- Data de Apresentação (showtime) - A data e hora da apresentação do filme.
+- O sistema valida se todos os campos obrigatórios estão preenchidos corretamente.
+- O sistema verifica se o número do assento está dentro do intervalo de 0 a 99.
+- O sistema verifica se o preço do ingresso está dentro do intervalo de 0 a 60.
+- Se todas as validações passarem, o sistema cria uma reserva de ingresso com os detalhes fornecidos.
+- O sistema atribui um ID único à reserva de ingresso.
+- O sistema retorna uma resposta de sucesso com o status 201 Created, incluindo o ID da reserva de ingresso.
 
----
+Requisitos Não Funcionais de Performance:
 
-## Criterios de aceitação - Testes Não Funcionais
+- A API deve ser capaz de processar pelo menos 50 solicitações de reserva de ingressos por segundo.
+- O tempo médio de resposta para a reserva de um ingresso não deve exceder 300 milissegundos.
 
-- A API deve ser capaz de processar 100 solicitações de reserva por segundo em condições de carga normal.
-- O tempo médio de resposta para o processamento de reservas deve ser inferior a 300ms durante a maioria das requisições.
-- A API deve garantir uma disponibilidade superior a 99% durante o período de testes.
-- O consumo de memória e CPU deve ser monitorado e não deve ultrapassar 80% de uso durante os testes de carga.
-- A API deve suportar até 500 usuários simultâneos sem degradação significativa na performance.
-- Logs básicos devem ser gerados para monitorar erros e o desempenho da API durante os testes.

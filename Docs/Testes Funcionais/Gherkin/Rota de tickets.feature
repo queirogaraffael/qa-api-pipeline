@@ -85,3 +85,34 @@ Feature: API de Reservas de Cinema
     When o cliente envia uma requisição DELETE para a rota "http://localhost:3000/tickets/inexistente123"
     Then o sistema deve retornar o status code 404
     And a mensagem de resposta deve ser "Ticket não encontrado."
+
+
+# GP-015 - Cenários para verificação de limites
+
+Scenario: CT-040 - Verificar número do assento fora do intervalo
+  Given que o usuário está autenticado como "admin"
+  And os dados do filme incluem um número de assento "seatNumber": 100
+  When o administrador envia uma requisição POST para a rota "http://localhost:3000/movies"
+  Then o sistema deve retornar o status code 400
+  And a mensagem de resposta deve ser "Número do assento inválido, deve estar entre 0 e 99."
+
+Scenario: CT-041 - Verificar número do assento dentro do intervalo
+  Given que o usuário está autenticado como "admin"
+  And os dados do filme incluem um número de assento "seatNumber": 45
+  When o administrador envia uma requisição POST para a rota "http://localhost:3000/movies"
+  Then o sistema deve retornar o status code 201
+  And a mensagem de resposta deve ser "Filme criado com sucesso."
+
+Scenario: CT-042 - Verificar preço do ingresso fora do intervalo
+  Given que o usuário está autenticado como "admin"
+  And os dados do filme incluem um preço de ingresso "ticketPrice": 65
+  When o administrador envia uma requisição POST para a rota "http://localhost:3000/movies"
+  Then o sistema deve retornar o status code 400
+  And a mensagem de resposta deve ser "Preço do ingresso inválido, deve estar entre 0 e 60."
+
+Scenario: CT-043 - Verificar preço do ingresso dentro do intervalo
+  Given que o usuário está autenticado como "admin"
+  And os dados do filme incluem um preço de ingresso "ticketPrice": 45
+  When o administrador envia uma requisição POST para a rota "http://localhost:3000/movies"
+  Then o sistema deve retornar o status code 201
+  And a mensagem de resposta deve ser "Filme criado com sucesso."
