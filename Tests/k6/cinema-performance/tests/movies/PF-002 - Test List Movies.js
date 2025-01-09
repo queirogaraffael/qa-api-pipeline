@@ -1,4 +1,8 @@
-import { sleep, BaseChecks, MoviesService, SharedArray } from "../../support/base/baseTest.js";
+import { sleep, BaseChecks, MoviesService, SharedArray, importedHandleSummary } from "../../support/base/baseTest.js";
+
+export function handleSummary(data) {
+  return importedHandleSummary(data, "PF-002");
+}
 
 const moviesService = new MoviesService();
 const checks = new BaseChecks();

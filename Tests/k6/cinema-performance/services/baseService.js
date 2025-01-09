@@ -1,5 +1,4 @@
-import { ENVIRONMENTS } from '../support/base/constants.js';
-
+import { ENVIRONMENTS } from '../support/config/Environments.js'
 const DEFAULT_BASE_URI = ENVIRONMENTS.LOCAL;
 
 export class BaseService {

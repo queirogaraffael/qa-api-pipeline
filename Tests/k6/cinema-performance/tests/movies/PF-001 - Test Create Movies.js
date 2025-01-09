@@ -1,4 +1,8 @@
-import { sleep, BaseChecks, MoviesService, geraFilmeAleatorio } from "../../support/base/baseTest.js";
+import { sleep, BaseChecks, MoviesService, geraFilmeAleatorio, importedHandleSummary } from "../../support/base/baseTest.js";
+
+export function handleSummary(data) {
+  return importedHandleSummary(data, "PF-001");
+}
 
 const moviesService = new MoviesService();
 
