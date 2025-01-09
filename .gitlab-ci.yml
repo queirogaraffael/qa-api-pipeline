@@ -11,20 +11,17 @@ start_api:
   services:
     - docker:dind
   script:
-    - docker-compose up 
+    - docker-compose up -d
     - >
-      MAX_RETRIES=12
-      RETRY_COUNT=0
-      while ! curl -s http://localhost:3000/ || [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -ne 200 ]]; do
-        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
-          echo "A API não ficou pronta a tempo. Saindo..."
-          exit 1
-        fi
-        echo "Aguardando a API... Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES"
-        RETRY_COUNT=$((RETRY_COUNT+1))
-        sleep 5
-      done
-    - echo "A API está pronta!"
+      for i in {1..12}; do
+        if curl -s http://localhost:3000/ && [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -eq 200 ]]; then
+          echo "A API está pronta!"; exit 0;
+        fi;
+        echo "Aguardando a API... Tentativa $i/12";
+        sleep 5;
+      done;
+      echo "A API não ficou pronta a tempo. Saindo...";
+      exit 1;
   only:
     - main
 
@@ -33,11 +30,10 @@ postman_tests:
   image: postman/newman
   script:
     - cd Tests/postman
-
+    - newman run './collection/nestjs-cinema.postman_collection.json' -e './environment/environment-nestjs-cinema.postman_environment.json' -r htmlextra --reporter-htmlextra-export './relatorios/'
   artifacts:
     paths:
-      - Tests/postman/reports
-      - Tests/Postman/allure-report
+      - Tests/postman/relatorios
   only:
     - main
 
@@ -45,11 +41,14 @@ performance_tests:
   stage: performance
   image: grafana/k6
   script:
-    - cd Tests/k6
-
+    - cd Tests/k6/cinema-performance/tests
+    - k6 run "movies/PF-001 - Test Create Movies.js"
+    - k6 run "movies/PF-002 - Test List Movies.js"
+    - k6 run "tickets/PF-003 - Ticket Life Cycle Test.js" --env TEST_TYPE="carga"
+    - k6 run "tickets/PF-004 - Tickets Performance Test.js"
   artifacts:
     paths:
-      - Tests/k6/reports
+      - Tests/k6/relatorios
   allow_failure: true
   only:
     - main
@@ -63,14 +62,14 @@ deploy_api:
     - chmod 600 ~/.ssh/id_rsa
     - ssh -o StrictHostKeyChecking=no $EC2_SSH_COMMAND << EOF
         if lsof -t -i :3000; then
-          echo "Port 3000 is in use. Killing the process..."
+          echo "Port 3000 is in uso. Finalizando processo..."
           kill -9 $(lsof -t -i :3000)
         fi
-        
+
         cd /path/to/your/deploy/directory
-        git pull origin main 
-        npm install         
-        npm run start       
+        git pull origin main
+        npm install
+        npm run start
       EOF
   only:
     - main 
