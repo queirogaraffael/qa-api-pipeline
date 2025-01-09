@@ -141,9 +141,7 @@ A matriz de rastreabilidade vai ser colocado em um arquivo separado para assim m
 ---
 
 ## 15. Testes de performance 
-
-apresentação, objetivo, ambiente, ferramentas, massa de testes, vai ser feito apenas pros que estão implementados, o porque dos tipos de testes de cada rota e contexto de cada rota
-, metricas, e cenarios. resultado por rota. fluxos
+ O teste de performance vai ser colocado em um arquivo separado para uma melhor visualização.
 
 ---
 
