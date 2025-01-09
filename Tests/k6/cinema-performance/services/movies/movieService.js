@@ -6,65 +6,28 @@ export class MoviesService extends BaseRest {
         this.checks = new BaseChecks();
     }
 
-    createMovie(movieData, headers, maxResponseTime = undefined) {
-        const response = this.post(ENDPOINTS.MOVIES, movieData, headers, null);
-
-        this.checks.checkStatusCode(response, 201, 'POST /movies resposta tem status 201');
-        this.checks.checkResponseBodyContains(response, 'id', 'POST /movies corpo da resposta contém ID do filme');
-
-        if (maxResponseTime) {
-            this.checks.checkResponseTime(response, maxResponseTime, 'POST /movies tempo de resposta está dentro do limite');
-        }
-
-        return { id: JSON.parse(response.body).id, title: movieData.title };
+    createMovie(movieData, headers) {
+        return this.post(ENDPOINTS.MOVIES, movieData, headers, null);
     }
 
-    getMovies(page = 1, limit = 10, headers, maxResponseTime = undefined) {
+    getMovies(page = 1, limit = 10, headers) {
         const queryParams = `?page=${page}&limit=${limit}`;
-        const response = this.get(ENDPOINTS.MOVIES, headers, queryParams);
-
-        this.checks.checkStatusCode(response, 200, 'GET /movies resposta tem status 200');
-
-        if (maxResponseTime) {
-            this.checks.checkResponseTime(response, maxResponseTime, 'GET /movies tempo de resposta é <= maxResponseTime');
-        }
-
-        return response.json();
+        return this.get(ENDPOINTS.MOVIES, headers, queryParams);
     }
 
-    getMovieById(movieId, headers, maxResponseTime = undefined) {
-        const response = this.get(`${ENDPOINTS.MOVIES}/${movieId}`, headers, null);
-
-        this.checks.checkStatusCode(response, 200, 'GET /movies/{id} resposta tem status 200');
-
-        if (maxResponseTime) {
-            this.checks.checkResponseTime(response, maxResponseTime, 'GET /movies/{id} tempo de resposta é <= maxResponseTime');
-        }
-
-        return response.json();
+    getMoviesAll(headers) {
+        return this.get(ENDPOINTS.MOVIES, headers);
+    }
+    
+    getMovieById(movieId, headers) {
+        return this.get(`${ENDPOINTS.MOVIES}/${movieId}`, headers, null);
     }
 
-    updateMovie(movieId, updatedData, headers, maxResponseTime = undefined) {
-        const response = this.put(`${ENDPOINTS.MOVIES}/${movieId}`, updatedData, headers, null);
-
-        this.checks.checkStatusCode(response, 200, 'PUT /movies resposta tem status 200');
-
-        if (maxResponseTime) {
-            this.checks.checkResponseTime(response, maxResponseTime, 'PUT /movies tempo de resposta é <= maxResponseTime');
-        }
-
-        return response;
+    updateMovie(movieId, updatedData, headers) {
+        return this.put(`${ENDPOINTS.MOVIES}/${movieId}`, updatedData, headers, null);
     }
 
-    deleteMovie(movieId, headers, maxResponseTime = undefined) {
-        const response = this.delete(`${ENDPOINTS.MOVIES}/${movieId}`, headers, null);
-
-        this.checks.checkStatusCode(response, 200, 'DELETE /movies resposta tem status 200');
-
-        if (maxResponseTime) {
-            this.checks.checkResponseTime(response, maxResponseTime, 'DELETE /movies tempo de resposta é <= maxResponseTime');
-        }
-
-        return response;
+    deleteMovie(movieId, headers) {
+        return this.delete(`${ENDPOINTS.MOVIES}/${movieId}`, headers, null);
     }
 }
