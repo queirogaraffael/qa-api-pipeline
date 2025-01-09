@@ -1,16 +1,16 @@
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
-export function handleSummary(data) {
-    const stage = __ENV.STAGE || 'stage1';
-    const version = __ENV.VERSION || 'No Version';
-
+export function generateFileName(baseName) {
     const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0];
-    const time = now.toTimeString().split(' ')[0].replace(/:/g, 'h');
+    const date = now.toISOString().split('T')[0];
+    const time = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+    const scriptName = baseName || "summary";
+    return `${scriptName}-${date}-${time}.html`;
+}
 
-    const reportPath = `./REPORTS/${version}/movies/${stage}/summary_${formattedDate}_${time}.html`;
-
+export function handleSummary(data, baseName = "summary") {
+    let fileName = generateFileName(baseName);
     return {
-        [reportPath]: htmlReport(data),
+        [fileName]: htmlReport(data),
     };
 }

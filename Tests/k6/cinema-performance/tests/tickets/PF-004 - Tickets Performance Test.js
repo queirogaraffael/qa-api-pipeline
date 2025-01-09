@@ -1,4 +1,8 @@
-import { sleep, BaseChecks, TicketsService, geraTicketAleatorio } from "../../support/base/baseTest.js";
+import { sleep, BaseChecks, TicketsService, geraTicketAleatorio, importedHandleSummary } from "../../support/base/baseTest.js";
+
+export function handleSummary(data) {
+  return importedHandleSummary(data, "PF-004");
+}
 
 const ticketsService = new TicketsService();
 
@@ -28,6 +32,13 @@ export default function () {
 
   checks.checkResponseCreated(response, 'status created is 201');
   checks.checkResponseTime(response, 300, '<', 'response time is < 300ms');
+
+  /*Const specificHeader = 'Content-Type';
+  if (response.headers[specificHeader]) {
+    console.log(`Header "${specificHeader}" encontrado: ${response.headers[specificHeader]}`);
+  } else {
+    console.log(`Header "${specificHeader}" não encontrado.`);
+  } */
 
   sleep(1);
 }

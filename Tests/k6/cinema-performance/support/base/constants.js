@@ -6,6 +6,6 @@ export const ENDPOINTS = {
 };
 
 export const ENVIRONMENTS = {
-    LOCAL: "htpp://localhost:3000",
-    AWS: "http://44.204.58.208:3000"
+    AWS: "htpp://localhost:3000",
+    LOCAL: "http://44.204.58.208:3000"
 };
