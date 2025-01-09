@@ -1,6 +1,6 @@
-import { sleep, BaseChecks, ENVIRONMENTS, MoviesService, geraFilmeAleatorio } from "../../support/base/baseTest.js";
+import { sleep, BaseChecks, MoviesService, geraFilmeAleatorio } from "../../support/base/baseTest.js";
 
-const moviesService = new MoviesService(ENVIRONMENTS.LOCAL);
+const moviesService = new MoviesService();
 
 const checks = new BaseChecks();
 
@@ -25,6 +25,8 @@ export default function () {
   const payload = geraFilmeAleatorio();
 
   const response = moviesService.createMovie(JSON.stringify(payload), null);
+
+  console.log(response.status);
 
   checks.checkResponseCreated(response, 'status is 201');
   checks.checkResponseTime(response, 200, '<', 'response time is < 200ms');

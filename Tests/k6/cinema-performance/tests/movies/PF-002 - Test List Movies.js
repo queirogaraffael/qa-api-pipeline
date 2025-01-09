@@ -1,6 +1,6 @@
-import { sleep, BaseChecks, ENVIRONMENTS, MoviesService, SharedArray } from "../../support/base/baseTest.js";
+import { sleep, BaseChecks, MoviesService, SharedArray } from "../../support/base/baseTest.js";
 
-const moviesService = new MoviesService(ENVIRONMENTS.LOCAL);
+const moviesService = new MoviesService();
 const checks = new BaseChecks();
 
 const data = new SharedArray('Movies', function () {

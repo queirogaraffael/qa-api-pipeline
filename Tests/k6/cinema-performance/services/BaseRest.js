@@ -3,8 +3,8 @@ import { BaseService } from './baseService.js'
 import http from 'k6/http';
 
 export class BaseRest extends BaseService {
-    constructor(base_uri) {
-        super(base_uri);
+    constructor() {
+        super();
     }
 
     post(endpoint, body, headers = {}, params = {}) {

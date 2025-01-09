@@ -7,6 +7,10 @@ export class BaseChecks {
         });
     }
 
+    checkResponse(response, expectedStatus = 200, message = `Status esperado ${expectedStatus}`) {
+        this.checkStatusCode(response, expectedStatus, message);
+    }
+
     checkResponseCreated(response, message = 'Status da resposta é 201 (Criado)') {
         this.checkStatusCode(response, 201, message);
     }
@@ -21,7 +25,7 @@ export class BaseChecks {
 
     checkResponseTime(response, maxResponseTime, comparisonOperator = '<', message = 'Response time is within the limit') {
         let checkCondition;
-    
+
         if (comparisonOperator === '<') {
             checkCondition = (r) => r.timings.duration < maxResponseTime;
         } else if (comparisonOperator === '>') {
@@ -35,11 +39,11 @@ export class BaseChecks {
         } else {
             throw new Error('Invalid comparison operator');
         }
-    
+
         check(response, {
             [message]: checkCondition,
         });
     }
-    
+
 
 }
