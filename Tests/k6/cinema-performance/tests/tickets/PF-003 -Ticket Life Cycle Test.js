@@ -1,10 +1,12 @@
-import { sleep, BaseChecks, TicketsService, SharedArray, geraTicketAleatorio } from "../../support/base/baseTest.js";
+import { sleep, BaseChecks, TicketsService, geraTicketAleatorio } from "../../support/base/baseTest.js";
 import { scenarios, thresholds } from "../../support/config/tickets/ticketsEnvironments.js";
 
-const ticketsService = new TicketsService();
 const checks = new BaseChecks();
 
 const testType = __ENV.TEST_TYPE || "all";
+const serviceUrl = __ENV.SERVICE_URL || undefined;
+
+const ticketsService = new TicketsService(serviceUrl);
 
 export let options = {
   scenarios: scenarios(testType),
