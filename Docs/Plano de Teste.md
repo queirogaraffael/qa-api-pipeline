@@ -207,7 +207,14 @@ Será criada uma pasta no diretório Docs para armazenar os registros da evoluç
 
 ---
 
-## 22. Cronograma
+## 22. Cobertura de automação.
+
+A matriz de rastreabilidade contém um total de **41 casos de teste**, sendo que:
+
+- **14 casos** são **automatizados** (aproximadamente **34.15%**).
+- **27 casos** são **não automatizados** (aproximadamente **65.85%**).
+
+## 23. Cronograma
 
 O cronograma do projeto, tanto a parte de desenvolvimento, planejamento de testes, automação de testes e DevOps, Abaixo estão as etapas detalhadas:
 

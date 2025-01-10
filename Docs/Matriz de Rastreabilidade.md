@@ -33,43 +33,21 @@
 |                                          | REQ-025: Exclusão de filme com ID válido deve ser bem-sucedida.       | GP-010 - Cenários para exclusão de filmes                    | CT-025 - Excluir filme com sucesso            | Automatizado              | Não testado         | N/A            |       BUG-005              |
 |                                          | REQ-026: Não deve permitir exclusão de filme inexistente.             |                                                               | CT-026 - Excluir filme inexistente            | Automatizado              | Não testado         | N/A            |            BUG-005         |
 |                                          | REQ-027: Não deve permitir exclusão de filme com tickets associados.  |                                                               | CT-039 - Tentar excluir filme com tickets associados | Automatizar  | Testado        | N/A            |       BUG-005,     BUG-008          |
-
 |                                          |        REQ-101: O endpoint POST /movies deve retornar uma resposta com corpo que permita validar a criação do filme, incluindo informações como ID e status detalhado.     |                                                               | PF-001 - Test Create Movies          | Automatizado              | Testado         | N/A            |            PF-BUG-001     |
 |                                          |  REQ-102: O endpoint GET /movies deve suportar paginação para listar filmes, permitindo evitar timeouts em cenários de alto volume de dados. |                                                               | PF-002 - Test List Movies  | Automatizado | Testado        | N/A            |          PF-BUG-002     |
-
-
-
 | US 004: [API] Reservas de Ingressos no Cinema |           |  |  |  |  |  | BUG-002 |
-
-
-
-|                                               | REQ-028: Criação de reserva com dados válidos deve ser bem-sucedida. | GP-011 - Cenários para criação de reservas de ingressos | CT-027 - Criar reserva de ingresso com sucesso | Automatizar | Não testado | N/A |      |
-
-|                                               | REQ-029: Não deve permitir criação de reserva com assento indisponível. |                                                           | CT-028 - Criar reserva com assento indisponível | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-030: Não deve permitir criação de reserva com dados inválidos. |                                                           | CT-029 - Criar reserva com dados inválidos | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-031: Deve ser possível listar reservas paginadas. | GP-012 - Cenários para listagem de reservas de ingressos | CT-030 - Listar reservas de ingressos com sucesso | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-032: Deve ser possível buscar reserva por ID. |                                                           | CT-031 - Buscar reserva por ID com sucesso | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-033: Não deve permitir buscar reserva inexistente por ID. |                                                           | CT-032 - Buscar reserva por ID inexistente | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-034: Deve ser possível atualizar reserva com dados válidos. | GP-013 - Cenários para atualização de reservas de ingressos | CT-033 - Atualizar reserva de ingresso com sucesso | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-035: Não deve permitir atualizar reserva inexistente. |                                                           | CT-034 - Atualizar reserva inexistente | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-036: Deve ser possível excluir reserva existente. | GP-014 - Cenários para exclusão de reservas de ingressos | CT-035 - Excluir reserva de ingresso com sucesso | Automatizado | Não testado | N/A | |
-
-|                                               | REQ-037: Não deve permitir excluir reserva inexistente. |                                                           | CT-036 - Excluir reserva inexistente | Não | Não testado | N/A | |
-
-|                                               | REQ-038: Deve validar número do assento dentro do intervalo permitido. |                                                           | CT-040 - Verificar número do assento fora do intervalo | Automatizado   | Não testado         | N/A            |                     |
-
-|                                               | REQ-038: Deve validar número do assento dentro do intervalo permitido. |                                                           | CT-041 - Verificar número do assento dentro do intervalo | Não   | Não testado         | N/A            |                     |
-
-|                                               | REQ-039: Deve validar o preço do ingresso dentro do intervalo permitido. |                                                           | CT-042 - Verificar preço do ingresso fora do intervalo | Não   | Não testado         | N/A            |                     |
-
+|                                               | REQ-028: Criação de reserva com dados válidos deve ser bem-sucedida. | GP-011 - Cenários para criação de reservas de ingressos | CT-027 - Criar reserva de ingresso com sucesso | Automatizar | Testado | N/A |      |
+|                                               | REQ-029: Não deve permitir criação de reserva com assento indisponível. |                                                           | CT-028 - Criar reserva com assento indisponível | Automatizado | Testado | N/A | |
+|                                               | REQ-030: Não deve permitir criação de reserva com dados inválidos. |                                                           | CT-029 - Criar reserva com preço inválido | Automatizado | Testado | N/A | |
+|                                               | REQ-031: Deve ser possível listar reservas paginadas. | GP-012 - Cenários para listagem de reservas de ingressos | CT-030 - Listar reservas de ingressos com sucesso | Automatizado | Testado | N/A | |
+|                                               | REQ-032: Deve ser possível buscar reserva por ID. |                                                           | CT-031 - Buscar reserva por ID com sucesso | Automatizado | Testado | N/A | BUG-009 |
+|                                               | REQ-033: Não deve permitir buscar reserva inexistente por ID. |                                                           | CT-032 - Buscar reserva por ID inexistente | Automatizado | Testado | N/A | BUG-009 |
+|                                               | REQ-034: Deve ser possível atualizar reserva com dados válidos. | GP-013 - Cenários para atualização de reservas de ingressos | CT-033 - Atualizar reserva de ingresso com sucesso | Automatizado | Testado | N/A | BUG-010 |
+|                                               | REQ-035: Não deve permitir atualizar reserva inexistente. |                                                           | CT-034 - Atualizar reserva inexistente | Automatizado | Testado | N/A | BUG-010 |
+|                                               | REQ-036: Deve ser possível excluir reserva existente. | GP-014 - Cenários para exclusão de reservas de ingressos | CT-035 - Excluir reserva de ingresso com sucesso | Automatizado | Testado | N/A | BUG-012 |
+|                                               | REQ-038: Deve validar número do assento dentro do intervalo permitido. |                                                           | CT-040 - Verificar número do assento fora do intervalo | Automatizado   | Testado         | N/A            |                     |
+|                                               | REQ-038: Deve validar número do assento dentro do intervalo permitido. |                                                           | CT-041 - Verificar número do assento dentro do intervalo | Não   | Testado         | N/A            |                     |
+|                                               | REQ-039: Deve validar o preço do ingresso dentro do intervalo permitido. |                                                           | CT-042 - Verificar preço do ingresso fora do intervalo | Automatizado  |  Testado         | N/A            |            BUG-011         |
 |                                               | REQ-039: Deve validar o preço do ingresso dentro do intervalo permitido. |                                                           | CT-043 - Verificar preço do ingresso dentro do intervalo | Automatizado   | Não testado         | N/A            |                     |
-
 |                                          |       REQ-103: A API de tickets deve suportar múltiplos tipos de testes de performance (carga, estresse, pico, resiliência e volume) sem apresentar problemas de conexão ou falhas na captura dos checks.      |                                                               | PF-003 -Ticket Life Cycle Test         | Automatizado              | Testado         | N/A            |        PF-BUG-003         |
 |                                          |  REQ-104: O endpoint POST /tickets deve ser capaz de criar tickets consistentemente em cenários de alto volume e manter o tempo de resposta médio abaixo de 300ms. |                                                               | PF-004 - Tickets Performance Test  | Automatizado | Testado        | N/A            |    PF-BUG-004           |
