@@ -5,26 +5,31 @@ stages:
   - deploy
   - shutdown
 
+default:
+  only:
+    - main
+
 start_api:
   stage: setup
   image: docker:latest
   services:
     - docker:dind
   script:
-    - docker-compose up -d
-    - apk add --no-cache curl
+    - docker-compose up 
     - >
-      for i in {1..12}; do
-        if curl -s http://localhost:3000/ && [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -eq 200 ]]; then
-          echo "A API está pronta!"; exit 0;
-        fi;
-        echo "Aguardando a API... Tentativa $i/12";
-        sleep 5;
-      done;
-      echo "A API não ficou pronta a tempo. Saindo...";
-      exit 1;
-  only:
-    - main
+      MAX_RETRIES=12
+      RETRY_COUNT=0
+      while ! curl -s http://localhost:3000/ || [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -ne 200 ]]; do
+        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+          echo "A API não ficou pronta a tempo. Saindo..."
+          exit 1
+        fi
+        echo "Aguardando a API... Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES"
+        RETRY_COUNT=$((RETRY_COUNT+1))
+        sleep 5
+      done
+    - echo "A API está pronta!"
+
 
 postman_tests:
   stage: postman
@@ -35,8 +40,6 @@ postman_tests:
   artifacts:
     paths:
       - Tests/postman/relatorios
-  only:
-    - main
 
 performance_tests:
   stage: performance
@@ -51,8 +54,6 @@ performance_tests:
     paths:
       - Tests/k6/relatorios
   allow_failure: true
-  only:
-    - main
 
 deploy_api:
   stage: deploy
@@ -72,8 +73,6 @@ deploy_api:
         npm install
         npm run start
       EOF
-  only:
-    - main 
 
 shutdown_api:
   stage: shutdown
@@ -82,5 +81,3 @@ shutdown_api:
     - docker:dind
   script:
     - docker-compose down
-  only:
-    - main
