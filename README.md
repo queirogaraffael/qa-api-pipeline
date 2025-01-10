@@ -43,6 +43,9 @@ Esse projeto visa não apenas garantir que a API funcione corretamente, mas tamb
     - **`Plano de Teste.md`**: Documento de planejamento de testes.
     - **`Testes Exploratorios.md`** : Relatórios de testes exploratórios realizados.
     - **`Testes Performance.md`**: Documentação sobre testes de performance.
+    - **`Bugs.md`**: Bugs encontrados na API
+    - **`Melhorias.md`**: Melhorias sugeridas pra API.
+
 
 - **`Tests/`**: Diretório para arquivos relacionados a testes, dividido em:
     - **`k6/`**: Testes de performance usando K6.
