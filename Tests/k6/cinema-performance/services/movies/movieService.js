@@ -10,7 +10,7 @@ export class MoviesService extends BaseRest {
         return this.post(ENDPOINTS.MOVIES, movieData, headers, null);
     }
 
-    getMovies(page = 1, limit = 10, headers) {
+    getMovies(page = 1, limit = 20, headers) {
         const queryParams = `?page=${page}&limit=${limit}`;
         return this.get(ENDPOINTS.MOVIES, headers, queryParams);
     }

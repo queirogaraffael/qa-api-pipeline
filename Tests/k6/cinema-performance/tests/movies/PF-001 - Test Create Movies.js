@@ -30,10 +30,15 @@ export default function () {
 
   const response = moviesService.createMovie(JSON.stringify(payload), null);
 
-  console.log(response.status);
-
   checks.checkResponseCreated(response, 'status is 201');
   checks.checkResponseTime(response, 200, '<', 'response time is < 200ms');
+
+  /*Const specificHeader = 'Content-Type';
+if (response.headers[specificHeader]) {
+  console.log(`Header "${specificHeader}" encontrado: ${response.headers[specificHeader]}`);
+} else {
+  console.log(`Header "${specificHeader}" não encontrado.`);
+} */
 
   sleep(1);
 }

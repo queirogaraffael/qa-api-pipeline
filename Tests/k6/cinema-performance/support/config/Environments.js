@@ -1,4 +1,4 @@
 export const ENVIRONMENTS = {
-    LOCAL: "htpp://localhost:3000",
-    AWS: "http://35.170.246.149:3000"
+    LOCAL: "http://localhost:3000",
+    AWS: "http://3.83.148.214:3000"
 };

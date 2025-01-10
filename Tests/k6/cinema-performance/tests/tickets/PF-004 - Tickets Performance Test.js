@@ -30,15 +30,10 @@ export default function () {
 
   const response = ticketsService.createTicket(JSON.stringify(payload), null);
 
+  console.log(response.status);
+
   checks.checkResponseCreated(response, 'status created is 201');
   checks.checkResponseTime(response, 300, '<', 'response time is < 300ms');
-
-  /*Const specificHeader = 'Content-Type';
-  if (response.headers[specificHeader]) {
-    console.log(`Header "${specificHeader}" encontrado: ${response.headers[specificHeader]}`);
-  } else {
-    console.log(`Header "${specificHeader}" não encontrado.`);
-  } */
 
   sleep(1);
 }

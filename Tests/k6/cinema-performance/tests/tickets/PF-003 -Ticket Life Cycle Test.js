@@ -1,9 +1,6 @@
 import { sleep, BaseChecks, TicketsService, geraTicketAleatorio, importedHandleSummary } from "../../support/base/baseTest.js";
 import { scenarios, thresholds } from "../../support/config/tickets/ticketsEnvironments.js";
 
-export function handleSummary(data) {
-  return importedHandleSummary(data, "PF-003");
-}
 
 const checks = new BaseChecks();
 const serviceUrl = __ENV.SERVICE_URL || undefined;
@@ -17,6 +14,8 @@ export let options = {
 function executeTestFlow(testType) {
   const ticketData = geraTicketAleatorio();
   const tags = { testType };
+
+  console.log(tags);
 
   const createResponse = ticketsService.createTicket(JSON.stringify(ticketData), null);
   checks.checkResponseCreated(createResponse, "status is 201", tags);
