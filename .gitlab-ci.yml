@@ -5,10 +5,6 @@ stages:
   - deploy
   - shutdown
 
-default:
-  only:
-    - main
-
 start_api:
   stage: setup
   image: docker:latest
@@ -29,7 +25,8 @@ start_api:
         sleep 5
       done
     - echo "A API está pronta!"
-
+  only:
+    - main
 
 postman_tests:
   stage: postman
@@ -40,6 +37,8 @@ postman_tests:
   artifacts:
     paths:
       - Tests/postman/relatorios
+  only:
+    - main
 
 performance_tests:
   stage: performance
@@ -54,6 +53,8 @@ performance_tests:
     paths:
       - Tests/k6/relatorios
   allow_failure: true
+  only:
+    - main
 
 deploy_api:
   stage: deploy
@@ -73,6 +74,8 @@ deploy_api:
         npm install
         npm run start
       EOF
+  only:
+    - main
 
 shutdown_api:
   stage: shutdown
@@ -81,3 +84,5 @@ shutdown_api:
     - docker:dind
   script:
     - docker-compose down
+  only:
+    - main
