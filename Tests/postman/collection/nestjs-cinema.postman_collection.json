@@ -1,0 +1,1304 @@
+{
+	"info": {
+		"_postman_id": "8a7c521d-fdf2-4793-8231-da52cc7f5dc7",
+		"name": "nestjs-cinema",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25319040"
+	},
+	"item": [
+		{
+			"name": "US 001: [API] - Login",
+			"item": [
+				{
+					"name": "GP-001 - Cenários de autenticação bem-sucedida",
+					"item": [
+						{
+							"name": "CT-001 - Autenticar usuário com sucesso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-002 - Autenticar administrador com sucesso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-002 - Cenários de autenticação falha",
+					"item": [
+						{
+							"name": "CT-003 - Autenticar usuário com email não cadastrado",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-004 - Autenticar usuário com senha incorreta",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-005 - Autenticar usuário com dados ausentes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-003 - Cenários de autorização com token",
+					"item": [
+						{
+							"name": "CT-006 - Usuário comum acessando rota protegida de tickets",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-007 - Administrador acessando rota protegida de filmes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-008 - Acesso a rota protegida sem token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-009 - Acesso a rota protegida com token inválido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "US 002: [API]- Usuarios",
+			"item": [
+				{
+					"name": "GP-004 - Cadastro de Usuários",
+					"item": [
+						{
+							"name": "CT-010 - Cadastro de usuário com dados válidos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-011 - Cadastro de usuário com email já utilizado",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-012 - Cadastro de usuário com email inválido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-013 - Cadastro de usuário com senha fora do padrão",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-005 - Listagem de Usuários",
+					"item": [
+						{
+							"name": "CT-014 - Listagem de usuários com paginação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-015 - Tentativa de listar usuários sem autenticação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-015 - Buscar Usuário",
+					"item": [
+						{
+							"name": "CT-037 - Buscar usuário por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-038 - Tentativa de buscar usuário sem autenticação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-006 - Atualização de Usuários",
+					"item": [
+						{
+							"name": "CT-016 - Atualização de usuário com ID inexistente",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-017 - Tentativa de editar usuário com email já utilizado",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "US 003: [API] - Movies",
+			"item": [
+				{
+					"name": "GP-007 - Cenários para a criação de filmes",
+					"item": [
+						{
+							"name": "CT-018 - Criar filme com sucesso",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let randomTitle = 'Title_' + Math.random().toString(36).substring(2, 10);\r",
+											"\r",
+											"pm.variables.set(\"randomTitle\", randomTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{randomTitle}}\",\r\n  \"description\": \"string\",\r\n  \"launchdate\": \"2025-01-09T16:40:45.398Z\",\r\n  \"showtimes\": [\r\n    \"string\"\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-019 - Criar filme com dados inválidos",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let randomTitle = 'Title_' + Math.random().toString(36).substring(2, 10);\r",
+											"\r",
+											"pm.variables.set(\"randomTitle\", randomTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{randomTitle}}\",\r\n  \"description\": \"string\",\r\n  \"launchdate\": \"2025-01-09T16:40:45.398Z\",\r\n  \"showtimes\": 0\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-044 - Criar filme com titulo duplicado",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const url = pm.environment.get('base_url');\r",
+											"if (!url) {\r",
+											"    console.error('A variável de ambiente \"base_url\" não está definida.');\r",
+											"    return;\r",
+											"}\r",
+											"\r",
+											"const filme = {\r",
+											"    title: \"titulo\",\r",
+											"    description: \"string\",\r",
+											"    launchdate: \"2025-01-09T16:40:45.398Z\",\r",
+											"    showtimes: [\"string\"]\r",
+											"};\r",
+											"\r",
+											"const postRequestFilme = {\r",
+											"    url: `${url}/movies`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify(filme)\r",
+											"    }\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequestFilme, (err, response) => {\r",
+											"    if (err) {\r",
+											"        console.error('Erro ao cadastrar o filme:', err);\r",
+											"        return;\r",
+											"    }\r",
+											"\r",
+											"\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"titulo\",\r\n  \"description\": \"string\",\r\n  \"launchdate\": \"2025-01-09T16:40:45.398Z\",\r\n  \"showtimes\": [\r\n    \"string\"\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-008 - Cenários para listagem de filmes",
+					"item": [
+						{
+							"name": "CT-020 - Listar todos os filmes com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-021 - Listar filme por ID com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-022 - Listar filme por ID inexistente",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-009 - Cenários para atualização de filmes",
+					"item": [
+						{
+							"name": "CT-023 - Atualizar filme com sucesso",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/movies/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-024 - Atualizar filme inexistente",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-010 - Cenários para exclusão de filmes",
+					"item": [
+						{
+							"name": "CT-025 - Excluir filme com sucesso",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-026 - Excluir filme inexistente",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "c",
+									"host": [
+										"c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-039 - Tentar excluir filme com tickets associados",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "CT-039 - Tentar excluir filme com tickets associados",
+									"host": [
+										"CT-039 - Tentar excluir filme com tickets associados"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "US 004: [API] - Tickets",
+			"item": [
+				{
+					"name": "GP-011 - Cenários para criação de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-027 -  Criar reserva de ingresso com sucesso",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"movieId\", `movie_${Math.floor(Math.random() * 10000)}`);\r",
+											"\r",
+											"pm.environment.set(\"seatNumber\", Math.floor(Math.random() * 99) + 1);\r",
+											"\r",
+											"pm.environment.set(\"price\", Math.floor(Math.random() * 49) + 11);\r",
+											"\r",
+											"pm.environment.set(\"userId\", \"user_123\");\r",
+											"\r",
+											"const now = new Date();\r",
+											"const showtime = new Date(now.getTime() + 60 * 60 * 1000).toISOString();\r",
+											"pm.environment.set(\"showtime\", showtime);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": \"{{movieId}}\",\r\n  \"userId\": \"{{userId}}\",\r\n  \"seatNumber\": {{seatNumber}},\r\n  \"price\": {{price}},\r\n  \"showtime\": \"{{showtime}}\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-028 - Criar reserva com assento indisponível",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": \"string\",\r\n  \"userId\": \"string\",\r\n  \"seatNumber\": 105,\r\n  \"price\": 0,\r\n  \"showtime\": \"2025-01-10T14:59:03.724Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-029 - Criar reserva com preço inválido",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": \"{{movieId}}\",\r\n  \"userId\": \"{{userId}}\",\r\n  \"seatNumber\": {{seatNumber}},\r\n  \"price\": -10,\r\n  \"showtime\": \"{{showtime}}\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-012 - Cenários para listagem de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-030 - Listar reservas de ingressos com sucesso",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-031 - Buscar reserva por ID com sucesso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets?:id=000OoJeVercantGk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									],
+									"query": [
+										{
+											"key": ":id",
+											"value": "000OoJeVercantGk"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-032 - Buscar reserva por ID inexistente",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-013 - Cenários para atualização de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-033 - Atualizar reserva de ingresso com sucesso",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-034 - Atualizar reserva inexistente",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-014 - Cenários para exclusão de reservas de ingressos",
+					"item": [
+						{
+							"name": "CT-035 - Excluir reserva de ingresso com sucesso",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const url = pm.environment.get('base_url');\r",
+											"if (!url) {\r",
+											"    console.error('A variável de ambiente \"base_url\" não está definida.');\r",
+											"    return;\r",
+											"}\r",
+											"\r",
+											"const nomeUsuario = pm.variables.replaceIn('{{$randomFullName}}');\r",
+											"const movieId = `movie_${Math.floor(Math.random() * 10000)}`;  \r",
+											"const userId = `user_${Math.floor(Math.random() * 10000)}`;   \r",
+											"const seatNumber = Math.floor(Math.random() * 99) + 1;         \r",
+											"const price = Math.floor(Math.random() * 50) + 10;             \r",
+											"const showtime = new Date().toISOString();                      \r",
+											"\r",
+											"pm.environment.set('nomeUsuario', nomeUsuario);\r",
+											"pm.environment.set('movieId', movieId);\r",
+											"pm.environment.set('userId', userId);\r",
+											"pm.environment.set('seatNumber', seatNumber);\r",
+											"pm.environment.set('price', price);\r",
+											"pm.environment.set('showtime', showtime);\r",
+											"\r",
+											"const postRequestTicket = {\r",
+											"    url: `${url}/tickets`,  \r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            \"movieId\": movieId,\r",
+											"            \"userId\": userId,\r",
+											"            \"seatNumber\": seatNumber,\r",
+											"            \"price\": price,\r",
+											"            \"showtime\": showtime\r",
+											"        })\r",
+											"    }\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequestTicket, (err, response) => {\r",
+											"    if (err) {\r",
+											"        console.error('Erro ao criar o ticket:', err);\r",
+											"        return;\r",
+											"    }\r",
+											"\r",
+											"    const resTicket = response.json();\r",
+											"    console.log('Resposta do ticket:', resTicket);\r",
+											"\r",
+											"    if (!resTicket._id) {\r",
+											"        console.warn('Falha ao criar o ticket - ID não retornado.');\r",
+											"        return;\r",
+											"    }\r",
+											"\r",
+											"    pm.environment.set('ticketId', resTicket._id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets?:id={{ticketId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									],
+									"query": [
+										{
+											"key": ":id",
+											"value": "{{ticketId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-036 - Excluir reserva inexistente",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GP-015 - Cenários para verificação de limites",
+					"item": [
+						{
+							"name": "CT-040 - Verificar número do assento fora do intervalo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"movieId\", `movie_${Math.floor(Math.random() * 10000)}`);\r",
+											"\r",
+											"pm.environment.set(\"seatNumber\", Math.floor(Math.random() * 99) + 1);\r",
+											"\r",
+											"pm.environment.set(\"price\", Math.floor(Math.random() * 49) + 11);\r",
+											"\r",
+											"pm.environment.set(\"userId\", \"user_123\");\r",
+											"\r",
+											"const now = new Date();\r",
+											"const showtime = new Date(now.getTime() + 60 * 60 * 1000).toISOString();\r",
+											"pm.environment.set(\"showtime\", showtime);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": \"{{movieId}}\",\r\n  \"userId\": \"{{userId}}\",\r\n  \"seatNumber\": 101,\r\n  \"price\": {{price}},\r\n  \"showtime\": \"{{showtime}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-041 - Verificar número do assento dentro do intervalo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": \"{{movieId}}\",\r\n  \"userId\": \"{{userId}}\",\r\n  \"seatNumber\": {{seatNumber}},\r\n  \"price\": {{price}},\r\n  \"showtime\": \"{{showtime}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CT-042 - Verificar preço do ingresso fora do intervalo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"movieId\", `movie_${Math.floor(Math.random() * 10000)}`);\r",
+											"\r",
+											"pm.environment.set(\"seatNumber\", Math.floor(Math.random() * 99) + 1);\r",
+											"\r",
+											"const price = Math.random() < 0.5 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 100) + 61; \r",
+											"pm.environment.set(\"price\", price);\r",
+											"\r",
+											"pm.environment.set(\"userId\", \"user_123\");\r",
+											"\r",
+											"const now = new Date();\r",
+											"const showtime = new Date(now.getTime() + 60 * 60 * 1000).toISOString();\r",
+											"pm.environment.set(\"showtime\", showtime);\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": \"{{movieId}}\",\r\n  \"userId\": \"{{userId}}\",\r\n  \"seatNumber\": {{seatNumber}},\r\n  \"price\": {{price}},\r\n  \"showtime\": \"{{showtime}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tickets",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tickets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
