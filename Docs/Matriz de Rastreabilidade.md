@@ -33,6 +33,12 @@
 |                                          | REQ-025: Exclusão de filme com ID válido deve ser bem-sucedida.       | GP-010 - Cenários para exclusão de filmes                    | CT-025 - Excluir filme com sucesso            | Automatizado              | Não testado         | N/A            |       BUG-005              |
 |                                          | REQ-026: Não deve permitir exclusão de filme inexistente.             |                                                               | CT-026 - Excluir filme inexistente            | Automatizado              | Não testado         | N/A            |            BUG-005         |
 |                                          | REQ-027: Não deve permitir exclusão de filme com tickets associados.  |                                                               | CT-039 - Tentar excluir filme com tickets associados | Automatizar  | Testado        | N/A            |       BUG-005,     BUG-008          |
+
+|                                          |        REQ-101: O endpoint POST /movies deve retornar uma resposta com corpo que permita validar a criação do filme, incluindo informações como ID e status detalhado.     |                                                               | PF-001 - Test Create Movies          | Automatizado              | Testado         | N/A            |            PF-BUG-001     |
+|                                          |  REQ-102: O endpoint GET /movies deve suportar paginação para listar filmes, permitindo evitar timeouts em cenários de alto volume de dados. |                                                               | PF-002 - Test List Movies  | Automatizado | Testado        | N/A            |          PF-BUG-002     |
+
+
+
 | US 004: [API] Reservas de Ingressos no Cinema |           |  |  |  |  |  | BUG-002 |
 
 
@@ -64,3 +70,6 @@
 |                                               | REQ-039: Deve validar o preço do ingresso dentro do intervalo permitido. |                                                           | CT-042 - Verificar preço do ingresso fora do intervalo | Não   | Não testado         | N/A            |                     |
 
 |                                               | REQ-039: Deve validar o preço do ingresso dentro do intervalo permitido. |                                                           | CT-043 - Verificar preço do ingresso dentro do intervalo | Automatizado   | Não testado         | N/A            |                     |
+
+|                                          |       REQ-103: A API de tickets deve suportar múltiplos tipos de testes de performance (carga, estresse, pico, resiliência e volume) sem apresentar problemas de conexão ou falhas na captura dos checks.      |                                                               | PF-003 -Ticket Life Cycle Test         | Automatizado              | Testado         | N/A            |        PF-BUG-003         |
+|                                          |  REQ-104: O endpoint POST /tickets deve ser capaz de criar tickets consistentemente em cenários de alto volume e manter o tempo de resposta médio abaixo de 300ms. |                                                               | PF-004 - Tickets Performance Test  | Automatizado | Testado        | N/A            |    PF-BUG-004           |
