@@ -29,7 +29,7 @@ Esse projeto visa não apenas garantir que a API funcione corretamente, mas tamb
 - Implementar monitoramento em tempo real para detectar falhas ou problemas durante a execução da API em produção.
 - Melhorar a documentação dos testes e processos, tornando-os mais acessíveis para futuros desenvolvedores.
 
-
+---
 
 ##  Estrutura do projeto
 ### Diretório Raiz
@@ -70,20 +70,51 @@ Esse projeto visa não apenas garantir que a API funcione corretamente, mas tamb
 
 ---
 
+## Pipeline de CI/CD com Stages Definidos
+
+Este pipeline organiza as etapas de integração e entrega contínua (CI/CD) em cinco stages principais: **setup**, **postman**, **performance**, **deploy** e **shutdown**.
+
+### Etapas do Pipeline
+
+1. **Setup: Inicialização da API**
+   - A API é iniciada utilizando `docker-compose up`.
+   - Um script verifica repetidamente se a API está acessível na porta 3000, com até 12 tentativas antes de falhar.
+   - Uso de imagens `docker:latest` e serviços `docker:dind`.
+
+2. **Testes de Integração com Postman**
+   - Os testes da API são executados com o Newman (CLI do Postman).
+   - Arquivos de coleção e ambiente são utilizados para validar endpoints.
+   - Relatórios detalhados em HTML são gerados como artefatos.
+
+3. **Testes de Performance com k6**
+   - Scripts de performance testam operações críticas da API, como criação de filmes e ciclo de vida de ingressos.
+   - Os resultados são armazenados como artefatos.
+   - A etapa permite falhas para não interromper o pipeline.
+
+4. **Deploy da API**
+   - O deploy é realizado em um servidor remoto utilizando SSH.
+   - Variáveis de ambiente são utilizadas para armazenar chaves privadas e comandos de acesso, melhorando a segurança.
+   - O script verifica se a porta 3000 está em uso antes de iniciar uma nova versão da API.
+
+5. **Shutdown da API**
+   - A API e seus serviços são finalizados com `docker-compose down`.
+
+### Pontos de Destaque
+- **Segurança Melhorada no Deploy**: O uso de variáveis de ambiente para gerenciar chaves SSH e credenciais evita a exposição de dados sensíveis no pipeline.
+- **Execução Gradual e Validada**: Cada etapa é vinculada à branch principal (`main`), garantindo controle e integridade do processo.
+
+---
 
 ## Como Executar o Projeto
 
 ### Pré-requisitos
 Certifique-se de ter os seguintes programas instalados em seu sistema:
 
-- **Node.js**
-    - [Guia de Download e Instalação](https://nodejs.org/en/download)
+- **Node.js** - [Guia de Download e Instalação](https://nodejs.org/en/download)
 
-- **Newman**
-    - [Documentação Oficial do Newman](https://www.npmjs.com/package/newman)
+- **Newman** - [Documentação Oficial do Newman](https://www.npmjs.com/package/newman)
 
-- **k6**
-    - [Guia Oficial de Instalação do k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)
+- **k6** - [Guia Oficial de Instalação do k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)
 
 ### Passo Inicial
 
@@ -107,6 +138,7 @@ Após iniciar a API, navegue até a pasta de testes específica para executar os
 - [Testes de API com Postman](./Tests/postman/README.md)
 - [Testes de Performance com k6](./Tests/k6/README.md)
 
+---
 
 ## 🤝 Agradecimentos Especiais
 
@@ -115,6 +147,7 @@ Após iniciar a API, navegue até a pasta de testes específica para executar os
 <a href="https://gitlab.com/RafaBricia"><img src="https://gitlab.com/uploads/-/system/user/avatar/23014310/avatar.png?width=800" width="100"></a>
 <a href="https://gitlab.com/KaioPinto"><img src="https://gitlab.com/uploads/-/system/user/avatar/23013976/avatar.png?width=800" width="100"></a>
  
+---
 
  ## 👨‍💻 Autor
 <div style="text-align: center;">

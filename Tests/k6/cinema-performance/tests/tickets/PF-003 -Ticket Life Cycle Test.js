@@ -1,6 +1,9 @@
 import { sleep, BaseChecks, TicketsService, geraTicketAleatorio, importedHandleSummary } from "../../support/base/baseTest.js";
 import { scenarios, thresholds } from "../../support/config/tickets/ticketsEnvironments.js";
 
+export function handleSummary(data) {
+  return importedHandleSummary(data, "PF-004");
+}
 
 const checks = new BaseChecks();
 const serviceUrl = __ENV.SERVICE_URL || undefined;
