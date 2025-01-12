@@ -7,24 +7,40 @@ stages:
 
 start_api:
   stage: setup
-  image: docker:latest
+  image: docker/compose:latest
   services:
     - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""       
   script:
-    - docker-compose up 
-    - >
-      MAX_RETRIES=12
+    - echo "Instalando dependências do ambiente..."
+    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
+    - apk update && apk add --no-cache curl
+    - echo "Dependências instaladas com sucesso!"
+    - echo "Aguardando o Docker-in-Docker iniciar..."
+    - sleep 20
+    - echo "Iniciando docker-compose..."
+    - docker-compose up -d
+    - echo "docker-compose iniciado. Verificando serviços ativos..."
+    - docker ps
+    - echo "Esperando 30 segundos antes de verificar a API para garantir que ela tenha tempo suficiente para iniciar..."
+    - sleep 30
+    - echo "Aguardando a API ficar pronta..."
+    - |
+      MAX_RETRIES=25
       RETRY_COUNT=0
-      while ! curl -s http://localhost:3000/ || [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -ne 200 ]]; do
+      WAIT_TIME=10
+      while ! curl -sf http://localhost:3000/ || [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)" -ne 200 ]; do
         if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
-          echo "A API não ficou pronta a tempo. Saindo..."
+          echo "API não ficou pronta a tempo. Saindo..."
           exit 1
         fi
-        echo "Aguardando a API... Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES"
+        echo "Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES - Aguardando ${WAIT_TIME}s..."
         RETRY_COUNT=$((RETRY_COUNT+1))
-        sleep 5
+        sleep $WAIT_TIME
       done
-    - echo "A API está pronta!"
+    - echo "API está pronta!"
   only:
     - main
 
