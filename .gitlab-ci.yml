@@ -39,9 +39,6 @@ start_api:
   only:
     - main
 
-  only:
-    - main
-
 postman_tests:
   stage: postman
   image: postman/newman
