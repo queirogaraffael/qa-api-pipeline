@@ -11,6 +11,9 @@ start_api:
   services:
     - docker:dind
   script:
+    - echo "Instalando dependências..."
+    - apk update && apk add --no-cache curl
+    - echo "Dependências instaladas com sucesso!"
     - echo "Iniciando docker-compose..."
     - docker-compose up -d
     - echo "docker-compose iniciado. Verificando serviços ativos..."
