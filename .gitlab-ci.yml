@@ -10,16 +10,35 @@ start_api:
   image: docker/compose:latest
   services:
     - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375  # Garante a comunicação com o Docker
+    DOCKER_TLS_CERTDIR: ""         # Desativa TLS para simplificar a configuração no CI
   script:
-    - docker-compose up 
-    - echo "Instalando dependências..."
+    - echo "Instalando dependências do ambiente..."
+    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
     - apk update && apk add --no-cache curl
     - echo "Dependências instaladas com sucesso!"
     - echo "Iniciando docker-compose..."
     - docker-compose up -d
     - echo "docker-compose iniciado. Verificando serviços ativos..."
     - docker ps
-    - echo "Iniciando verificação da API..."
+    - echo "Aguardando a API ficar pronta..."
+    - |
+      MAX_RETRIES=12
+      RETRY_COUNT=0
+      while ! curl -s http://localhost:3000/ || [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)" -ne 200 ]; do
+        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+          echo "API não ficou pronta a tempo. Saindo..."
+          exit 1
+        fi
+        echo "Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES"
+        RETRY_COUNT=$((RETRY_COUNT+1))
+        sleep 5
+      done
+    - echo "API está pronta e funcional!"
+  only:
+    - main
+
   only:
     - main
 
