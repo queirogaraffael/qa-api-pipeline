@@ -11,35 +11,20 @@ start_api:
   services:
     - docker:dind
   script:
-    - echo "Instalando dependências..."
-    - apk update && apk add --no-cache curl
-    - echo "Dependências instaladas com sucesso!"
-    - echo "Iniciando docker-compose..."
-    - docker-compose up -d
-    - echo "docker-compose iniciado. Verificando serviços ativos..."
-    - docker ps
-    - echo "Iniciando verificação da API..."
-    - |
-      MAX_RETRIES=10
+    - docker-compose up 
+    - >
+      MAX_RETRIES=12
       RETRY_COUNT=0
-      while true; do
-        echo "Tentativa $((RETRY_COUNT+1)) de $MAX_RETRIES"
-        HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)
-        echo "Código HTTP: $HTTP_CODE"
-        if [ "$HTTP_CODE" -eq 200 ]; then
-          echo "A API está pronta!"
-          break
-        fi
+      while ! curl -s http://localhost:3000/ || [[ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/) -ne 200 ]]; do
         if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
-          echo "A API não ficou pronta a tempo. Exibindo logs dos serviços..."
-          docker-compose logs
-          echo "Saindo..."
+          echo "API did not become ready in time. Exiting..."
           exit 1
         fi
+        echo "Waiting for API... Attempt $((RETRY_COUNT+1))/$MAX_RETRIES"
         RETRY_COUNT=$((RETRY_COUNT+1))
         sleep 5
       done
-    - echo "API verificada com sucesso!"
+    - echo "API is ready!"
   only:
     - main
 
