@@ -1,104 +1,20 @@
 stages:
-  - setup
-  - postman
-  - performance
-  - deploy
-  - shutdown
+  - build
+  - deploy_teste
 
-start_api:
-  stage: setup
-  image: docker/compose:latest
+build_image:
+  stage: build
+  image: docker:24
   services:
-    - docker:dind
+    - docker:24-dind
   variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""       
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
   script:
-    - echo "Instalando dependências do ambiente..."
-    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
-    - apk update && apk add --no-cache curl
-    - echo "Dependências instaladas com sucesso!"
-    - echo "Aguardando o Docker-in-Docker iniciar..."
-    - sleep 20
-    - echo "Iniciando docker-compose..."
-    - docker-compose up -d
-    - echo "docker-compose iniciado. Verificando serviços ativos..."
-    - docker ps
-    - echo "Esperando 30 segundos antes de verificar a API para garantir que ela tenha tempo suficiente para iniciar..."
-    - sleep 30
-    - echo "Aguardando a API ficar pronta..."
-    - |
-      MAX_RETRIES=25
-      RETRY_COUNT=0
-      WAIT_TIME=10
-      while ! curl -sf http://localhost:3000/ || [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)" -ne 200 ]; do
-        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
-          echo "API não ficou pronta a tempo. Saindo..."
-          exit 1
-        fi
-        echo "Tentativa $((RETRY_COUNT+1))/$MAX_RETRIES - Aguardando ${WAIT_TIME}s..."
-        RETRY_COUNT=$((RETRY_COUNT+1))
-        sleep $WAIT_TIME
-      done
-    - echo "API está pronta!"
-  only:
-    - main
-
-postman_tests:
-  stage: postman
-  image: postman/newman
-  script:
-    - cd Tests/postman
-    - newman run './collection/nestjs-cinema.postman_collection.json' -e './environment/environment-nestjs-cinema.postman_environment.json' -r htmlextra --reporter-htmlextra-export './relatorios/'
-  artifacts:
-    paths:
-      - Tests/postman/relatorios
-  only:
-    - main
-
-performance_tests:
-  stage: performance
-  image: grafana/k6
-  script:
-    - cd Tests/k6/cinema-performance/tests
-    - k6 run "movies/PF-001 - Test Create Movies.js"
-    - k6 run "movies/PF-002 - Test List Movies.js"
-    - k6 run "tickets/PF-003 - Ticket Life Cycle Test.js" --env TEST_TYPE="carga"
-    - k6 run "tickets/PF-004 - Tickets Performance Test.js"
-  artifacts:
-    paths:
-      - Tests/k6/relatorios
-  allow_failure: true
-  only:
-    - main
-
-deploy_api:
-  stage: deploy
-  image: node:20
-  script:
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh -o StrictHostKeyChecking=no $EC2_SSH_COMMAND << EOF
-        if lsof -t -i :3000; then
-          echo "Port 3000 is in uso. Finalizando processo..."
-          kill -9 $(lsof -t -i :3000)
-        fi
-
-        cd /path/to/your/deploy/directory
-        git pull origin main
-        npm install
-        npm run start
-      EOF
-  only:
-    - main
-
-shutdown_api:
-  stage: shutdown
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker-compose down
-  only:
-    - main
+    - echo "Fazendo build da imagem Docker..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - IMAGE_TAG=$CI_PIPELINE_ID 
+    - docker build -t raffaelqueiroga/nestjs-cinema:$IMAGE_TAG .
+    - docker push raffaelqueiroga/nestjs-cinema:$IMAGE_TAG
+    - docker tag raffaelqueiroga/nestjs-cinema:$IMAGE_TAG raffaelqueiroga/nestjs-cinema:latest
+    - docker push raffaelqueiroga/nestjs-cinema:latest
