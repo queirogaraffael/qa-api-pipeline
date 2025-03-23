@@ -1,8 +1,26 @@
 stages:
+  - test_unit
+  - test_integration
   - build
-  - deploy_teste
+  - setup_test_env
+  - test_postman
+  - test_k6
+  - deploy
+
+test_unit:
+  stage: test_unit
+  script:
+    - mvn test -Dtest=*UnitTest
+
+test_integration:s
+  stage: test_integration
+  script:
+    - mvn verify -Dtest=*IntegrationTest
 
 build_image:
+  needs:
+    - test_unit
+    - test_integration
   stage: build
   image: docker:24
   services:
@@ -18,3 +36,79 @@ build_image:
     - docker push raffaelqueiroga/nestjs-cinema:$IMAGE_TAG
     - docker tag raffaelqueiroga/nestjs-cinema:$IMAGE_TAG raffaelqueiroga/nestjs-cinema:latest
     - docker push raffaelqueiroga/nestjs-cinema:latest
+    - echo "Imagem Docker construída e enviada para o Docker Hub."
+
+
+setup_test_env:
+  needs:
+    - build_image
+  stage: setup_test_env
+  script:
+    # 1️⃣ Criar instância EC2 (substituir AMI correta)
+    - INSTANCE_ID=$(aws ec2 run-instances \
+        --image-id ami-12345678 \
+        --count 1 \
+        --instance-type t3.micro \
+        --key-name my-key-pair \
+        --security-groups my-security-group \
+        --query 'Instances[0].InstanceId' \
+        --output text)
+
+    # 2️⃣ Aguardar a EC2 ficar disponível
+    - echo "Aguardando EC2 iniciar..."
+    - aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+
+    # 3️⃣ Obter o IP da EC2
+    - PUBLIC_IP=$(aws ec2 describe-instances \
+        --instance-ids $INSTANCE_ID \
+        --query 'Reservations[0].Instances[0].PublicIpAddress' \
+        --output text)
+
+    # 4️⃣ Conectar na EC2 e configurar Docker
+    - ssh -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP << 'EOF'
+        sudo yum update -y
+        sudo yum install docker -y
+        sudo service docker start
+        sudo usermod -aG docker ec2-user
+        docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+        docker pull my-app:$CI_COMMIT_SHA
+        docker run -d -p 3000:3000 my-app:$CI_COMMIT_SHA
+      EOF
+
+    # 5️⃣ Salvar IP da EC2 para os próximos stages
+    - echo "$PUBLIC_IP" > ec2_ip.txt
+    - cat ec2_ip.txt
+
+    # 6️⃣ Upload para GitLab artifacts (para que os testes possam usar)
+    - mkdir -p artifacts
+    - mv ec2_ip.txt artifacts/
+  artifacts:
+    paths:
+      - artifacts/ec2_ip.txt
+    expire_in: 1h
+
+test_postman:
+  before_script:
+    - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
+  image: postman/newman
+  script:
+    - newman run Tests/postman/collection/nestjs-cinema.postman_collection.json \
+      --environment Tests/postman/environment/environment-nestjs-cinema.postman_environment.json \
+      --env-var "base_url=http://$PUBLIC_IP:3000"
+
+test_k6:
+  before_script:
+    - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
+  image: grafana/k6
+  script:
+    - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-001\ -\ Test\ Create\ Movies.js
+    - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-002\ -\ Test\ List\ Movies.js
+
+deploy:
+  needs:
+    - test_postman
+    - test_k6
+  stage: deploy
+  script:
+    - aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment
+  when: manual  # Para evitar deploy automático sem revisão
