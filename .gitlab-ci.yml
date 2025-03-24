@@ -46,7 +46,7 @@ build_image:
     - echo "Imagem Docker construída e enviada para o Docker Hub."
 
 setup_test_env:
-  stage: setup
+  stage: setup_test_env
   script:
     # Criar diretório de artifacts primeiro
     - mkdir -p artifacts
