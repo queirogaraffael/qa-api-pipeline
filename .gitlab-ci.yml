@@ -1,3 +1,9 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+    - when: never
+    
 stages:
   - test_unit
   - test_integration
@@ -5,6 +11,7 @@ stages:
   - setup_test_env
   - test_postman
   - test_k6
+  - cleanup
   - deploy
 
 test_unit:
@@ -12,16 +19,16 @@ test_unit:
   script:
     - mvn test -Dtest=*UnitTest
 
-test_integration:s
+test_integration:
   stage: test_integration
   script:
     - mvn verify -Dtest=*IntegrationTest
 
 build_image:
+  stage: build
   needs:
     - test_unit
     - test_integration
-  stage: build
   image: docker:24
   services:
     - docker:24-dind
@@ -38,56 +45,57 @@ build_image:
     - docker push raffaelqueiroga/nestjs-cinema:latest
     - echo "Imagem Docker construída e enviada para o Docker Hub."
 
-
 setup_test_env:
-  needs:
-    - build_image
-  stage: setup_test_env
+  stage: setup
   script:
-    # 1️⃣ Criar instância EC2 (substituir AMI correta)
-    - INSTANCE_ID=$(aws ec2 run-instances \
-        --image-id ami-12345678 \
-        --count 1 \
-        --instance-type t3.micro \
-        --key-name my-key-pair \
-        --security-groups my-security-group \
-        --query 'Instances[0].InstanceId' \
-        --output text)
+    # Criar diretório de artifacts primeiro
+    - mkdir -p artifacts
 
-    # 2️⃣ Aguardar a EC2 ficar disponível
-    - echo "Aguardando EC2 iniciar..."
-    - aws ec2 wait instance-running --instance-ids $INSTANCE_ID
-
-    # 3️⃣ Obter o IP da EC2
+    # Obtém o IP da instância EC2
     - PUBLIC_IP=$(aws ec2 describe-instances \
-        --instance-ids $INSTANCE_ID \
+        --filters "Name=tag:Name,Values=my-instance-name" \
         --query 'Reservations[0].Instances[0].PublicIpAddress' \
         --output text)
 
-    # 4️⃣ Conectar na EC2 e configurar Docker
-    - ssh -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP << 'EOF'
-        sudo yum update -y
-        sudo yum install docker -y
-        sudo service docker start
-        sudo usermod -aG docker ec2-user
-        docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
-        docker pull my-app:$CI_COMMIT_SHA
-        docker run -d -p 3000:3000 my-app:$CI_COMMIT_SHA
+    # Salva o IP para os próximos stages
+    - echo "$PUBLIC_IP" > artifacts/ec2_ip.txt
+
+    # Conecta na EC2 e faz o setup da API
+    - |
+      ssh -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP /bin/bash << 'EOF'
+      set -e  # Sai ao primeiro erro
+      
+      # Limpar ambiente
+      docker ps -q | xargs --no-run-if-empty docker stop
+      docker ps -aq | xargs --no-run-if-empty docker rm
+      docker volume prune -f
+      docker network prune -f
+      docker image prune -af
+      
+      # Puxar nova versão da API
+      docker pull my-app:$CI_COMMIT_SHA
+      docker run -d -p 3000:3000 --name cinema-api my-app:$CI_COMMIT_SHA
+      
+      # Esperar API subir com timeout
+      for i in {1..10}; do
+        if curl -s http://localhost:3000/health | grep -q "ok"; then
+          echo "API pronta!"
+          exit 0
+        fi
+        echo "Aguardando API... ($i/10)"
+        sleep 5
+      done
+      echo "Timeout: API não subiu"
+      exit 1
       EOF
-
-    # 5️⃣ Salvar IP da EC2 para os próximos stages
-    - echo "$PUBLIC_IP" > ec2_ip.txt
-    - cat ec2_ip.txt
-
-    # 6️⃣ Upload para GitLab artifacts (para que os testes possam usar)
-    - mkdir -p artifacts
-    - mv ec2_ip.txt artifacts/
   artifacts:
     paths:
       - artifacts/ec2_ip.txt
-    expire_in: 1h
+    expire_in: 1 h
+
 
 test_postman:
+  stage: test_postman
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: postman/newman
@@ -97,6 +105,7 @@ test_postman:
       --env-var "base_url=http://$PUBLIC_IP:3000"
 
 test_k6:
+  stage: test_k6
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: grafana/k6
@@ -104,11 +113,31 @@ test_k6:
     - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-001\ -\ Test\ Create\ Movies.js
     - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-002\ -\ Test\ List\ Movies.js
 
-deploy:
+cleanup_env:
+  stage: cleanup
   needs:
     - test_postman
     - test_k6
+  script:
+    # Obter IP da EC2
+    - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
+
+    # Conectar na EC2 e limpar os recursos do Docker
+    - ssh -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP << 'EOF'
+        echo "Limpando ambiente..."
+        docker stop cinema-api || true
+        docker rm cinema-api || true
+        docker volume prune -f
+        docker network prune -f
+        docker image prune -af
+        echo "Ambiente limpo com sucesso!"
+      EOF
+
+deploy:
   stage: deploy
+  needs:
+    - test_postman
+    - test_k6
   script:
     - aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment
   when: manual  # Para evitar deploy automático sem revisão
