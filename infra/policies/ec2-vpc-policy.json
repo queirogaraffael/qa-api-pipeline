@@ -8,7 +8,11 @@
                 "ec2:DescribeInstances",
                 "ec2:StartInstances",
                 "ec2:StopInstances",
-                "ec2:TerminateInstances"
+                "ec2:TerminateInstances",
+                "ec2:CreateKeyPair",
+                "ec2:ImportKeyPair",
+                "ec2:DeleteKeyPair",
+                "ec2:DescribeKeyPairs"
             ],
             "Resource": "*",
             "Condition": {
@@ -31,6 +35,41 @@
             "Condition": {
                 "StringEquals": {
                     "aws:RequestedRegion": "us-east-1"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "ec2:AuthorizedCidr": "0.0.0.0/0"
+                },
+                "ForAllValues:StringEquals": {
+                    "ec2:Port": [
+                        "22",
+                        "80",
+                        "443"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateSecurityGroup"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ForAnyValue:StringLike": {
+                    "ec2:AuthorizedCidr": [
+                        "0.0.0.0/0",
+                        "::/0"
+                    ]
                 }
             }
         },
@@ -63,6 +102,14 @@
                 "iam:ListAccessKeys"
             ],
             "Resource": "arn:aws:iam::*:user/${aws:username}"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:GetCallerIdentity",
+                "sts:GetSessionToken"
+            ],
+            "Resource": "*"
         },
         {
             "Effect": "Deny",
