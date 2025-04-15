@@ -2,11 +2,9 @@ workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-    - when: never
-    
+
 stages:
-  - test_unit
-  - test_integration
+  - test_api_unit_integration
   - build
   - setup_test_env
   - test_postman
@@ -14,21 +12,17 @@ stages:
   - cleanup
   - deploy
 
-test_unit:
-  stage: test_unit
+unit_and_integration_tests: 
+  stage: test_api_unit_integration
+  image: maven:3.8.6-openjdk-17
   script:
-    - mvn test -Dtest=*UnitTest
-
-test_integration:
-  stage: test_integration
-  script:
-    - mvn verify -Dtest=*IntegrationTest
+    - cd cinema-api
+    - mvn verify
 
 build_image:
   stage: build
   needs:
-    - test_unit
-    - test_integration
+    - unit_and_integration_tests
   image: docker:24
   services:
     - docker:24-dind
@@ -39,63 +33,84 @@ build_image:
     - echo "Fazendo build da imagem Docker..."
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
     - IMAGE_TAG=$CI_PIPELINE_ID 
-    - docker build -t raffaelqueiroga/nestjs-cinema:$IMAGE_TAG .
-    - docker push raffaelqueiroga/nestjs-cinema:$IMAGE_TAG
-    - docker tag raffaelqueiroga/nestjs-cinema:$IMAGE_TAG raffaelqueiroga/nestjs-cinema:latest
-    - docker push raffaelqueiroga/nestjs-cinema:latest
+    - docker build -t raffaelqueiroga/cinema-api:$IMAGE_TAG .
+    - docker push raffaelqueiroga/cinema-api:$IMAGE_TAG
+    - docker tag raffaelqueiroga/cinema-api:$IMAGE_TAG raffaelqueiroga/cinema-api:latest
+    - docker push raffaelqueiroga/cinema-api:latest
     - echo "Imagem Docker construída e enviada para o Docker Hub."
 
 setup_test_env:
   stage: setup_test_env
+  needs:
+    - build_image
   script:
-    # Criar diretório de artifacts primeiro
-    - mkdir -p artifacts
+    - set -e
 
-    # Obtém o IP da instância EC2
-    - PUBLIC_IP=$(aws ec2 describe-instances \
-        --filters "Name=tag:Name,Values=my-instance-name" \
-        --query 'Reservations[0].Instances[0].PublicIpAddress' \
-        --output text)
+    - echo "$PRIVATE_KEY" > my_key_pair.pem
+    - chmod 600 my_key_pair.pem
+    - mkdir -p ~/.ssh
 
-    # Salva o IP para os próximos stages
-    - echo "$PUBLIC_IP" > artifacts/ec2_ip.txt
+    - echo "Adicionando host ao known_hosts..."
+    - ssh-keyscan -H ec2-user@"$TEST_EC2_SSH_TARGET" >> ~/.ssh/known_hosts || { echo "Erro ao adicionar host"; exit 1; }
 
-    # Conecta na EC2 e faz o setup da API
+    - echo "Criando diretório remoto e copiando arquivos..."
+    - ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" "mkdir -p /home/ec2-user/cinema-api" || { echo "Erro ao criar diretório remoto"; exit 1; }
+
+    - scp -i my_key_pair.pem docker-compose.yml ec2-user@"$TEST_EC2_SSH_TARGET":/home/ec2-user/cinema-api || { echo "Erro ao copiar docker-compose.yml"; exit 1; }
+
+    - echo "Executando comandos remotos..."
     - |
-      ssh -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP /bin/bash << 'EOF'
-      set -e  # Sai ao primeiro erro
-      
-      # Limpar ambiente
-      docker ps -q | xargs --no-run-if-empty docker stop
-      docker ps -aq | xargs --no-run-if-empty docker rm
-      docker volume prune -f
-      docker network prune -f
-      docker image prune -af
-      
-      # Puxar nova versão da API
-      docker pull my-app:$CI_COMMIT_SHA
-      docker run -d -p 3000:3000 --name cinema-api my-app:$CI_COMMIT_SHA
-      
-      # Esperar API subir com timeout
-      for i in {1..10}; do
-        if curl -s http://localhost:3000/health | grep -q "ok"; then
-          echo "API pronta!"
-          exit 0
+      ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << 'EOF'
+        set -e  # <- Garante que falhas aqui dentro abortem
+
+        echo "Limpando Docker..."
+        docker system prune -a --volumes -f
+
+        echo "Logando no Docker Hub..."
+        echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+
+        echo "Puxando imagem Docker..."
+        docker pull nome-da-imagem:latest
+
+        echo "Subindo containers com Docker Compose..."
+        cd /home/ec2-user/cinema-api
+        docker-compose up -d
+
+        echo "Aguardando containers ficarem saudáveis..."
+        timeout=60
+        while [ \$timeout -gt 0 ]; do
+          unhealthy=\$(docker ps --filter "health=unhealthy" --format '{{.Names}}')
+          starting=\$(docker ps --filter "health=starting" --format '{{.Names}}')
+
+          if [ -z "\$unhealthy" ] && [ -z "\$starting" ]; then
+            echo "Todos os containers estão saudáveis!"
+            break
+          fi
+
+          echo "Aguardando containers... restante: \$timeout segundos"
+          sleep 5
+          timeout=\$((timeout - 5))
+        done
+
+        if [ ! -z "\$(docker ps --filter "health=unhealthy" --format '{{.Names}}')" ]; then
+          echo "Alguns containers estão com problemas de saúde!"
+          docker ps --filter "health=unhealthy"
+          exit 1
         fi
-        echo "Aguardando API... ($i/10)"
-        sleep 5
-      done
-      echo "Timeout: API não subiu"
-      exit 1
       EOF
+    
+    echo "Salvando IP"
+    - mkdir -p artifacts
+    - echo "$TEST_EC2_SSH_TARGET" > artifacts/ec2_ip.txt
   artifacts:
     paths:
       - artifacts/ec2_ip.txt
-    expire_in: 1 h
 
 
 test_postman:
   stage: test_postman
+  needs:
+    - setup_test_env
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: postman/newman
@@ -104,8 +119,11 @@ test_postman:
       --environment Tests/postman/environment/environment-nestjs-cinema.postman_environment.json \
       --env-var "base_url=http://$PUBLIC_IP:3000"
 
+
 test_k6:
   stage: test_k6
+  needs:
+    - setup_test_env
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: grafana/k6
@@ -113,24 +131,42 @@ test_k6:
     - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-001\ -\ Test\ Create\ Movies.js
     - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-002\ -\ Test\ List\ Movies.js
 
+
 cleanup_env:
   stage: cleanup
   needs:
     - test_postman
     - test_k6
   script:
-    # Obter IP da EC2
-    - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
+    - set -e
 
-    # Conectar na EC2 e limpar os recursos do Docker
-    - ssh -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP << 'EOF'
-        echo "Limpando ambiente..."
-        docker stop cinema-api || true
-        docker rm cinema-api || true
-        docker volume prune -f
-        docker network prune -f
-        docker image prune -af
-        echo "Ambiente limpo com sucesso!"
+    - echo "$PRIVATE_KEY" > my_key_pair.pem
+    - chmod 600 my_key_pair.pem
+    - mkdir -p ~/.ssh
+
+    - echo "Adicionando host ao known_hosts..."
+    - ssh-keyscan -H ec2-user@"$TEST_EC2_SSH_TARGET" >> ~/.ssh/known_hosts || { echo "Erro ao adicionar host"; exit 1; }
+
+    - echo "Conectando à EC2 e limpando Docker..."
+    - |
+      ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << 'EOF'
+        set -e
+        echo "Parando todos os containers..."
+        docker stop \$(docker ps -aq) || true
+
+        echo "Removendo todos os containers..."
+        docker rm \$(docker ps -aq) || true
+
+        echo "Removendo todas as imagens..."
+        docker rmi \$(docker images -aq) || true
+
+        echo "Removendo todos os volumes..."
+        docker volume prune -f || true
+
+        echo "Removendo todas as redes não utilizadas..."
+        docker network prune -f || true
+
+        echo "Ambiente Docker limpo com sucesso!"
       EOF
 
 deploy:
@@ -140,4 +176,4 @@ deploy:
     - test_k6
   script:
     - aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment
-  when: manual  # Para evitar deploy automático sem revisão
+  when: manual 
