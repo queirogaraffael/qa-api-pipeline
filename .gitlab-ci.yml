@@ -6,6 +6,7 @@ workflow:
 stages:
   - test_api_unit_integration
   - build
+  - provision_infrastructure
   - setup_test_env
   - test_postman
   - test_k6
@@ -38,6 +39,29 @@ build_image:
     - docker tag raffaelqueiroga/cinema-api:$IMAGE_TAG raffaelqueiroga/cinema-api:latest
     - docker push raffaelqueiroga/cinema-api:latest
     - echo "Imagem Docker construída e enviada para o Docker Hub."
+
+
+provision_infrastructure:
+  stage: provision_infrastructure
+  image: hashicorp/terraform:1.6.6
+  script:
+    - echo "Provisionando infraestrutura com Terraform..."
+
+    - echo "Acesaando o diretório do Terraform..."
+    - cd infra/terraform
+
+    - echo ""Configurando o backend do Terraform..."
+    - terraform init
+
+    - echo ""Aplicando o Terraform..."
+    - terraform apply -auto-approve
+
+    - echo "Infraestrutura provisionada com sucesso!"
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+
 
 setup_test_env:
   stage: setup_test_env
