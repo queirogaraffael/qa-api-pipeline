@@ -99,7 +99,7 @@ setup_test_env:
         fi
       EOF
     
-    echo "Salvando IP"
+    - echo "Salvando IP"
     - mkdir -p artifacts
     - echo "$TEST_EC2_SSH_TARGET" > artifacts/ec2_ip.txt
   artifacts:
