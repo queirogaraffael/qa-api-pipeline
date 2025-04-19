@@ -14,5 +14,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     Page<GenreResponseDTOProjection> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    boolean existsByName(String name);
+
 }
 

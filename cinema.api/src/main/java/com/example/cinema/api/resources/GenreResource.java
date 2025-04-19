@@ -67,6 +67,7 @@ public class GenreResource {
     @ApiResponse(responseCode = "200", description = "Gênero atualizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Gênero não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
+    @ApiResponse(responseCode = "409", description = "Gênero já existe com esse nome")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     public ResponseEntity<GenreResponseDTO> update(@PathVariable Long id,
                                                    @RequestBody @Valid GenreUpdateDTO dto) {
