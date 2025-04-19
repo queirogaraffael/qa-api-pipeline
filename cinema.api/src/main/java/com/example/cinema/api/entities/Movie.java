@@ -1,9 +1,12 @@
 package com.example.cinema.api.entities;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -11,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Movie {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String description;
@@ -18,6 +23,11 @@ public class Movie {
     private int duration;
     private String imageUrl;
 
-    private Rating rating;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Session> sessions = new ArrayList<>();
+
 }

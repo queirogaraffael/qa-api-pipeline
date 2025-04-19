@@ -12,14 +12,16 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Genre {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
 
-    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
-    private List<Movie> movies = new ArrayList<>();
+    private String number;
+    private int capacity;
+
+    @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Session> sessions = new ArrayList<>();
 
 }
