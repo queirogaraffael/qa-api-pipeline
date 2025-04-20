@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Movie {
     private Long id;
     private String title;
     private String description;
-    private String releaseDate;
+    private LocalDate releaseDate;
     private int duration;
     private String imageUrl;
 

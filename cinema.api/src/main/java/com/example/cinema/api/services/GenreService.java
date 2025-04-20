@@ -8,7 +8,6 @@ import com.example.cinema.api.exceptions.GeneroJaExisteException;
 import com.example.cinema.api.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.mappers.GenreMapper;
 import com.example.cinema.api.repositories.GenreRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

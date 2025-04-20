@@ -16,5 +16,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     boolean existsByName(String name);
 
+    boolean existsById(Long id);
+
 }
 
