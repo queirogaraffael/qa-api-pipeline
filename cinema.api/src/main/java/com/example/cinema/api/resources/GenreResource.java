@@ -42,7 +42,7 @@ public class GenreResource {
     }
 
     @GetMapping()
-    @Operation(summary = "Buscar todos os gêneros", description = "Retorna uma lista paginada de gêneros")
+    @Operation(summary = "Buscar todos os gêneros paginados", description = "Retorna uma lista paginada de gêneros")
     @ApiResponse(responseCode = "200", description = "Lista de gêneros encontrada")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     public ResponseEntity<?> findAllPageable(@RequestParam(defaultValue = "0") int page,
@@ -51,7 +51,7 @@ public class GenreResource {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Buscar gêneros por nome", description = "Retorna uma lista paginada de gêneros filtrados pelo nome")
+    @Operation(summary = "Buscar gêneros por nome paginados", description = "Retorna uma lista paginada de gêneros filtrados pelo nome")
     @ApiResponse(responseCode = "200", description = "Lista de gêneros encontrada")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     public ResponseEntity<Page<GenreResponseDTO>> findByNameContainingIgnoreCase(@RequestParam String name,

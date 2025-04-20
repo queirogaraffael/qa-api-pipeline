@@ -16,5 +16,6 @@ public class MovieUpdateDTO {
     private LocalDate releaseDate;
     private int duration;
     private String imageUrl;
+    private Long genreId;
 
 }
