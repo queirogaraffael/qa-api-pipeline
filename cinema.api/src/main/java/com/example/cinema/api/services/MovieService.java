@@ -49,9 +49,6 @@ public class MovieService {
         return movieRepository.findAllBy(pageable);
     }
 
-
-
-
     public Page<MovieResponseDTO> findByGenreId(Long genreId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return movieRepository.findByGenreId(genreId, pageable).map(movieMapper::toDTO);
@@ -61,11 +58,6 @@ public class MovieService {
         Pageable pageable = PageRequest.of(page, size);
         return movieRepository.findByTitleContainingAndGenreId(title, genreId, pageable).map(movieMapper::toDTO);
     }
-
-
-
-
-
 
     public Page<MovieResponseDTO> findByTitleContainingIgnoreCase(String title, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
