@@ -24,7 +24,7 @@ public class RoomResource {
     @ApiResponse(responseCode = "201", description = "Quarto criado com sucesso")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PostMapping("/api/rooms")
+    @PostMapping()
     public ResponseEntity<RoomResponseDTO> createRoom(@RequestBody RoomRequestDTO dto) {
         RoomResponseDTO createdRoom = roomService.createRoom(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
@@ -34,7 +34,7 @@ public class RoomResource {
     @ApiResponse(responseCode = "200", description = "Quarto encontrado")
     @ApiResponse(responseCode = "404", description = "Quarto não encontrado")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PostMapping("/api/rooms/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<RoomResponseDTO> getRoomById(@PathVariable Long id) {
         RoomResponseDTO room = roomService.getRoomById(id);
         return ResponseEntity.ok(room);
@@ -44,7 +44,7 @@ public class RoomResource {
     @ApiResponse(responseCode = "200", description = "Lista de quartos encontrada")
     @ApiResponse(responseCode = "404", description = "Nenhum quarto encontrado")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @GetMapping("/api/rooms")
+    @GetMapping()
     public ResponseEntity<Page<RoomResponseDTO>> getAllRooms(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -57,7 +57,7 @@ public class RoomResource {
     @ApiResponse(responseCode = "404", description = "Quarto não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PutMapping("/api/rooms/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<RoomResponseDTO> updateRoom(
             @PathVariable Long id,
             @RequestBody RoomRequestDTO roomRequestDTO) {
