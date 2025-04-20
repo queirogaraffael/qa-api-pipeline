@@ -8,6 +8,7 @@ import com.example.cinema.api.exceptions.GeneroJaExisteException;
 import com.example.cinema.api.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.mappers.GenreMapper;
 import com.example.cinema.api.repositories.GenreRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,11 +49,8 @@ public class GenreService {
     }
 
     public GenreResponseDTO update(Long id, GenreUpdateDTO dto) {
-
-
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gênero não encontrado"));
-
 
         if(genreRepository.existsByName(dto.getName()) && !Objects.equals(dto.getName(), genre.getName())){
             throw new GeneroJaExisteException("Gênero com o nome " + dto.getName() + " já existe");

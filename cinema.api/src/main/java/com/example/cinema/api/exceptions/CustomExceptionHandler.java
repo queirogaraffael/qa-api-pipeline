@@ -22,4 +22,9 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgumentException(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(GeneroJaExisteException.class)
+    public ResponseEntity<Object> handleGeneroJaExisteException(GeneroJaExisteException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
 }
