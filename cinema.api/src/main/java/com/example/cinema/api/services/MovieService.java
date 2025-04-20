@@ -46,7 +46,7 @@ public class MovieService {
 
     public Page<MovieResponseDTO> findAllPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return movieRepository.findAllBy(pageable);
+        return movieRepository.findAllPaginado(pageable);
     }
 
     public Page<MovieResponseDTO> findByGenreId(Long genreId, int page, int size) {

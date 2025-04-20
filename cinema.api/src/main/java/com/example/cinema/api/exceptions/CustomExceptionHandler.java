@@ -27,4 +27,11 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleGeneroJaExisteException(GeneroJaExisteException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(NumeroDeQuartoJaCadastradoException.class)
+    public ResponseEntity<Object> handleNumeroDeQuartoJaCadastradoException(NumeroDeQuartoJaCadastradoException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+
 }

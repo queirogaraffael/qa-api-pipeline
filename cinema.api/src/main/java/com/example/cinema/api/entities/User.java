@@ -1,5 +1,6 @@
 package com.example.cinema.api.entities;
 
+import com.example.cinema.api.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

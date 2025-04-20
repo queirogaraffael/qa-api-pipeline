@@ -1,4 +1,4 @@
-package com.example.cinema.api.entities;
+package com.example.cinema.api.enums;
 
 public enum UserRole {
     ADMIN("admin"),

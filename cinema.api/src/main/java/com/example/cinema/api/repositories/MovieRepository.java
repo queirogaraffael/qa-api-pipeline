@@ -16,7 +16,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query(
             value = "SELECT new com.example.cinema.api.dtos.movie.MovieResponseDTO(m.id, m.title, m.description, m.releaseDate, m.duration, m.imageUrl) FROM Movie m",
             countQuery = "SELECT count(m) FROM Movie m")
-    Page<MovieResponseDTO> findAllBy(Pageable pageable);
+    Page<MovieResponseDTO> findAllPaginado(Pageable pageable);
 
 
     Page<MovieResponseDTOProjection> findByTitleContainingIgnoreCase(String title, Pageable pageable);
