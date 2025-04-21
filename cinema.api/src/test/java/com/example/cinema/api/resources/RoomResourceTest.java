@@ -81,7 +81,6 @@ public class RoomResourceTest {
     }
 
 
-
     @Test
     public void getAllRooms_ReturnsPagedResults() throws Exception {
         IntStream.rangeClosed(1, 3)

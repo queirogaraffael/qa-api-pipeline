@@ -1,5 +1,6 @@
 package com.example.cinema.api.entities;
 
+import com.example.cinema.api.enums.SessionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,10 @@ public class Session {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private double ticketPrice;
+    private LocalDateTime availableUntil;
+
+    @Enumerated(EnumType.STRING)
+    private SessionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
