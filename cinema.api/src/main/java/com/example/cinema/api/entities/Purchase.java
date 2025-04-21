@@ -29,5 +29,5 @@ public class Purchase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id")
-    private Session session;
+    private MovieSession movieSession;
 }

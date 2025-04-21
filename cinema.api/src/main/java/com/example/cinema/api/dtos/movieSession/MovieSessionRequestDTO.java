@@ -1,8 +1,6 @@
-package com.example.cinema.api.dtos.session;
+package com.example.cinema.api.dtos.movieSession;
 
-import com.example.cinema.api.enums.SessionStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.example.cinema.api.enums.MovieSessionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,15 +10,17 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SessionSimpleDTO {
+public class MovieSessionRequestDTO {
 
-    private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime availableUntil;
 
     private double ticketPrice;
 
-    private SessionStatus status;
+    private MovieSessionStatus status;
+
+    private Long roomId;
+    private Long movieId;
 
 }

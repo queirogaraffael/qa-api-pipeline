@@ -1,6 +1,6 @@
 package com.example.cinema.api.enums;
 
-public enum SessionStatus {
+public enum MovieSessionStatus {
     SCHEDULED,
     ACTIVE,
     FINISHED,

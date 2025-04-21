@@ -29,7 +29,7 @@ public class Movie {
     private Genre genre;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Session> sessions = new ArrayList<>();
+    private List<MovieSession> movieSessions = new ArrayList<>();
 
 
 }

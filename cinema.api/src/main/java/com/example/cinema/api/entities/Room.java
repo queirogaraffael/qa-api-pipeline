@@ -23,6 +23,6 @@ public class Room {
     private int capacity;
 
     @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Session> sessions = new ArrayList<>();
+    private List<MovieSession> movieSessions = new ArrayList<>();
 
 }
