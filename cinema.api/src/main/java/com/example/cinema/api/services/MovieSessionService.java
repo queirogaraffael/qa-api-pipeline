@@ -44,29 +44,14 @@ public class MovieSessionService {
 
         validateScheduleConflicts(dto, room);
 
-        MovieSession movieSession = new MovieSession();
-        movieSession.setStatus(dto.getStatus());
-        movieSession.setStartTime(dto.getStartTime());
-        movieSession.setEndTime(dto.getEndTime());
-        movieSession.setAvailableUntil(dto.getAvailableUntil());
-        movieSession.setTicketPrice(dto.getTicketPrice());
-        movieSession.setMovie(movie);
-        movieSession.setCinemaRoom(room);
+        MovieSession movieSession = sessionMapper.toEntity(dto, room, movie);
 
         movieSession = movieSessionRepository.save(movieSession);
 
-        MovieSessionResponseDTO responseDTO = new MovieSessionResponseDTO();
-        responseDTO.setId(movieSession.getId());
-        responseDTO.setStartTime(movieSession.getStartTime());
-        responseDTO.setEndTime(movieSession.getEndTime());
-        responseDTO.setAvailableUntil(movieSession.getAvailableUntil());
-        responseDTO.setTicketPrice(movieSession.getTicketPrice());
-        responseDTO.setStatus(movieSession.getStatus());
-        responseDTO.setRoomId(room.getId());
-        responseDTO.setMovieId(movie.getId());
+        return sessionMapper.toResponseDTO(movieSession, room, movie);
 
-        return responseDTO;
     }
+
 
     private void validateSessionRequest(MovieSessionRequestDTO dto) {
         if (dto.getStartTime().isBefore(LocalDateTime.now())) {
