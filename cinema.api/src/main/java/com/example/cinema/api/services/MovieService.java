@@ -34,7 +34,6 @@ public class MovieService {
         Movie movie = movieMapper.toEntity(dto);
         movie.setGenre(genre);
         Movie movieSaved = movieRepository.save(movie);
-
         return movieMapper.toDTO(movieSaved);
     }
 
@@ -51,17 +50,17 @@ public class MovieService {
 
     public Page<MovieResponseDTO> findByGenreId(Long genreId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return movieRepository.findByGenreId(genreId, pageable).map(movieMapper::toDTO);
+        return movieRepository.findByGenreId(genreId, pageable);
     }
 
     public Page<MovieResponseDTO> findByTitleAndGenreId(String title, Long genreId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return movieRepository.findByTitleContainingAndGenreId(title, genreId, pageable).map(movieMapper::toDTO);
+        return movieRepository.findByTitleContainingAndGenreId(title, genreId, pageable);
     }
 
     public Page<MovieResponseDTO> findByTitleContainingIgnoreCase(String title, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return movieRepository.findByTitleContainingIgnoreCase(title, pageable).map(movieMapper::toDTO);
+        return movieRepository.findByTitleContainingIgnoreCase(title, pageable).map(movieMapper::projectionToDTO);
     }
 
     public MovieResponseDTO updateMovie(Long idMovie, MovieUpdateDTO dto) {

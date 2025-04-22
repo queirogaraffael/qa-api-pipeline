@@ -4,7 +4,6 @@ import com.example.cinema.api.dtos.movieSession.MovieSessionRequestDTO;
 import com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO;
 import com.example.cinema.api.entities.MovieSession;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SessionMapper {

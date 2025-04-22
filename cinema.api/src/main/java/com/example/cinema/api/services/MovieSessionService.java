@@ -55,12 +55,6 @@ public class MovieSessionService {
 
         movieSession = movieSessionRepository.save(movieSession);
 
-        MovieSessionResponseDTO responseDTO = getMovieSessionResponseDTO(movieSession, room, movie);
-
-        return responseDTO;
-    }
-
-    private static MovieSessionResponseDTO getMovieSessionResponseDTO(MovieSession movieSession, Room room, Movie movie) {
         MovieSessionResponseDTO responseDTO = new MovieSessionResponseDTO();
         responseDTO.setId(movieSession.getId());
         responseDTO.setStartTime(movieSession.getStartTime());
@@ -70,6 +64,7 @@ public class MovieSessionService {
         responseDTO.setStatus(movieSession.getStatus());
         responseDTO.setRoomId(room.getId());
         responseDTO.setMovieId(movie.getId());
+
         return responseDTO;
     }
 
