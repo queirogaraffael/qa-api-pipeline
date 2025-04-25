@@ -5,11 +5,13 @@ import com.example.cinema.api.dtos.room.RoomResponseDTO;
 import com.example.cinema.api.services.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Rooms")
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomResource {

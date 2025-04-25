@@ -62,5 +62,4 @@ public class RoomService {
         return roomMapper.toDTO(roomRepository.save(room));
     }
 
-
 }
