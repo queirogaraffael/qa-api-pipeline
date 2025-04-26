@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -137,7 +138,7 @@ public class MovieSessionService {
             throw new IllegalArgumentException("A data de início não pode ser depois da data de término");
         }
 
-        if (dto.getTicketPrice() <= 0) {
+        if (dto.getBasePrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O preço do ingresso deve ser maior que zero");
         }
 
@@ -158,7 +159,7 @@ public class MovieSessionService {
             throw new IllegalArgumentException("A data de início não pode ser depois da data de término");
         }
 
-        if (dto.getTicketPrice() <= 0) {
+        if (dto.getBasePrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O preço do ingresso deve ser maior que zero");
         }
 

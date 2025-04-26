@@ -1,14 +1,14 @@
-package com.example.cinema.api.pricing.context;
+package com.example.cinema.api.ticketpricing.context;
 
 import com.example.cinema.api.entities.MovieSession;
-import com.example.cinema.api.pricing.strategy.PricingStrategy;
+import com.example.cinema.api.ticketpricing.strategy.PricingStrategy;
 
 import java.math.BigDecimal;
 
-public class PricingContext {
+public class TicketPricingContext {
     private PricingStrategy strategy;
 
-    public PricingContext(PricingStrategy strategy) {
+    public TicketPricingContext(PricingStrategy strategy) {
         this.strategy = strategy;
     }
 

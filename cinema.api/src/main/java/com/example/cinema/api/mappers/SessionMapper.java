@@ -18,7 +18,7 @@ public interface SessionMapper {
             @Mapping(source = "movieSessionRequestDTO.startTime", target = "startTime"),
             @Mapping(source = "movieSessionRequestDTO.endTime", target = "endTime"),
             @Mapping(source = "movieSessionRequestDTO.availableUntil", target = "availableUntil"),
-            @Mapping(source = "movieSessionRequestDTO.ticketPrice", target = "ticketPrice")
+            @Mapping(source = "movieSessionRequestDTO.basePrice", target = "basePrice")
 
     })
     MovieSession toEntity(MovieSessionRequestDTO movieSessionRequestDTO);
@@ -29,7 +29,7 @@ public interface SessionMapper {
             @Mapping(source = "session.startTime", target = "startTime"),
             @Mapping(source = "session.endTime", target = "endTime"),
             @Mapping(source = "session.availableUntil", target = "availableUntil"),
-            @Mapping(source = "session.ticketPrice", target = "ticketPrice"),
+            @Mapping(source = "session.basePrice", target = "basePrice"),
             @Mapping(source = "session.status", target = "status")
     })
     MovieSessionResponseDTO toDTO(MovieSession session);
@@ -40,7 +40,7 @@ public interface SessionMapper {
             @Mapping(source = "dto.startTime", target = "startTime"),
             @Mapping(source = "dto.endTime", target = "endTime"),
             @Mapping(source = "dto.availableUntil", target = "availableUntil"),
-            @Mapping(source = "dto.ticketPrice", target = "ticketPrice"),
+            @Mapping(source = "dto.basePrice", target = "basePrice"),
             @Mapping(source = "movie", target = "movie"),
             @Mapping(source = "room", target = "cinemaRoom"),
             @Mapping(target = "id", ignore = true)
@@ -52,7 +52,7 @@ public interface SessionMapper {
             @Mapping(source = "movieSession.startTime", target = "startTime"),
             @Mapping(source = "movieSession.endTime", target = "endTime"),
             @Mapping(source = "movieSession.availableUntil", target = "availableUntil"),
-            @Mapping(source = "movieSession.ticketPrice", target = "ticketPrice"),
+            @Mapping(source = "movieSession.basePrice", target = "basePrice"),
             @Mapping(source = "movieSession.status", target = "status"),
             @Mapping(source = "room.id", target = "roomId"),
             @Mapping(source = "movie.id", target = "movieId")

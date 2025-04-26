@@ -23,22 +23,22 @@ public interface MovieSessionRepository extends JpaRepository<MovieSession, Long
             LocalDateTime newStartTime
     );
 
-    @Query("SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.room.id, ms.movie.id) "
-            + "FROM MovieSession ms JOIN ms.room r JOIN ms.movie m WHERE ms.id = :id")
+    @Query("SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.cinemaRoom.id, ms.movie.id) "
+            + "FROM MovieSession ms JOIN ms.cinemaRoom r JOIN ms.movie m WHERE ms.id = :id")
     Optional<MovieSessionResponseDTO> findMovieSessionDtoById(Long id);
 
 
     @Query(
-            value = "SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.room.id, ms.movie.id) FROM MovieSession ms",
+            value = "SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.cinemaRoom.id, ms.movie.id) FROM MovieSession ms",
             countQuery = "SELECT count(ms) FROM MovieSession ms"
     )
     Page<MovieSessionResponseDTO> findAllPaginado(Pageable pageable);
 
 
     @Query(
-            value = "SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.room.id, ms.movie.id) " +
-                    "FROM MovieSession ms WHERE ms.room.id = :roomId",
-            countQuery = "SELECT count(ms) FROM MovieSession ms WHERE ms.room.id = :roomId"
+            value = "SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.cinemaRoom.id, ms.movie.id) " +
+                    "FROM MovieSession ms WHERE ms.cinemaRoom.id = :roomId",
+            countQuery = "SELECT count(ms) FROM MovieSession ms WHERE ms.cinemaRoom.id = :roomId"
     )
     Page<MovieSessionResponseDTO> findAllByRoomId(@Param("roomId") Long roomId, Pageable pageable);
 

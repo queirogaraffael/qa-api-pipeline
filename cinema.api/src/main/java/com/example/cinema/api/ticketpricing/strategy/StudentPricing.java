@@ -1,4 +1,4 @@
-package com.example.cinema.api.pricing.strategy;
+package com.example.cinema.api.ticketpricing.strategy;
 
 import com.example.cinema.api.entities.MovieSession;
 
