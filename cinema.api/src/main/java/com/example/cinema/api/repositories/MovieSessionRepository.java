@@ -29,10 +29,14 @@ public interface MovieSessionRepository extends JpaRepository<MovieSession, Long
 
 
     @Query(
-            value = "SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.cinemaRoom.id, ms.movie.id) FROM MovieSession ms",
-            countQuery = "SELECT count(ms) FROM MovieSession ms"
+            value = "SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(" +
+                    "ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, " +
+                    "ms.cinemaRoom.id, ms.movie.id) " +
+                    "FROM MovieSession ms " +
+                    "WHERE ms.status IN ('SCHEDULED', 'ACTIVE') AND ms.availableUntil > :now",
+            countQuery = "SELECT count(ms) FROM MovieSession ms WHERE ms.status IN ('SCHEDULED', 'ACTIVE') AND ms.availableUntil > :now"
     )
-    Page<MovieSessionResponseDTO> findAllPaginado(Pageable pageable);
+    Page<MovieSessionResponseDTO> findAllDisponiveisPaginado(@Param("now") LocalDateTime now, Pageable pageable);
 
 
     @Query(

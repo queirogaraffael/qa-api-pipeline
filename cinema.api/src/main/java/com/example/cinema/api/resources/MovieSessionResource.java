@@ -6,6 +6,7 @@ import com.example.cinema.api.services.MovieSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,22 +43,6 @@ public class MovieSessionResource {
     }
 
 
-
-
-    /*
-
-    @Operation(summary = "Busca paginada de todas as sessões de filme", description = "Busca todas as sessões de filme")
-    @ApiResponse(responseCode = "200", description = "Sessões encontradas")
-    @ApiResponse(responseCode = "404", description = "Sessões não encontradas")
-    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    public ResponseEntity<Page<MovieSessionResponseDTO>> getAllMovieSessions(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<MovieSessionResponseDTO> movieSessions = movieSessionService.getAllPaginados(page, size);
-        return ResponseEntity.ok(movieSessions);
-    }
-
-
     @Operation(summary = "Busca paginada de todas as sessões de filme por ID da sala", description = "Busca todas as sessões de filme por ID da sala")
     @ApiResponse(responseCode = "200", description = "Sessões encontradas")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
@@ -71,17 +56,17 @@ public class MovieSessionResource {
 
     }
 
-    @Operation(summary = "Cancelar sessão de filme", description = "Cancela uma sessão de filme")
-    @ApiResponse(responseCode = "200", description = "Sessão cancelada com sucesso")
-    @ApiResponse(responseCode = "404", description = "Sessão não encontrada")
+
+    @Operation(summary = "Busca paginada de todas as sessões de filme disponiveis", description = "Busca todas as sessões de filme")
+    @ApiResponse(responseCode = "200", description = "Sessões encontradas")
+    @ApiResponse(responseCode = "404", description = "Sessões não encontradas")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PutMapping("/{id}/cancel")
-    public ResponseEntity<String> cancelMovieSession(@PathVariable Long id) {
-        String message = movieSessionService.cancelSession(id);
-        return ResponseEntity.ok(message);
+    @GetMapping("/available")
+    public ResponseEntity<Page<MovieSessionResponseDTO>> getAllMoviesSessionsDisponiveis(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<MovieSessionResponseDTO> movieSessions = movieSessionService.getAllMovieSessionsDisponiveisPaginados(page, size);
+        return ResponseEntity.ok(movieSessions);
     }
-
-
-     */
 
 }
