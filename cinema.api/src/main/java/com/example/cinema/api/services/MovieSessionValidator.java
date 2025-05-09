@@ -20,7 +20,7 @@ public class MovieSessionValidator {
     }
 
     public void validateSessionRequest(MovieSessionRequestDTO dto) {
-        if (dto.getStartTime().isBefore(LocalDateTime.now())) {
+        if (   dto.get ) {
             throw new IllegalArgumentException("A data de início não pode ser menor que a data atual");
         }
         if (dto.getStartTime().isAfter(dto.getEndTime())) {

@@ -1,6 +1,7 @@
 package com.example.cinema.api.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class Purchase {
 
     @OneToOne
     @JoinColumn(name = "ticket_id")
+    @NotNull
     private Ticket ticket;
 
     @ManyToOne(fetch = FetchType.LAZY)

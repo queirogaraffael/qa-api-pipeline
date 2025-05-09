@@ -10,18 +10,32 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Repository
 public interface MovieSessionRepository extends JpaRepository<MovieSession, Long> {
 
 
-    boolean existsByCinemaRoomAndStartTimeLessThanAndEndTimeGreaterThan(
-            Room cinemaRoom,
-            LocalDateTime newEndTime,
-            LocalDateTime newStartTime
+    @Query("""
+                SELECT COUNT(ms) > 0
+                FROM MovieSession ms
+                WHERE ms.cinemaRoom.id = :roomId
+                  AND ms.availableFrom <= :availableUntil
+                  AND ms.availableUntil >= :availableFrom
+                  AND ms.startTime < :endTime
+                  AND ms.endTime > :startTime
+            """)
+    boolean existsSessionConflict(
+            @Param("roomId") Long roomId,
+            @Param("availableFrom") LocalDate availableFrom,
+            @Param("availableUntil") LocalDate availableUntil,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime
     );
+
 
     @Query("SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.cinemaRoom.id, ms.movie.id) "
             + "FROM MovieSession ms JOIN ms.cinemaRoom r JOIN ms.movie m WHERE ms.id = :id")

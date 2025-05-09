@@ -6,16 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieSessionUpdateDTO {
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private LocalDateTime availableUntil;
+    private LocalDate availableFrom;
+    private LocalDate availableUntil;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     private BigDecimal basePrice;
 

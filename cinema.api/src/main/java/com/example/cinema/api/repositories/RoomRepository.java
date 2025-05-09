@@ -19,4 +19,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     boolean existsByNumber(String number);
 
+    boolean existsById(Long id);
 }

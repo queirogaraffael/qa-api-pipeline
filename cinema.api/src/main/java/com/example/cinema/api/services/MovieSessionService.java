@@ -40,15 +40,18 @@ public class MovieSessionService {
     public MovieSessionResponseDTO createSession(MovieSessionRequestDTO dto) {
         movieSessionValidator.validateSessionRequest(dto);
 
-        Movie movie = movieRepository.findById(dto.getMovieId())
-                .orElseThrow(() -> new ResourceNotFoundException("Filme não encontrado"));
+        if(!movieRepository.existsById(dto.getMovieId())){
+            throw new ResourceNotFoundException("Filme não encontrado");
+        }
 
-        Room room = roomRepository.findById(dto.getRoomId())
-                .orElseThrow(() -> new ResourceNotFoundException("Sala não encontrada"));
+       if(!roomRepository.existsById(dto.getRoomId())){
+           throw new ResourceNotFoundException("Sala não encontrada");
 
-        movieSessionValidator.validateScheduleConflicts(dto, room);
+       }
 
-        MovieSession movieSession = sessionMapper.toEntity(dto, room, movie);
+        movieSessionValidator.validateScheduleConflicts(dto);
+
+        MovieSession movieSession = sessionMapper.toEntity(dto);
 
         movieSession = movieSessionRepository.save(movieSession);
 

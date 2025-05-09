@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +22,12 @@ public class MovieSession {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate availableFrom;
+    private LocalDate availableUntil;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private BigDecimal basePrice;
-    private LocalDateTime availableUntil;
+
 
     @Enumerated(EnumType.STRING)
     private MovieSessionStatus status;

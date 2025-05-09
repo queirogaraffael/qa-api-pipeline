@@ -35,4 +35,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     )
     Page<MovieResponseDTO> findByTitleContainingAndGenreId(@Param("title") String title, @Param("genreId") Long genreId, Pageable pageable);
 
+
+    boolean existsById(Long id);
 }
