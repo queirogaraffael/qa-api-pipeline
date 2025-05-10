@@ -2,9 +2,7 @@ package com.example.cinema.api.services;
 
 import com.example.cinema.api.dtos.movieSession.MovieSessionRequestDTO;
 import com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO;
-import com.example.cinema.api.entities.Movie;
 import com.example.cinema.api.entities.MovieSession;
-import com.example.cinema.api.entities.Room;
 import com.example.cinema.api.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.mappers.SessionMapper;
 import com.example.cinema.api.repositories.MovieRepository;
@@ -51,15 +49,11 @@ public class MovieSessionService {
 
         movieSessionValidator.validateSessionConflicts(dto);
 
-
-
-
-
         MovieSession movieSession = sessionMapper.toEntity(dto);
 
         movieSession = movieSessionRepository.save(movieSession);
 
-        return sessionMapper.toResponseDTO(movieSession);
+        return sessionMapper.toResponseDTO(movieSession, dto.getRoomId(), dto.getMovieId());
 
     }
 

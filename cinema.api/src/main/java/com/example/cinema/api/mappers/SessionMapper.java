@@ -54,9 +54,9 @@ public interface SessionMapper {
             @Mapping(source = "movieSession.availableUntil", target = "availableUntil"),
             @Mapping(source = "movieSession.basePrice", target = "basePrice"),
             @Mapping(source = "movieSession.status", target = "status"),
-            @Mapping(source = "room.id", target = "roomId"),
-            @Mapping(source = "movie.id", target = "movieId")
+            @Mapping(source = "roomId", target = "roomId"),
+            @Mapping(source = "movieId", target = "movieId")
     })
-    MovieSessionResponseDTO toResponseDTO(MovieSession movieSession, Room room, Movie movie);
+    MovieSessionResponseDTO toResponseDTO(MovieSession movieSession, Long roomId, Long movieId);
 
 }
