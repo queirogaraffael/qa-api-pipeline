@@ -49,13 +49,17 @@ public class MovieSessionService {
 
        }
 
-        movieSessionValidator.validateScheduleConflicts(dto);
+        movieSessionValidator.validateSessionConflicts(dto);
+
+
+
+
 
         MovieSession movieSession = sessionMapper.toEntity(dto);
 
         movieSession = movieSessionRepository.save(movieSession);
 
-        return sessionMapper.toResponseDTO(movieSession, room, movie);
+        return sessionMapper.toResponseDTO(movieSession);
 
     }
 

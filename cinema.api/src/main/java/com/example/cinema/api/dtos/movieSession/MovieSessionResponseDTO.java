@@ -16,7 +16,6 @@ public class MovieSessionResponseDTO {
 
     private Long id;
 
-
     private LocalDate availableFrom;
     private LocalDate availableUntil;
     private LocalTime startTime;
