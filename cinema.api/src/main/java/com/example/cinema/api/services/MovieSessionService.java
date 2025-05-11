@@ -2,7 +2,9 @@ package com.example.cinema.api.services;
 
 import com.example.cinema.api.dtos.movieSession.MovieSessionRequestDTO;
 import com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO;
+import com.example.cinema.api.entities.Movie;
 import com.example.cinema.api.entities.MovieSession;
+import com.example.cinema.api.entities.Room;
 import com.example.cinema.api.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.mappers.SessionMapper;
 import com.example.cinema.api.repositories.MovieRepository;
@@ -38,22 +40,21 @@ public class MovieSessionService {
     public MovieSessionResponseDTO createSession(MovieSessionRequestDTO dto) {
         movieSessionValidator.validateSessionRequest(dto);
 
-        if(!movieRepository.existsById(dto.getMovieId())){
-            throw new ResourceNotFoundException("Filme não encontrado");
-        }
+        Movie movie = movieRepository.findById(dto.getMovieId()).orElseThrow(() -> new ResourceNotFoundException("Filme não encontrado"));
 
-       if(!roomRepository.existsById(dto.getRoomId())){
-           throw new ResourceNotFoundException("Sala não encontrada");
-
-       }
+        Room room = roomRepository.findById(dto.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Sala não encontrada"));
 
         movieSessionValidator.validateSessionConflicts(dto);
 
         MovieSession movieSession = sessionMapper.toEntity(dto);
 
+        // associar movie e room a movieSession
+        movieSession.setMovie(movie);
+        movieSession.setCinemaRoom(room);
+
         movieSession = movieSessionRepository.save(movieSession);
 
-        return sessionMapper.toResponseDTO(movieSession, dto.getRoomId(), dto.getMovieId());
+        return sessionMapper.toResponseDTO(movieSession);
 
     }
 

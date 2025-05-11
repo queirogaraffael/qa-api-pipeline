@@ -24,8 +24,6 @@ public class MovieSessionResponseDTO {
 
     private MovieSessionStatus status;
 
-    private boolean canceled;
-
     private Long roomId;
     private Long movieId;
 }
