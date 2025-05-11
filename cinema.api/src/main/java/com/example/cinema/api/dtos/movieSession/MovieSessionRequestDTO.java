@@ -21,8 +21,6 @@ public class MovieSessionRequestDTO {
 
     private BigDecimal basePrice;
 
-    private MovieSessionStatus status;
-
     private Long roomId;
     private Long movieId;
 
