@@ -13,15 +13,16 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieSessionRequestDTO {
+    private LocalDate showDate;
 
-    private LocalDate availableFrom;
-    private LocalDate availableUntil;
     private LocalTime startTime;
+
     private LocalTime endTime;
 
     private BigDecimal basePrice;
 
     private Long roomId;
-    private Long movieId;
 
+    private Long movieId;
 }
+
