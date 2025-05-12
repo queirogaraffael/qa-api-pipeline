@@ -13,20 +13,15 @@ public class TicketService {
     }
 
 
+
     // TODO: Criar ticket
 
     // Recebe um ticket dto
-    // Valida se o assento é valido e disponivel
+    // Valida se o assento é valido e disponivel// o numero do seat do tikcet não pode passar da capacidade maxima do room associado a session
     // MovieSession precisa ser valida
     // salva ticket
 
-
-    // O ticket precisa ter um campo de data da sessão
-    // essa data não pode ser anterior a o dia de hoje e nao pode ser posterior ao dia de disponibilidade
-    // maxima da sessão
-
-
-    // criar um metodo em que verifique a questão do assento não passa a capacidade maxima do room
+    // assento não passa a capacidade maxima do room
     // e o assento não pode ser o mesmo de outro ticket
 
 
