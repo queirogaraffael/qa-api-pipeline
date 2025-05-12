@@ -11,6 +11,5 @@ public class TicketRequestDTO {
 
     private int seatNumber;
 
-    private Long userId;
     private Long movieSessionId;
 }

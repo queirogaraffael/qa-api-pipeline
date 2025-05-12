@@ -1,7 +1,12 @@
 package com.example.cinema.api.services;
 
+import com.example.cinema.api.dtos.tickets.TicketRequestDTO;
+import com.example.cinema.api.dtos.tickets.TicketResponseDTO;
 import com.example.cinema.api.entities.MovieSession;
+import com.example.cinema.api.entities.Ticket;
 import com.example.cinema.api.enums.UserCategory;
+import com.example.cinema.api.mappers.TicketMapper;
+import com.example.cinema.api.repositories.MovieSessionRepository;
 import com.example.cinema.api.repositories.TicketRepository;
 import com.example.cinema.api.ticketpricing.context.TicketPricingContext;
 import com.example.cinema.api.ticketpricing.strategy.*;
@@ -14,22 +19,44 @@ import java.time.DayOfWeek;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final MovieSessionRepository movieSessionRepository;
+    private final TicketMapper ticketMapper;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, MovieSessionRepository movieSessionRepository, TicketMapper ticketMapper) {
         this.ticketRepository = ticketRepository;
+        this.movieSessionRepository = movieSessionRepository;
+        this.ticketMapper = ticketMapper;
+    }
+
+    public TicketResponseDTO criarTickt(TicketRequestDTO ticketRequestDTO){
+
+        Integer roomCapacity = movieSessionRepository.findRoomCapacityByMovieSessionId(ticketRequestDTO.getMovieSessionId());
+
+        if (ticketRequestDTO.getSeatNumber() > roomCapacity) {
+            throw new IllegalArgumentException("Assento inválido");
+        }
+
+        boolean isSeatTaken = ticketRepository.isSeatTaken(ticketRequestDTO.getSeatNumber(), ticketRequestDTO.getMovieSessionId());
+
+        if (isSeatTaken) {
+            throw new IllegalArgumentException("Assento já reservado");
+        }
+
+        MovieSession movieSession = movieSessionRepository.findById(ticketRequestDTO.getMovieSessionId())
+                .orElseThrow(() -> new IllegalArgumentException("Sessão de filme não encontrada"));
+
+
+        Ticket ticket = ticketMapper.toEntity(ticketRequestDTO);
+
+        ticket.setMovieSession(movieSession);
+
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        return ticketMapper.toResponseDTO(savedTicket);
+
     }
 
 
-
-    // TODO: Criar ticket
-
-    // Recebe um ticket dto
-    // Valida se o assento é valido e disponivel// o numero do seat do tikcet não pode passar da capacidade maxima do room associado a session
-    // MovieSession precisa ser valida
-    // salva ticket
-
-    // assento não passa a capacidade maxima do room
-    // e o assento não pode ser o mesmo de outro ticket
 
 
     public BigDecimal calculateTicketPrice(UserCategory userCategory, MovieSession session) {
