@@ -1,5 +1,6 @@
 package com.example.cinema.api.entities;
 
+import com.example.cinema.api.enums.UserCategory;
 import com.example.cinema.api.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,14 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private UserRole role;
     private String dataJoined;
     private LocalDate birthdate;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    private UserCategory category;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Purchase> purchases;

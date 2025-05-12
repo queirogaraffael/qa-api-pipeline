@@ -1,7 +1,14 @@
 package com.example.cinema.api.services;
 
+import com.example.cinema.api.entities.MovieSession;
+import com.example.cinema.api.enums.UserCategory;
 import com.example.cinema.api.repositories.TicketRepository;
+import com.example.cinema.api.ticketpricing.context.TicketPricingContext;
+import com.example.cinema.api.ticketpricing.strategy.*;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
 
 @Service
 public class TicketService {
@@ -25,15 +32,14 @@ public class TicketService {
     // e o assento não pode ser o mesmo de outro ticket
 
 
-    /*
-    public BigDecimal calculateTicketPrice(UserCategoryDTO userCategoryDTO) {
+    public BigDecimal calculateTicketPrice(UserCategory userCategory, MovieSession session) {
         PricingStrategy strategy;
 
-        if (session. isOnWednesday()) {
+        if (session.getShowDate().getDayOfWeek() == DayOfWeek.WEDNESDAY) {
             strategy = new WednesdayPromoPricing();
-        } else if (userCategoryDTO.isStudent()) {
+        } else if (userCategory == UserCategory.STUDENT) {
             strategy = new StudentPricing();
-        } else if (userCategoryDTO.isSenior()) {
+        } else if (userCategory == UserCategory.SENIOR) {
             strategy = new SeniorPricing();
         } else {
             strategy = new RegularPricing();
@@ -42,7 +48,7 @@ public class TicketService {
         TicketPricingContext context = new TicketPricingContext(strategy);
         return context.executeStrategy(session);
     }
-*/
+
 
 
 
