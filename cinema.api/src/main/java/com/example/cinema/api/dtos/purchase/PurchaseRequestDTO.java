@@ -9,13 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseRequestDTO {
 
-    /*
-    private LocalDateTime purchaseDate;
-    private BigDecimal totalPrice;
-
-    private Long userId;
-*/
-
     private Long ticketId;
     private Long movieSessionId;
 
