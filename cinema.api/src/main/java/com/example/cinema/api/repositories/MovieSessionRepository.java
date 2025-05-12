@@ -20,22 +20,20 @@ public interface MovieSessionRepository extends JpaRepository<MovieSession, Long
 
 
     @Query("""
-                SELECT COUNT(ms) > 0
-                FROM MovieSession ms
-                WHERE ms.cinemaRoom.id = :roomId
-                  AND ms.availableFrom <= :availableUntil
-                  AND ms.availableUntil >= :availableFrom
-                  AND ms.startTime < :endTime
-                  AND ms.endTime > :startTime
-            """)
+    SELECT COUNT(ms) > 0
+    FROM MovieSession ms
+    WHERE ms.cinemaRoom.id = :roomId
+      AND ms.showDate = :showDate
+      AND ms.startTime < :endTime
+      AND ms.endTime > :startTime
+      AND ms.canceled = false
+""")
     boolean existsSessionConflict(
             @Param("roomId") Long roomId,
-            @Param("availableFrom") LocalDate availableFrom,
-            @Param("availableUntil") LocalDate availableUntil,
+            @Param("showDate") LocalDate showDate,
             @Param("startTime") LocalTime startTime,
             @Param("endTime") LocalTime endTime
     );
-
 
     @Query("SELECT new com.example.cinema.api.dtos.movieSession.MovieSessionResponseDTO(ms.id, ms.startTime, ms.endTime, ms.availableUntil, ms.basePrice, ms.status, ms.cinemaRoom.id, ms.movie.id) "
             + "FROM MovieSession ms JOIN ms.cinemaRoom r JOIN ms.movie m WHERE ms.id = :id")

@@ -23,61 +23,56 @@ public class MovieSessionValidator {
     }
 
     public void validateSessionRequest(MovieSessionRequestDTO dto) {
-        validateDateRange(dto.getAvailableFrom(), dto.getAvailableUntil());
+        validateShowDate(dto.getShowDate());
         validateTimeRange(dto.getStartTime(), dto.getEndTime());
         validateBasePrice(dto.getBasePrice());
-        validateStatus(dto.getStatus());
-        validateAvailableUntilNotInPast(dto.getAvailableUntil());
     }
 
     public void validateSessionUpdate(MovieSessionUpdateDTO dto) {
-        validateDateRange(dto.getAvailableFrom(), dto.getAvailableUntil());
+        validateShowDate(dto.getShowDate());
         validateTimeRange(dto.getStartTime(), dto.getEndTime());
         validateBasePrice(dto.getBasePrice());
-        validateAvailableUntilNotInPast(dto.getAvailableUntil());
-    }
-
-    public void validateSessionConflicts(MovieSessionUpdateDTO dto) {
-        boolean conflict = movieSessionRepository.existsSessionConflict(
-                dto.getRoomId(),
-                dto.getAvailableFrom(),
-                dto.getAvailableUntil(),
-                dto.getStartTime(),
-                dto.getEndTime()
-        );
-        if (conflict) {
-            throw new IllegalArgumentException("A sala já está reservada para esse horário");
-        }
     }
 
     public void validateSessionConflicts(MovieSessionRequestDTO dto) {
         boolean conflict = movieSessionRepository.existsSessionConflict(
                 dto.getRoomId(),
-                dto.getAvailableFrom(),
-                dto.getAvailableUntil(),
+                dto.getShowDate(),
                 dto.getStartTime(),
                 dto.getEndTime()
         );
         if (conflict) {
-            throw new IllegalArgumentException("A sala já está reservada para esse horário");
+            throw new IllegalArgumentException("A sala já está reservada para esse horário.");
         }
     }
 
-    private void validateDateRange(LocalDate from, LocalDate until) {
-        if (from == null || until == null) {
-            throw new IllegalArgumentException("As datas de disponibilidade não podem ser nulas");
+    public void validateSessionConflicts(MovieSessionUpdateDTO dto) {
+        boolean conflict = movieSessionRepository.existsSessionConflict(
+                dto.getRoomId(),
+                dto.getShowDate(),
+                dto.getStartTime(),
+                dto.getEndTime()
+        );
+        if (conflict) {
+            throw new IllegalArgumentException("A sala já está reservada para esse horário.");
         }
-        if (from.isAfter(until)) {
-            throw new IllegalArgumentException("A data de início de disponibilidade não pode ser depois da data de término.");
+    }
+
+    private void validateShowDate(LocalDate showDate) {
+        if (showDate == null) {
+            throw new IllegalArgumentException("A data da sessão (showDate) não pode ser nula.");
+        }
+        if (showDate.isBefore(LocalDate.now(clock))) {
+            throw new IllegalArgumentException("A data da sessão não pode estar no passado.");
         }
     }
 
     private void validateTimeRange(LocalTime start, LocalTime end) {
         if (start == null || end == null) {
-            throw new IllegalArgumentException("Os horários de início e término não podem ser nulos");
+            throw new IllegalArgumentException("Os horários de início e término não podem ser nulos.");
         }
-        if (start.isAfter(end)) {
-            throw new IllegalArgumentException("A hora de início não pode ser depois da hora de término.");
+        if (!start.isBefore(end)) {
+            throw new IllegalArgumentException("A hora de início deve ser antes da hora de término.");
         }
     }
 
@@ -89,14 +84,7 @@ public class MovieSessionValidator {
 
     private void validateStatus(MovieSessionStatus status) {
         if (status == MovieSessionStatus.CANCELED || status == MovieSessionStatus.FINISHED) {
-            throw new IllegalArgumentException("O status da sessão não pode ser CANCELLED ou FINISHED na criação.");
-        }
-    }
-
-    private void validateAvailableUntilNotInPast(LocalDate availableUntil) {
-        if (availableUntil != null && availableUntil.isBefore(LocalDate.now(clock))) {
-            throw new IllegalArgumentException("O campo availableUntil não pode estar no passado.");
+            throw new IllegalArgumentException("O status da sessão não pode ser CANCELED ou FINISHED na criação.");
         }
     }
 }
-
