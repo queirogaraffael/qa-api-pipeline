@@ -10,12 +10,7 @@ import com.example.cinema.api.mappers.SessionMapper;
 import com.example.cinema.api.repositories.MovieRepository;
 import com.example.cinema.api.repositories.MovieSessionRepository;
 import com.example.cinema.api.repositories.RoomRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class MovieSessionService {
@@ -57,27 +52,6 @@ public class MovieSessionService {
         return sessionMapper.toResponseDTO(movieSession);
 
     }
-
-
-    public MovieSessionResponseDTO getSessionById(Long id) {
-        return movieSessionRepository.findMovieSessionDtoById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Sessão não encontrada"));
-    }
-
-
-    public Page<MovieSessionResponseDTO> getSessionsByRoomId(Long roomId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return movieSessionRepository.findAllByRoomId(roomId, pageable);
-    }
-
-
-    public Page<MovieSessionResponseDTO> getAllMovieSessionsDisponiveisPaginados(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return movieSessionRepository.findAllDisponiveisPaginado(LocalDateTime.now(), pageable);
-    }
-
 
 }
 
