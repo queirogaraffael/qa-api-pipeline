@@ -2,7 +2,11 @@ package com.example.cinema.api.repositories;
 
 import com.example.cinema.api.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.UUID;
 
+public interface UserRepository extends JpaRepository<User, UUID> {
+
+    UserDetails findByUsername(String username);
 }
