@@ -33,14 +33,16 @@ public class LoginResource {
     @ApiResponse(responseCode = "200", description = "Login realizado com sucesso")
     @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PostMapping()
+    @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid UserLoginDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getUsername(), data.getPassword());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var auth = authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        var user = (User) auth.getPrincipal();
+        var token = tokenService.generateToken(user);
 
         return ResponseEntity.ok(new TokenResponseDTO(token));
     }
+
 
 }

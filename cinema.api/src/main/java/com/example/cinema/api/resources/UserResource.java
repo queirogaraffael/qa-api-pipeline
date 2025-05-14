@@ -2,16 +2,15 @@ package com.example.cinema.api.resources;
 
 import com.example.cinema.api.dtos.user.UserRequestDTO;
 import com.example.cinema.api.entities.User;
-import com.example.cinema.api.infra.security.TokenService;
+import com.example.cinema.api.factories.UserFactory;
 import com.example.cinema.api.repositories.UserRepository;
 import com.example.cinema.api.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,30 +22,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 public class UserResource {
 
-
-    @Autowired
     private UserService userService;
-    @Autowired
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public UserResource(UserService userService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Operation(summary = "Criar um novo usuário")
-    @ApiResponse(responseCode = "200", description = "Usuário criado com sucesso")
-    @ApiResponse(responseCode = "400", description = "Erro ao criar usuário")
-    @ApiResponse(responseCode = "401", description = "Não autorizado")
-    @ApiResponse(responseCode = "403", description = "Acesso negado")
-    @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso")
+    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    @ApiResponse(responseCode = "409", description = "Usuário já existe")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PostMapping()
+    @PostMapping("/users")
     public ResponseEntity<Void> register(@RequestBody @Valid UserRequestDTO data) {
-        if (this.userService.loadUserByUsername(data.getUsername()) != null) return ResponseEntity.badRequest().build();
+        if (userRepository.existsByUsername(data.getUsername())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
-        User newUser = new User(null, data.getUsername(), data.getName(), data.getEmail(), encryptedPassword, data.getDataJoined(),
-                data.getBirthdate(), data.getRole(), data.getCategory(), null, null);
+        String encryptedPassword = passwordEncoder.encode(data.getPassword());
+        User newUser = UserFactory.createFromDto(data, encryptedPassword);
 
-        this.userRepository.save(newUser);
 
-        return ResponseEntity.ok().build();
+        userRepository.save(newUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
