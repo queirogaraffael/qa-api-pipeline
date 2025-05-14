@@ -11,8 +11,6 @@ import com.example.cinema.api.repositories.MovieSessionRepository;
 import com.example.cinema.api.repositories.TicketRepository;
 import com.example.cinema.api.ticketpricing.context.TicketPricingContext;
 import com.example.cinema.api.ticketpricing.strategy.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,14 +22,16 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final MovieSessionRepository movieSessionRepository;
     private final TicketMapper ticketMapper;
+    private final UserService userService;
 
-    public TicketService(TicketRepository ticketRepository, MovieSessionRepository movieSessionRepository, TicketMapper ticketMapper) {
+    public TicketService(TicketRepository ticketRepository, MovieSessionRepository movieSessionRepository, TicketMapper ticketMapper, UserService userService) {
         this.ticketRepository = ticketRepository;
         this.movieSessionRepository = movieSessionRepository;
         this.ticketMapper = ticketMapper;
+        this.userService = userService;
     }
 
-    public TicketResponseDTO criarTickt(TicketRequestDTO ticketRequestDTO){
+    public TicketResponseDTO criarTickt(TicketRequestDTO ticketRequestDTO) {
 
         Integer roomCapacity = movieSessionRepository.findRoomCapacityByMovieSessionId(ticketRequestDTO.getMovieSessionId());
 
@@ -52,8 +52,7 @@ public class TicketService {
 
         ticket.setMovieSession(movieSession);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User user = userService.getAuthenticatedUser();
 
         ticket.setUser(user);
 

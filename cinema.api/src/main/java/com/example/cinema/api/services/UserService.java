@@ -1,6 +1,10 @@
 package com.example.cinema.api.services;
 
+import com.example.cinema.api.entities.User;
+import com.example.cinema.api.exceptions.UserNotAuthenticatedException;
 import com.example.cinema.api.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,10 +24,16 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    // metodo de criar usuario
-    // notificar usuario
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new UserNotAuthenticatedException("Usuário não autenticado");
+        }
 
+        return (User) authentication.getPrincipal();
+    }
 
+    // criar usuario
 
 }

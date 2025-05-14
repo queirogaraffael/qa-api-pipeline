@@ -44,4 +44,9 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(UserNotAuthenticatedException.class)
+    public ResponseEntity<Object> handleUserNotAuthenticatedException(UserNotAuthenticatedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
 }
