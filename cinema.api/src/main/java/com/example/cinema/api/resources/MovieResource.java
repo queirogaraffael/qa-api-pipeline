@@ -65,7 +65,6 @@ public class MovieResource {
         return ResponseEntity.ok(movieService.findByTitleContainingIgnoreCase(title, page, size));
     }
 
-
     @Operation(summary = "Busca paginada de filmes por gênero", description = "Busca filmes pelo gênero")
     @ApiResponse(responseCode = "200", description = "Lista de filmes encontrada")
     @ApiResponse(responseCode = "404", description = "Filme não encontrado")
@@ -93,6 +92,8 @@ public class MovieResource {
     @ApiResponse(responseCode = "200", description = "Filme atualizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Filme não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
     public ResponseEntity<MovieResponseDTO> updateMovie(@PathVariable Long id, @RequestBody @Valid MovieUpdateDTO dto) {
         MovieResponseDTO movieResponseDTO = movieService.updateMovie(id, dto);

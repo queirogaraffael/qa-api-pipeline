@@ -39,6 +39,13 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/genres/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/genres/search").permitAll()
 
+                        // Endpoints públicos do MovieResource
+                        .requestMatchers(HttpMethod.GET, "/api/movies").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/genre/{genreId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/genre/{genreId}").permitAll()
+
                         // Swagger (também público)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
 
