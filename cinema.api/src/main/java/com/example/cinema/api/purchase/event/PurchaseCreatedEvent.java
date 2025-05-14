@@ -3,7 +3,9 @@ package com.example.cinema.api.purchase.event;
 import com.example.cinema.api.entities.Purchase;
 import org.springframework.context.ApplicationEvent;
 
+//POJO
 public class PurchaseCreatedEvent extends ApplicationEvent {
+
     private final Purchase purchase;
 
     public PurchaseCreatedEvent(Object source, Purchase purchase) {

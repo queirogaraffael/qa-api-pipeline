@@ -1,5 +1,6 @@
 package com.example.cinema.api.services;
 
+import com.example.cinema.api.entities.Purchase;
 import com.example.cinema.api.exceptions.EmailSendException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,5 +51,22 @@ public class EmailService {
             logger.error("Erro enviando e‑mail para {}", to, e);
             throw new EmailSendException("Não foi possível enviar e‑mail para " + to, e);
         }
+    }
+
+    public void sendPurchaseNotificationEmail(String to, Purchase purchase) {
+        String subject = "Compra Realizada com Sucesso!";
+        String text = String.format(
+                "Olá %s,%n%nSua compra foi realizada com sucesso!%n%nDetalhes da compra:%n" +
+                        "Sessão de Filme: %s%n" +
+                        "Valor Total: %s%n" +
+                        "Data da Compra: %s%n%n" +
+                        "Obrigado por comprar conosco!",
+                purchase.getUser().getName(),
+                purchase.getMovieSession().getMovie().getTitle(),
+                purchase.getTotalPrice(),
+                purchase.getPurchaseDate()
+        );
+
+        sendSimpleMessage(to, subject, text);
     }
 }

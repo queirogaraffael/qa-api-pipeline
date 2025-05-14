@@ -8,9 +8,11 @@ import com.example.cinema.api.entities.Ticket;
 import com.example.cinema.api.entities.User;
 import com.example.cinema.api.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.mappers.PurchaseMapper;
+import com.example.cinema.api.purchase.event.PurchaseCreatedEvent;
 import com.example.cinema.api.repositories.MovieSessionRepository;
 import com.example.cinema.api.repositories.PurchaseRepository;
 import com.example.cinema.api.repositories.TicketRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,14 +27,16 @@ public class PurchaseService {
     private final MovieSessionRepository movieSessionRepository;
     private final PurchaseMapper purchaseMapper;
     private final UserService userService;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public PurchaseService(PurchaseRepository purchaseRepository, TicketService ticketService, TicketRepository ticketRepository, MovieSessionRepository movieSessionRepository, PurchaseMapper purchaseMapper, UserService userService) {
+    public PurchaseService(PurchaseRepository purchaseRepository, TicketService ticketService, TicketRepository ticketRepository, MovieSessionRepository movieSessionRepository, PurchaseMapper purchaseMapper, UserService userService, ApplicationEventPublisher eventPublisher) {
         this.purchaseRepository = purchaseRepository;
         this.ticketService = ticketService;
         this.ticketRepository = ticketRepository;
         this.movieSessionRepository = movieSessionRepository;
         this.purchaseMapper = purchaseMapper;
         this.userService = userService;
+        this.eventPublisher = eventPublisher;
     }
 
     public PurchaseResponseDTO createPurchase(PurchaseRequestDTO purchaseRequestDTO) {
@@ -55,9 +59,9 @@ public class PurchaseService {
 
         Purchase savedPurchase = purchaseRepository.save(purchase);
 
-        return purchaseMapper.toResponseDTO(savedPurchase);
+        eventPublisher.publishEvent(new PurchaseCreatedEvent(this, savedPurchase));
 
-        // avisar usuario
+        return purchaseMapper.toResponseDTO(savedPurchase);
 
     }
 }
