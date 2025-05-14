@@ -1,8 +1,8 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.room.RoomRequestDTO;
-import com.example.cinema.api.dtos.room.RoomResponseDTO;
-import com.example.cinema.api.services.RoomService;
+import com.example.cinema.api.shared.dtos.room.RoomRequestDTO;
+import com.example.cinema.api.shared.dtos.room.RoomResponseDTO;
+import com.example.cinema.api.domain.services.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -1,10 +1,10 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.user.UserRequestDTO;
-import com.example.cinema.api.entities.User;
-import com.example.cinema.api.factories.UserFactory;
-import com.example.cinema.api.repositories.UserRepository;
-import com.example.cinema.api.services.UserService;
+import com.example.cinema.api.domain.repositories.UserRepository;
+import com.example.cinema.api.shared.dtos.user.UserRequestDTO;
+import com.example.cinema.api.domain.entities.User;
+import com.example.cinema.api.domain.user.factories.UserFactory;
+import com.example.cinema.api.domain.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,8 +1,8 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.purchase.PurchaseRequestDTO;
-import com.example.cinema.api.dtos.purchase.PurchaseResponseDTO;
-import com.example.cinema.api.services.PurchaseService;
+import com.example.cinema.api.shared.dtos.purchase.PurchaseRequestDTO;
+import com.example.cinema.api.shared.dtos.purchase.PurchaseResponseDTO;
+import com.example.cinema.api.domain.services.PurchaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

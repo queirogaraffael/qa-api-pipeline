@@ -1,9 +1,9 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.login.TokenResponseDTO;
-import com.example.cinema.api.dtos.login.UserLoginDTO;
-import com.example.cinema.api.entities.User;
-import com.example.cinema.api.infra.security.TokenService;
+import com.example.cinema.api.shared.dtos.login.TokenResponseDTO;
+import com.example.cinema.api.shared.dtos.login.UserLoginDTO;
+import com.example.cinema.api.domain.entities.User;
+import com.example.cinema.api.infrastructure.security.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

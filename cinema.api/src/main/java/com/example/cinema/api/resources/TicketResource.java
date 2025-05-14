@@ -1,8 +1,8 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.tickets.TicketRequestDTO;
-import com.example.cinema.api.dtos.tickets.TicketResponseDTO;
-import com.example.cinema.api.services.TicketService;
+import com.example.cinema.api.shared.dtos.tickets.TicketRequestDTO;
+import com.example.cinema.api.shared.dtos.tickets.TicketResponseDTO;
+import com.example.cinema.api.domain.services.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

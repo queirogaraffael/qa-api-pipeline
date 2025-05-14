@@ -1,9 +1,9 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.movie.MovieRequestDTO;
-import com.example.cinema.api.dtos.movie.MovieResponseDTO;
-import com.example.cinema.api.dtos.movie.MovieUpdateDTO;
-import com.example.cinema.api.services.MovieService;
+import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
+import com.example.cinema.api.shared.dtos.movie.MovieResponseDTO;
+import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
+import com.example.cinema.api.domain.services.MovieService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -1,9 +1,9 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.genre.GenreRequestDTO;
-import com.example.cinema.api.dtos.genre.GenreUpdateDTO;
-import com.example.cinema.api.entities.Genre;
-import com.example.cinema.api.repositories.GenreRepository;
+import com.example.cinema.api.shared.dtos.genre.GenreRequestDTO;
+import com.example.cinema.api.shared.dtos.genre.GenreUpdateDTO;
+import com.example.cinema.api.domain.entities.Genre;
+import com.example.cinema.api.infrastructure.repositories.GenreRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

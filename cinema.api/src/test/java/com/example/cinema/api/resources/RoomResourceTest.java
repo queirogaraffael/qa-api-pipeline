@@ -1,9 +1,9 @@
 package com.example.cinema.api.resources;
 
 
-import com.example.cinema.api.dtos.room.RoomRequestDTO;
-import com.example.cinema.api.entities.Room;
-import com.example.cinema.api.repositories.RoomRepository;
+import com.example.cinema.api.shared.dtos.room.RoomRequestDTO;
+import com.example.cinema.api.domain.entities.Room;
+import com.example.cinema.api.infrastructure.repositories.RoomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,11 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.dtos.movie.MovieRequestDTO;
-import com.example.cinema.api.dtos.movie.MovieUpdateDTO;
-import com.example.cinema.api.entities.Genre;
-import com.example.cinema.api.entities.Movie;
-import com.example.cinema.api.repositories.GenreRepository;
-import com.example.cinema.api.repositories.MovieRepository;
+import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
+import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
+import com.example.cinema.api.domain.entities.Genre;
+import com.example.cinema.api.domain.entities.Movie;
+import com.example.cinema.api.infrastructure.repositories.GenreRepository;
+import com.example.cinema.api.infrastructure.repositories.MovieRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
