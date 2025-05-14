@@ -15,14 +15,21 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
+                //.addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+                .components(new Components()
+                        .addSecuritySchemes("Bearer Authentication",
+                                new SecurityScheme()
+                                        .name("Bearer Authentication")
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                        )
+                )
                 .info(new Info()
                         .title("Cinema API")
                         .version("1.0")
-                        .description("API documentation for the Cinema application"))
-                .components(new Components()
-                        .addSecuritySchemes("bearer-jwt", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")));
+                        .description("API documentation for the Cinema application"));
+
     }
+
 }

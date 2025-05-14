@@ -33,12 +33,22 @@ public class SecurityConfigurations {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
+
+                        // Endpoints públicos do GenreResource
+                        .requestMatchers(HttpMethod.GET, "/api/genres").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/genres/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/genres/search").permitAll()
+
+                        // Swagger (também público)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+
+                        // O restante exige autenticação
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
