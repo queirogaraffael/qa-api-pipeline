@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PurchaseMapper {
 
-    @Mapping(source = "ticketId", target = "ticket.id")
-    @Mapping(source = "movieSessionId", target = "movieSession.id")
+    @Mapping(target = "ticket", ignore = true)
+    @Mapping(target = "movieSession", ignore = true)
     Purchase toEntity(PurchaseRequestDTO purchaseRequestDTO);
 
     @Mapping(source = "purchase.user.id", target = "userId")

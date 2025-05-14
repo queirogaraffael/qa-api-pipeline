@@ -11,10 +11,6 @@ import org.mapstruct.Mappings;
 public interface SessionMapper {
 
     @Mappings({
-            @Mapping(source = "movieSessionRequestDTO.showDate", target = "showDate"),
-            @Mapping(source = "movieSessionRequestDTO.startTime", target = "startTime"),
-            @Mapping(source = "movieSessionRequestDTO.endTime", target = "endTime"),
-            @Mapping(source = "movieSessionRequestDTO.basePrice", target = "basePrice"),
             @Mapping(target = "canceled", constant = "false"),
             @Mapping(target = "cinemaRoom", ignore = true),
             @Mapping(target = "movie", ignore = true),
@@ -25,11 +21,6 @@ public interface SessionMapper {
 
 
     @Mappings({
-            @Mapping(source = "movieSession.id", target = "id"),
-            @Mapping(source = "movieSession.showDate", target = "showDate"),
-            @Mapping(source = "movieSession.startTime", target = "startTime"),
-            @Mapping(source = "movieSession.endTime", target = "endTime"),
-            @Mapping(source = "movieSession.basePrice", target = "basePrice"),
             @Mapping(expression = "java(movieSession.getStatus())", target = "status"),
             @Mapping(source = "movieSession.cinemaRoom.id", target = "roomId"),
             @Mapping(source = "movieSession.movie.id", target = "movieId")

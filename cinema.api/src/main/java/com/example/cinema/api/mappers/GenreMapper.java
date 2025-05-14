@@ -13,7 +13,6 @@ import org.mapstruct.MappingTarget;
 public interface GenreMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "name", target = "name")
     Genre toEntity(GenreRequestDTO dto);
 
     GenreResponseDTO toDTO(Genre genre);

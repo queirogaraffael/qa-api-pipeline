@@ -18,22 +18,11 @@ public interface MovieMapper {
     @Mapping(target = "movieSessions", ignore = true)
     Movie toEntity(MovieRequestDTO dto);
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "releaseDate", source = "releaseDate")
-    @Mapping(target = "duration", source = "duration")
-    @Mapping(target = "imageUrl", source = "imageUrl")
     @BeanMapping(ignoreByDefault = true)
     MovieResponseDTO toDTO(Movie movie);
 
     MovieResponseDTO projectionToDTO(MovieResponseDTOProjection movie);
 
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "releaseDate", source = "releaseDate")
-    @Mapping(target = "duration", source = "duration")
-    @Mapping(target = "imageUrl", source = "imageUrl")
     @BeanMapping(ignoreByDefault = true)
     void updateEntityFromDTO(MovieUpdateDTO dto, @MappingTarget Movie movie);
 
