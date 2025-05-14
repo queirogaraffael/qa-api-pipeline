@@ -4,12 +4,15 @@ import com.example.cinema.api.dtos.tickets.TicketRequestDTO;
 import com.example.cinema.api.dtos.tickets.TicketResponseDTO;
 import com.example.cinema.api.entities.MovieSession;
 import com.example.cinema.api.entities.Ticket;
+import com.example.cinema.api.entities.User;
 import com.example.cinema.api.enums.UserCategory;
 import com.example.cinema.api.mappers.TicketMapper;
 import com.example.cinema.api.repositories.MovieSessionRepository;
 import com.example.cinema.api.repositories.TicketRepository;
 import com.example.cinema.api.ticketpricing.context.TicketPricingContext;
 import com.example.cinema.api.ticketpricing.strategy.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,18 +48,19 @@ public class TicketService {
         MovieSession movieSession = movieSessionRepository.findById(ticketRequestDTO.getMovieSessionId())
                 .orElseThrow(() -> new IllegalArgumentException("Sessão de filme não encontrada"));
 
-
         Ticket ticket = ticketMapper.toEntity(ticketRequestDTO);
 
         ticket.setMovieSession(movieSession);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        ticket.setUser(user);
+
         Ticket savedTicket = ticketRepository.save(ticket);
 
         return ticketMapper.toResponseDTO(savedTicket);
-
     }
-
-
 
 
     public BigDecimal calculateTicketPrice(UserCategory userCategory, MovieSession session) {
@@ -75,8 +79,5 @@ public class TicketService {
         TicketPricingContext context = new TicketPricingContext(strategy);
         return context.executeStrategy(session);
     }
-
-
-
 
 }
