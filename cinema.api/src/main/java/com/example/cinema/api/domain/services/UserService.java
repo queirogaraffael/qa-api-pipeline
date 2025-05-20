@@ -24,6 +24,14 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -33,7 +41,5 @@ public class UserService implements UserDetailsService {
 
         return (User) authentication.getPrincipal();
     }
-
-    // criar usuario
 
 }
