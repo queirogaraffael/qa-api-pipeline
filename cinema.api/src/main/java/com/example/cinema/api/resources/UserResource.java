@@ -1,8 +1,7 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.domain.entities.User;
 import com.example.cinema.api.domain.services.UserService;
-import com.example.cinema.api.domain.user.factories.UserFactory;
+import com.example.cinema.api.shared.dtos.user.UserCreatedResponseDTO;
 import com.example.cinema.api.shared.dtos.user.UserRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserResource {
 
     private UserService userService;
-    private BCryptPasswordEncoder passwordEncoder;
 
-    public UserResource(UserService userService, BCryptPasswordEncoder passwordEncoder) {
+    public UserResource(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Operation(summary = "Criar um novo usuário")
@@ -35,17 +31,11 @@ public class UserResource {
     @ApiResponse(responseCode = "409", description = "Usuário já existe")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     @PostMapping("/users")
-    public ResponseEntity<Void> register(@RequestBody @Valid UserRequestDTO data) {
-        if (userService.existsByUsername(data.getUsername())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
-        String encryptedPassword = passwordEncoder.encode(data.getPassword());
-        User newUser = UserFactory.createFromDto(data, encryptedPassword);
-
-        userService.createUser(newUser);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<UserCreatedResponseDTO> register(@RequestBody @Valid UserRequestDTO data) {
+        UserCreatedResponseDTO createdUser = userService.createUser(data);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdUser);
     }
 
 }
