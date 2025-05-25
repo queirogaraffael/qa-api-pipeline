@@ -12,6 +12,7 @@ import com.example.cinema.api.shared.dtos.movieSession.MovieSessionResponseDTO;
 import com.example.cinema.api.shared.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.shared.mappers.SessionMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MovieSessionService {
@@ -33,6 +34,7 @@ public class MovieSessionService {
         this.movieSessionValidator = movieSessionValidator;
     }
 
+    @Transactional
     public MovieSessionResponseDTO createSession(MovieSessionRequestDTO dto) {
         movieSessionValidator.validateSessionRequest(dto);
 
@@ -44,7 +46,7 @@ public class MovieSessionService {
 
         MovieSession movieSession = sessionMapper.toEntity(dto);
 
-        // associar movie e room a movieSession
+        // associa movie e room a movieSession
         movieSession.setMovie(movie);
         movieSession.setCinemaRoom(room);
 

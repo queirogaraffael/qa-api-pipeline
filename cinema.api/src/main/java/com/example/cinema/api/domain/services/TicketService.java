@@ -14,6 +14,7 @@ import com.example.cinema.api.domain.enums.UserCategory;
 import com.example.cinema.api.shared.mappers.TicketMapper;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -33,6 +34,7 @@ public class TicketService {
         this.userService = userService;
     }
 
+    @Transactional
     public TicketResponseDTO criarTickt(TicketRequestDTO ticketRequestDTO) {
 
         Integer roomCapacity = movieSessionRepository.findRoomCapacityByMovieSessionId(ticketRequestDTO.getMovieSessionId());

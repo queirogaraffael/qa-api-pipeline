@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -25,27 +26,32 @@ public class GenreService {
         this.genreMapper = genreMapper;
     }
 
+    @Transactional
     public GenreResponseDTO create(GenreRequestDTO dto) {
         Genre genero = genreMapper.toEntity(dto);
         return genreMapper.toDTO(genreRepository.save(genero));
     }
 
+    @Transactional(readOnly = true)
     public GenreResponseDTO findById(Long id) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gênero não encontrado"));
         return genreMapper.toDTO(genre);
     }
 
+    @Transactional(readOnly = true)
     public Page<GenreResponseDTO> findAllPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return genreRepository.findAllBy(pageable).map(genreMapper::toDTO);
     }
 
+    @Transactional(readOnly = true)
     public Page<GenreResponseDTO> findByNameContainingIgnoreCase(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return genreRepository.findByNameContainingIgnoreCase(name, pageable).map(genreMapper::toDTO);
     }
 
+    @Transactional
     public GenreResponseDTO update(Long id, GenreUpdateDTO dto) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gênero não encontrado"));

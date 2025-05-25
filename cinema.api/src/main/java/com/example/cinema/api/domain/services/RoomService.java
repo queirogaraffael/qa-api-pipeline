@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RoomService {
@@ -24,7 +25,7 @@ public class RoomService {
         this.roomMapper = roomMapper;
     }
 
-
+    @Transactional
     public RoomResponseDTO createRoom(RoomRequestDTO roomRequestDTO) {
 
         if(roomRepository.existsByNumber(roomRequestDTO.getNumber())) {
@@ -36,20 +37,20 @@ public class RoomService {
         return roomMapper.toDTO(room);
     }
 
-
+    @Transactional(readOnly = true)
     public RoomResponseDTO getRoomById(Long id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sala não encontrada"));
         return roomMapper.toDTO(room);
     }
 
-
+    @Transactional(readOnly = true)
     public Page<RoomResponseDTO> getAllRooms(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return roomRepository.findAllPaginado(pageable);
     }
 
-
+    @Transactional
     public RoomResponseDTO updateRoom(Long id, RoomRequestDTO roomRequestDTO) {
 
         Room room = roomRepository.findById(id)

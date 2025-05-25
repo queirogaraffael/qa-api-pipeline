@@ -14,6 +14,7 @@ import com.example.cinema.api.shared.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.shared.mappers.PurchaseMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class PurchaseService {
         this.eventPublisher = eventPublisher;
     }
 
+    @Transactional
     public PurchaseResponseDTO createPurchase(PurchaseRequestDTO purchaseRequestDTO) {
 
         Ticket ticket = ticketRepository.findById(purchaseRequestDTO.getTicketId()).orElseThrow(() -> new ResourceNotFoundException("Ticket nao encontrado"));

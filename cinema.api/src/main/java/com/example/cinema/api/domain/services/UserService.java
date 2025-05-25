@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -41,6 +42,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
+    @Transactional
     public UserCreatedResponseDTO createUser(UserRequestDTO data) {
 
         if (userRepository.existsByUsername(data.getUsername())) {
@@ -58,10 +60,12 @@ public class UserService implements UserDetailsService {
 
     }
 
+    @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
+    @Transactional(readOnly = true)
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -71,7 +75,5 @@ public class UserService implements UserDetailsService {
 
         return (User) authentication.getPrincipal();
     }
-
-
 
 }
