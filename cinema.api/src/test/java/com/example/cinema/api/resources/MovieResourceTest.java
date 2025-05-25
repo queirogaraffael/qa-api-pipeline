@@ -1,18 +1,25 @@
 package com.example.cinema.api.resources;
 
-import com.example.cinema.api.domain.repositories.GenreRepository;
-import com.example.cinema.api.domain.repositories.MovieRepository;
-import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
-import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
 import com.example.cinema.api.domain.entities.Genre;
 import com.example.cinema.api.domain.entities.Movie;
+import com.example.cinema.api.domain.entities.User;
+import com.example.cinema.api.domain.enums.UserCategory;
+import com.example.cinema.api.domain.enums.UserRole;
+import com.example.cinema.api.domain.repositories.GenreRepository;
+import com.example.cinema.api.domain.repositories.MovieRepository;
+import com.example.cinema.api.domain.repositories.UserRepository;
+import com.example.cinema.api.shared.dtos.login.UserLoginDTO;
+import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
+import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -39,10 +46,48 @@ class MovieResourceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private String jwtToken;
+
     @BeforeEach
-    void setUp() {
+    void setup() throws Exception {
         movieRepository.deleteAll();
         genreRepository.deleteAll();
+
+        User user = new User();
+        user.setUsername("usuarioexemplo");
+        user.setName("Nome Exemplo");
+        user.setEmail("email.exemplo@dominio.com");
+        user.setPassword(passwordEncoder.encode("senha123"));
+        user.setDataJoined(LocalDate.parse("2024-01-01"));
+        user.setBirthdate(LocalDate.parse("1990-01-01"));
+        user.setRole(UserRole.ADMIN);
+        user.setCategory(UserCategory.REGULAR);
+
+        userRepository.save(user);
+
+        var loginDTO = new UserLoginDTO("usuarioexemplo", "senha123");
+
+        var result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        jwtToken = objectMapper.readTree(response).get("token").asText();
+    }
+
+    @AfterEach
+    void tearDown() {
+        movieRepository.deleteAll();
+        genreRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -62,6 +107,7 @@ class MovieResourceTest {
         );
 
         mockMvc.perform(post("/api/movies/" + genre.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -217,6 +263,7 @@ class MovieResourceTest {
         );
 
         mockMvc.perform(put("/api/movies/" + movie.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
@@ -242,6 +289,7 @@ class MovieResourceTest {
         );
 
         mockMvc.perform(put("/api/movies/12345")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isNotFound());
@@ -270,6 +318,7 @@ class MovieResourceTest {
         );
 
         mockMvc.perform(put("/api/movies/" + movie.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isNotFound());

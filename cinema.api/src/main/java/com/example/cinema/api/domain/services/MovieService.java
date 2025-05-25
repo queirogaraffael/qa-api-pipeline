@@ -5,10 +5,8 @@ import com.example.cinema.api.domain.entities.Movie;
 import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
 import com.example.cinema.api.shared.dtos.movie.MovieResponseDTO;
 import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
-
 import com.example.cinema.api.shared.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.shared.mappers.MovieMapper;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
