@@ -30,7 +30,7 @@ public class UserResource {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "409", description = "Usuário já existe")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PostMapping("/users")
+    @PostMapping()
     public ResponseEntity<UserCreatedResponseDTO> register(@RequestBody @Valid UserRequestDTO data) {
         UserCreatedResponseDTO createdUser = userService.createUser(data);
         return ResponseEntity

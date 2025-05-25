@@ -37,7 +37,7 @@ public class MovieSession {
     @JoinColumn(name = "room_id")
     private Room cinemaRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movie_id")
     private Movie movie;
 

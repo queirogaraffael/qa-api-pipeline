@@ -16,7 +16,7 @@ public class UserRequestDTO{
         private String name;
         private String email;
         private String password;
-        private String dataJoined;
+        private LocalDate dataJoined;
         private LocalDate birthdate;
         private UserRole role;
         private UserCategory category;

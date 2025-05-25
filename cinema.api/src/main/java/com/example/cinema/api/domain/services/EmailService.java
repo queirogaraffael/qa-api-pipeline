@@ -9,7 +9,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
 @Service
 public class EmailService {
 
@@ -23,22 +22,6 @@ public class EmailService {
         this.from = from;
     }
 
-    public void sendWelcomeEmail(String to, String userName) {
-        sendSimpleMessage(
-                to,
-                "Bem‑vindo(a)",
-                String.format("Bem‑vindo(a) %s, seu cadastro foi concluído!", userName)
-        );
-    }
-
-    public void sendPasswordReset(String to, String newPassword) {
-        sendSimpleMessage(
-                to,
-                "Redefinição de senha",
-                String.format("Sua nova senha é: %s%nNão compartilhe com ninguém!", newPassword)
-        );
-    }
-
     private void sendSimpleMessage(String to, String subject, String text) {
         try {
             SimpleMailMessage msg = new SimpleMailMessage();
@@ -48,25 +31,49 @@ public class EmailService {
             msg.setText(text);
             mailSender.send(msg);
         } catch (MailException e) {
-            logger.error("Erro enviando e‑mail para {}", to, e);
-            throw new EmailSendException("Não foi possível enviar e‑mail para " + to, e);
+            logger.error("Erro enviando e-mail para {}", to, e);
+            throw new EmailSendException("Não foi possível enviar e-mail para " + to, e);
         }
     }
 
     public void sendPurchaseNotificationEmail(String to, Purchase purchase) {
-        String subject = "Compra Realizada com Sucesso!";
+        String subject = "Sua compra foi confirmada! 🍿🎬";
         String text = String.format(
-                "Olá %s,%n%nSua compra foi realizada com sucesso!%n%nDetalhes da compra:%n" +
-                        "Sessão de Filme: %s%n" +
-                        "Valor Total: %s%n" +
+                "Olá %s,%n%n" +
+                        "Sua compra para o filme \"%s\" foi realizada com sucesso!%n%n" +
+                        "Detalhes da compra:%n" +
+                        "Sessão: %s%n" +
+                        "Valor Total: R$ %.2f%n" +
                         "Data da Compra: %s%n%n" +
-                        "Obrigado por comprar conosco!",
+                        "Prepare a pipoca e aproveite o filme!%n%n" +
+                        "Obrigado por escolher nosso cinema online.%n" +
+                        "Até breve!%n%n" +
+                        "Atenciosamente,%n" +
+                        "Equipe Cinema Online",
                 purchase.getUser().getName(),
                 purchase.getMovieSession().getMovie().getTitle(),
+                purchase.getMovieSession().getStartTime(),
                 purchase.getTotalPrice(),
                 purchase.getPurchaseDate()
         );
 
         sendSimpleMessage(to, subject, text);
     }
+
+    public void sendWelcomeEmail(String to, String userName) {
+        String subject = "Bem-vindo(a) ao Cinema Online! 🎉";
+        String text = String.format(
+                "Olá %s,%n%n" +
+                        "Obrigado por se cadastrar no Cinema Online, seu portal para as melhores sessões!%n%n" +
+                        "Agora você pode comprar ingressos, acompanhar lançamentos e receber ofertas exclusivas.%n%n" +
+                        "Esperamos que aproveite muito a experiência.%n%n" +
+                        "Seja muito bem-vindo(a)!%n%n" +
+                        "Atenciosamente,%n" +
+                        "Equipe Cinema Online",
+                userName
+        );
+
+        sendSimpleMessage(to, subject, text);
+    }
 }
+

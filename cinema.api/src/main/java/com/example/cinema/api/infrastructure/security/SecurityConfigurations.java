@@ -46,6 +46,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/movies/genre/{genreId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/search/genre/{genreId}").permitAll()
 
+                        // Endpoints públicos do UserResource
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+
                         // Swagger (também público)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
 

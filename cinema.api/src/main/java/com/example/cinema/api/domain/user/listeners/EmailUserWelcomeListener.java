@@ -1,5 +1,6 @@
 package com.example.cinema.api.domain.user.listeners;
 
+import com.example.cinema.api.domain.services.EmailService;
 import com.example.cinema.api.domain.user.event.UserCreatedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -7,10 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailUserWelcomeListener {
 
+    private final EmailService emailService;
+
+    public EmailUserWelcomeListener(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     @EventListener
     public void handleUserCreated(UserCreatedEvent event) {
-        String email = event.getEmail();
-        String name = event.getName();
-        //System.out.println("📧 Enviando boas-vindas para " + name + " no e-mail " + email);
+        emailService.sendWelcomeEmail(event.getEmail(), event.getName());
+
     }
 }

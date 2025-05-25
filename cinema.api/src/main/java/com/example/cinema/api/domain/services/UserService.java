@@ -2,17 +2,14 @@ package com.example.cinema.api.domain.services;
 
 import com.example.cinema.api.domain.entities.User;
 import com.example.cinema.api.domain.repositories.UserRepository;
+import com.example.cinema.api.domain.user.event.UserCreatedEvent;
 import com.example.cinema.api.domain.user.factories.UserFactory;
-import com.example.cinema.api.infrastructure.security.TokenService;
-import com.example.cinema.api.shared.dtos.login.TokenResponseDTO;
-import com.example.cinema.api.shared.dtos.login.UserLoginDTO;
 import com.example.cinema.api.shared.dtos.user.UserCreatedResponseDTO;
 import com.example.cinema.api.shared.dtos.user.UserRequestDTO;
 import com.example.cinema.api.shared.exceptions.UserAlreadyExistsException;
 import com.example.cinema.api.shared.exceptions.UserNotAuthenticatedException;
 import com.example.cinema.api.shared.mappers.UserMapper;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,11 +24,16 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserService(UserRepository userRepository,
+                      PasswordEncoder passwordEncoder,
+                      UserMapper userMapper,
+                      ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -49,6 +51,8 @@ public class UserService implements UserDetailsService {
         User newUser = UserFactory.createFromDto(data, encryptedPassword);
 
         User user = userRepository.save(newUser);
+
+        eventPublisher.publishEvent(new UserCreatedEvent(this, user.getEmail(), user.getName()));
 
         return userMapper.toResponseDTO(user);
 

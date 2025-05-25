@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private String name;
     private String email;
     private String password;
-    private String dataJoined;
+    private LocalDate dataJoined;
     private LocalDate birthdate;
 
     @Enumerated(EnumType.STRING)
