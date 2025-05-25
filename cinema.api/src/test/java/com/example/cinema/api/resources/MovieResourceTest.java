@@ -1,11 +1,11 @@
 package com.example.cinema.api.resources;
 
+import com.example.cinema.api.domain.repositories.GenreRepository;
+import com.example.cinema.api.domain.repositories.MovieRepository;
 import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
 import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
 import com.example.cinema.api.domain.entities.Genre;
 import com.example.cinema.api.domain.entities.Movie;
-import com.example.cinema.api.infrastructure.repositories.GenreRepository;
-import com.example.cinema.api.infrastructure.repositories.MovieRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MovieResourceTest {
+class MovieResourceTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,13 +40,13 @@ public class MovieResourceTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         movieRepository.deleteAll();
         genreRepository.deleteAll();
     }
 
     @Test
-    public void createMovie_ReturnsCreated() throws Exception {
+    void createMovie_ReturnsCreated() throws Exception {
 
         Genre genero = new Genre();
         genero.setName("Action");
@@ -70,7 +70,7 @@ public class MovieResourceTest {
     }
 
     @Test
-    public void findById_ReturnsOk_WhenMovieExists() throws Exception {
+    void findById_ReturnsOk_WhenMovieExists() throws Exception {
         Genre genero = new Genre();
         genero.setName("Drama");
         Genre genre = genreRepository.save(genero);
@@ -92,7 +92,7 @@ public class MovieResourceTest {
 
 
     @Test
-    public void findAllPageable_ReturnsPagedResults() throws Exception {
+    void findAllPageable_ReturnsPagedResults() throws Exception {
         Genre genero = new Genre();
         genero.setName("Sci-Fi");
         Genre genre = genreRepository.save(genero);
@@ -117,7 +117,7 @@ public class MovieResourceTest {
 
 
     @Test
-    public void findByTitleContainingIgnoreCase_ReturnsMatching() throws Exception {
+    void findByTitleContainingIgnoreCase_ReturnsMatching() throws Exception {
         Genre genero = new Genre();
         genero.setName("Adventure");
         Genre genre = genreRepository.save(genero);
@@ -147,7 +147,7 @@ public class MovieResourceTest {
 
 
     @Test
-    public void findByGenreId_ReturnsGenreMovies() throws Exception {
+    void findByGenreId_ReturnsGenreMovies() throws Exception {
         Genre g1 = new Genre();
         g1.setName("Comedy");
         genreRepository.save(g1);
@@ -182,7 +182,7 @@ public class MovieResourceTest {
 
 
     @Test
-    public void findByTitleAndGenreId_ReturnsFiltered() throws Exception {
+    void findByTitleAndGenreId_ReturnsFiltered() throws Exception {
         Genre genre = genreRepository.save(new Genre(null, "Action", null));
         movieRepository.save(new Movie(null, "Avengers", "", LocalDate.now(), 143, "", genre, null));
         movieRepository.save(new Movie(null, "Avatar", "", LocalDate.now(), 162, "", genre, null));
@@ -194,7 +194,7 @@ public class MovieResourceTest {
 
 
     @Test
-    public void updateMovie_ReturnsOk_WhenSuccessful() throws Exception {
+    void updateMovie_ReturnsOk_WhenSuccessful() throws Exception {
         Genre oldGenre = genreRepository.save(new Genre(null, "Thriller", null));
         Genre newGenre = genreRepository.save(new Genre(null, "Mystery", null));
         Movie movie = movieRepository.save(new Movie(
@@ -225,13 +225,13 @@ public class MovieResourceTest {
     }
 
     @Test
-    public void findById_ReturnsNotFound_WhenMissing() throws Exception {
+    void findById_ReturnsNotFound_WhenMissing() throws Exception {
         mockMvc.perform(get("/api/movies/9999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void updateMovie_ReturnsNotFound_WhenMovieMissing() throws Exception {
+    void updateMovie_ReturnsNotFound_WhenMovieMissing() throws Exception {
         MovieUpdateDTO dto = new MovieUpdateDTO(
                 "Title",
                 "Desc",
@@ -248,7 +248,7 @@ public class MovieResourceTest {
     }
 
     @Test
-    public void updateMovie_ReturnsNotFound_WhenGenreMissing() throws Exception {
+    void updateMovie_ReturnsNotFound_WhenGenreMissing() throws Exception {
         Genre genre = genreRepository.save(new Genre(null, "Original", null));
         Movie movie = movieRepository.save(new Movie(
                 null,

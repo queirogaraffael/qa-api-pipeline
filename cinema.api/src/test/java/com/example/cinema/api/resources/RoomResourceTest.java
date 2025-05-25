@@ -1,9 +1,9 @@
 package com.example.cinema.api.resources;
 
 
-import com.example.cinema.api.shared.dtos.room.RoomRequestDTO;
 import com.example.cinema.api.domain.entities.Room;
-import com.example.cinema.api.infrastructure.repositories.RoomRepository;
+import com.example.cinema.api.domain.repositories.RoomRepository;
+import com.example.cinema.api.shared.dtos.room.RoomRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RoomResourceTest {
+class RoomResourceTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,12 +35,12 @@ public class RoomResourceTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         roomRepository.deleteAll();
     }
 
     @Test
-    public void createRoom_ReturnsCreated() throws Exception {
+    void createRoom_ReturnsCreated() throws Exception {
         RoomRequestDTO dto = new RoomRequestDTO("101", 2);
 
         mockMvc.perform(post("/api/rooms")
@@ -65,7 +65,7 @@ public class RoomResourceTest {
 
 
     @Test
-    public void getRoomById_ReturnsOk_WhenRoomExists() throws Exception {
+    void getRoomById_ReturnsOk_WhenRoomExists() throws Exception {
         Room saved = roomRepository.save(new Room(null, "202", 4, null));
 
         mockMvc.perform(get("/api/rooms/" + saved.getId()))
@@ -75,14 +75,14 @@ public class RoomResourceTest {
     }
 
     @Test
-    public void getRoomById_ReturnsNotFound_WhenMissing() throws Exception {
+    void getRoomById_ReturnsNotFound_WhenMissing() throws Exception {
         mockMvc.perform(get("/api/rooms/9999"))
                 .andExpect(status().isNotFound());
     }
 
 
     @Test
-    public void getAllRooms_ReturnsPagedResults() throws Exception {
+    void getAllRooms_ReturnsPagedResults() throws Exception {
         IntStream.rangeClosed(1, 3)
                 .forEach(i -> roomRepository.save(new Room(null, String.valueOf(300 + i), i, null)));
 
@@ -93,7 +93,7 @@ public class RoomResourceTest {
     }
 
     @Test
-    public void updateRoom_ReturnsOk_WhenSuccessful() throws Exception {
+    void updateRoom_ReturnsOk_WhenSuccessful() throws Exception {
         Room original = roomRepository.save(new Room(null, "401", 3, null));
         RoomRequestDTO dto = new RoomRequestDTO("402", 5);
 
@@ -106,7 +106,7 @@ public class RoomResourceTest {
     }
 
     @Test
-    public void updateRoom_ReturnsNotFound_WhenRoomMissing() throws Exception {
+    void updateRoom_ReturnsNotFound_WhenRoomMissing() throws Exception {
         RoomRequestDTO dto = new RoomRequestDTO("501", 2);
 
         mockMvc.perform(put("/api/rooms/12345")
@@ -116,7 +116,7 @@ public class RoomResourceTest {
     }
 
     @Test
-    public void updateRoom_ReturnsServerError_WhenDuplicateNumber() throws Exception {
+    void updateRoom_ReturnsServerError_WhenDuplicateNumber() throws Exception {
         roomRepository.save(new Room(null, "601", 2, null));
         Room second = roomRepository.save(new Room(null, "602", 3,null));
 

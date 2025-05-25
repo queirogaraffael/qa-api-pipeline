@@ -1,9 +1,14 @@
 package com.example.cinema.api.resources;
 
+import com.example.cinema.api.domain.entities.Genre;
+import com.example.cinema.api.domain.entities.User;
+import com.example.cinema.api.domain.enums.UserCategory;
+import com.example.cinema.api.domain.enums.UserRole;
+import com.example.cinema.api.domain.repositories.GenreRepository;
+import com.example.cinema.api.domain.repositories.UserRepository;
 import com.example.cinema.api.shared.dtos.genre.GenreRequestDTO;
 import com.example.cinema.api.shared.dtos.genre.GenreUpdateDTO;
-import com.example.cinema.api.domain.entities.Genre;
-import com.example.cinema.api.infrastructure.repositories.GenreRepository;
+import com.example.cinema.api.shared.dtos.login.UserLoginDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GenreResourceTest {
+class GenreResourceTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,9 +38,44 @@ public class GenreResourceTest {
     @Autowired
     private GenreRepository genreRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private String jwtToken;
+
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
+        // Limpa os dados anteriores
+        userRepository.deleteAll();
         genreRepository.deleteAll();
+
+        // Cria o usuário
+        User user = new User();
+        user.setUsername("usuarioexemplo");
+        user.setName("Nome Exemplo");
+        user.setEmail("email.exemplo@dominio.com");
+        user.setPassword(passwordEncoder.encode("senha123"));
+        user.setDataJoined(LocalDate.parse("2024-01-01"));
+        user.setBirthdate(LocalDate.parse("1990-01-01"));
+        user.setRole(UserRole.ADMIN);
+        user.setCategory(UserCategory.REGULAR);
+
+        userRepository.save(user);
+
+        // Autentica o usuário e obter o token JWT
+        var loginDTO = new UserLoginDTO("usuarioexemplo", "senha123");
+
+        var result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        jwtToken = objectMapper.readTree(response).get("token").asText();
     }
 
     @Test
@@ -40,15 +83,16 @@ public class GenreResourceTest {
         GenreRequestDTO genreRequestDTO = new GenreRequestDTO("Action");
 
         mockMvc.perform(post("/api/genres")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(genreRequestDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Action"));
     }
 
+
     @Test
     void testFindById() throws Exception {
-
         Genre novoGenero = new Genre();
         novoGenero.setName("Action");
 
@@ -97,8 +141,6 @@ public class GenreResourceTest {
     }
 
 
-
-
     @Test
     void testUpdateGenre() throws Exception {
         Genre genero = new Genre();
@@ -108,6 +150,7 @@ public class GenreResourceTest {
         GenreUpdateDTO genreUpdateDTO = new GenreUpdateDTO("Action Adventure");
 
         mockMvc.perform(put("/api/genres/{id}", generoSalvo.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(genreUpdateDTO)))
                 .andExpect(status().isOk())
@@ -128,6 +171,7 @@ public class GenreResourceTest {
         GenreUpdateDTO genreUpdateDTO = new GenreUpdateDTO("Adventure");
 
         mockMvc.perform(put("/api/genres/{id}", generoUmSalvo.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(genreUpdateDTO)))
                 .andExpect(status().isConflict());
