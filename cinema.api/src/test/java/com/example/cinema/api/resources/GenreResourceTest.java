@@ -48,38 +48,15 @@ class GenreResourceTest {
 
     @BeforeEach
     void setup() throws Exception {
-        // Limpa os dados anteriores
         userRepository.deleteAll();
         genreRepository.deleteAll();
-
-        // Cria o usuário
-        User user = new User();
-        user.setUsername("usuarioexemplo");
-        user.setName("Nome Exemplo");
-        user.setEmail("email.exemplo@dominio.com");
-        user.setPassword(passwordEncoder.encode("senha123"));
-        user.setDataJoined(LocalDate.parse("2024-01-01"));
-        user.setBirthdate(LocalDate.parse("1990-01-01"));
-        user.setRole(UserRole.ADMIN);
-        user.setCategory(UserCategory.REGULAR);
-
-        userRepository.save(user);
-
-        // Autentica o usuário e obter o token JWT
-        var loginDTO = new UserLoginDTO("usuarioexemplo", "senha123");
-
-        var result = mockMvc.perform(post("/api/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginDTO)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String response = result.getResponse().getContentAsString();
-        jwtToken = objectMapper.readTree(response).get("token").asText();
     }
 
     @Test
     void testCreateGenre() throws Exception {
+
+        jwtToken = authenticateAs(UserRole.ADMIN);
+
         GenreRequestDTO genreRequestDTO = new GenreRequestDTO("Action");
 
         mockMvc.perform(post("/api/genres")
@@ -93,6 +70,7 @@ class GenreResourceTest {
 
     @Test
     void testFindById() throws Exception {
+
         Genre novoGenero = new Genre();
         novoGenero.setName("Action");
 
@@ -106,6 +84,7 @@ class GenreResourceTest {
 
     @Test
     void testFindAllPageable() throws Exception {
+
         Genre generoUm = new Genre();
         generoUm.setName("Ação");
         genreRepository.save(generoUm);
@@ -123,6 +102,7 @@ class GenreResourceTest {
 
     @Test
     void testFindByNameContainingIgnoreCase() throws Exception {
+
         Genre generoUm = new Genre();
         generoUm.setName("Action");
         genreRepository.save(generoUm);
@@ -143,6 +123,9 @@ class GenreResourceTest {
 
     @Test
     void testUpdateGenre() throws Exception {
+
+        jwtToken = authenticateAs(UserRole.ADMIN);
+
         Genre genero = new Genre();
         genero.setName("Action");
         Genre generoSalvo = genreRepository.save(genero);
@@ -159,6 +142,7 @@ class GenreResourceTest {
 
     @Test
     void testUpdateGenreConflict() throws Exception {
+        jwtToken = authenticateAs(UserRole.ADMIN);
 
         Genre generoUm = new Genre();
         generoUm.setName("Action");
@@ -175,6 +159,34 @@ class GenreResourceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(genreUpdateDTO)))
                 .andExpect(status().isConflict());
+    }
+
+
+    private String authenticateAs(UserRole role) throws Exception {
+        String username = "user_" + role.name().toLowerCase();
+
+        User user = new User();
+        user.setUsername(username);
+        user.setName("Test " + role.name());
+        user.setEmail(username + "@test.com");
+        user.setPassword(passwordEncoder.encode("senha123"));
+        user.setDataJoined(LocalDate.parse("2024-01-01"));
+        user.setBirthdate(LocalDate.parse("1990-01-01"));
+        user.setRole(role);
+        user.setCategory(UserCategory.REGULAR);
+
+        userRepository.save(user);
+
+        var loginDTO = new UserLoginDTO(username, "senha123");
+
+        var result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        return objectMapper.readTree(response).get("token").asText();
     }
 
 }

@@ -12,7 +12,6 @@ import com.example.cinema.api.shared.dtos.login.UserLoginDTO;
 import com.example.cinema.api.shared.dtos.movie.MovieRequestDTO;
 import com.example.cinema.api.shared.dtos.movie.MovieUpdateDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,40 +57,13 @@ class MovieResourceTest {
     void setup() throws Exception {
         movieRepository.deleteAll();
         genreRepository.deleteAll();
-
-        User user = new User();
-        user.setUsername("usuarioexemplo");
-        user.setName("Nome Exemplo");
-        user.setEmail("email.exemplo@dominio.com");
-        user.setPassword(passwordEncoder.encode("senha123"));
-        user.setDataJoined(LocalDate.parse("2024-01-01"));
-        user.setBirthdate(LocalDate.parse("1990-01-01"));
-        user.setRole(UserRole.ADMIN);
-        user.setCategory(UserCategory.REGULAR);
-
-        userRepository.save(user);
-
-        var loginDTO = new UserLoginDTO("usuarioexemplo", "senha123");
-
-        var result = mockMvc.perform(post("/api/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginDTO)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String response = result.getResponse().getContentAsString();
-        jwtToken = objectMapper.readTree(response).get("token").asText();
-    }
-
-    @AfterEach
-    void tearDown() {
-        movieRepository.deleteAll();
-        genreRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
     void createMovie_ReturnsCreated() throws Exception {
+
+        jwtToken = authenticateAs(UserRole.ADMIN);
 
         Genre genero = new Genre();
         genero.setName("Action");
@@ -241,6 +213,9 @@ class MovieResourceTest {
 
     @Test
     void updateMovie_ReturnsOk_WhenSuccessful() throws Exception {
+
+        jwtToken = authenticateAs(UserRole.ADMIN);
+
         Genre oldGenre = genreRepository.save(new Genre(null, "Thriller", null));
         Genre newGenre = genreRepository.save(new Genre(null, "Mystery", null));
         Movie movie = movieRepository.save(new Movie(
@@ -279,6 +254,9 @@ class MovieResourceTest {
 
     @Test
     void updateMovie_ReturnsNotFound_WhenMovieMissing() throws Exception {
+
+        jwtToken = authenticateAs(UserRole.ADMIN);
+
         MovieUpdateDTO dto = new MovieUpdateDTO(
                 "Title",
                 "Desc",
@@ -297,6 +275,9 @@ class MovieResourceTest {
 
     @Test
     void updateMovie_ReturnsNotFound_WhenGenreMissing() throws Exception {
+
+        jwtToken = authenticateAs(UserRole.ADMIN);
+
         Genre genre = genreRepository.save(new Genre(null, "Original", null));
         Movie movie = movieRepository.save(new Movie(
                 null,
@@ -322,5 +303,32 @@ class MovieResourceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isNotFound());
+    }
+
+    private String authenticateAs(UserRole role) throws Exception {
+        String username = "user_" + role.name().toLowerCase();
+
+        User user = new User();
+        user.setUsername(username);
+        user.setName("Test " + role.name());
+        user.setEmail(username + "@test.com");
+        user.setPassword(passwordEncoder.encode("senha123"));
+        user.setDataJoined(LocalDate.parse("2024-01-01"));
+        user.setBirthdate(LocalDate.parse("1990-01-01"));
+        user.setRole(role);
+        user.setCategory(UserCategory.REGULAR);
+
+        userRepository.save(user);
+
+        var loginDTO = new UserLoginDTO(username, "senha123");
+
+        var result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        return objectMapper.readTree(response).get("token").asText();
     }
 }
