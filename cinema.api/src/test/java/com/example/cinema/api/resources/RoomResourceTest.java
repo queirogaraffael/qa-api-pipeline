@@ -2,17 +2,25 @@ package com.example.cinema.api.resources;
 
 
 import com.example.cinema.api.domain.entities.Room;
+import com.example.cinema.api.domain.entities.User;
+import com.example.cinema.api.domain.enums.UserCategory;
+import com.example.cinema.api.domain.enums.UserRole;
 import com.example.cinema.api.domain.repositories.RoomRepository;
+import com.example.cinema.api.domain.repositories.UserRepository;
+import com.example.cinema.api.shared.dtos.login.UserLoginDTO;
 import com.example.cinema.api.shared.dtos.room.RoomRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -34,9 +42,48 @@ class RoomResourceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private String jwtToken;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         roomRepository.deleteAll();
+        userRepository.deleteAll();
+
+        User user = new User();
+        user.setUsername("usuarioexemplo");
+        user.setName("Nome Exemplo");
+        user.setEmail("email.exemplo@dominio.com");
+        user.setPassword(passwordEncoder.encode("senha123"));
+        user.setDataJoined(LocalDate.parse("2024-01-01"));
+        user.setBirthdate(LocalDate.parse("1990-01-01"));
+        user.setRole(UserRole.ADMIN);
+        user.setCategory(UserCategory.REGULAR);
+
+        userRepository.save(user);
+
+        var loginDTO = new UserLoginDTO("usuarioexemplo", "senha123");
+
+        var result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        jwtToken = objectMapper.readTree(response).get("token").asText();
+
+    }
+
+    @AfterEach
+    void tearDown() {
+        roomRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -44,6 +91,7 @@ class RoomResourceTest {
         RoomRequestDTO dto = new RoomRequestDTO("101", 2);
 
         mockMvc.perform(post("/api/rooms")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -58,6 +106,7 @@ class RoomResourceTest {
         RoomRequestDTO room = new RoomRequestDTO("101", 5);
 
         mockMvc.perform(post("/api/rooms")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(room)))
                 .andExpect(status().isConflict());
@@ -68,7 +117,7 @@ class RoomResourceTest {
     void getRoomById_ReturnsOk_WhenRoomExists() throws Exception {
         Room saved = roomRepository.save(new Room(null, "202", 4, null));
 
-        mockMvc.perform(get("/api/rooms/" + saved.getId()))
+        mockMvc.perform(get("/api/rooms/" + saved.getId()).header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(saved.getId().intValue())))
                 .andExpect(jsonPath("$.number", is("202")));
@@ -76,7 +125,7 @@ class RoomResourceTest {
 
     @Test
     void getRoomById_ReturnsNotFound_WhenMissing() throws Exception {
-        mockMvc.perform(get("/api/rooms/9999"))
+        mockMvc.perform(get("/api/rooms/9999").header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNotFound());
     }
 
@@ -86,7 +135,7 @@ class RoomResourceTest {
         IntStream.rangeClosed(1, 3)
                 .forEach(i -> roomRepository.save(new Room(null, String.valueOf(300 + i), i, null)));
 
-        mockMvc.perform(get("/api/rooms?page=0&size=2"))
+        mockMvc.perform(get("/api/rooms?page=0&size=2").header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(2)))
                 .andExpect(jsonPath("$.totalElements", is(3)));
@@ -98,6 +147,7 @@ class RoomResourceTest {
         RoomRequestDTO dto = new RoomRequestDTO("402", 5);
 
         mockMvc.perform(put("/api/rooms/" + original.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
@@ -110,6 +160,7 @@ class RoomResourceTest {
         RoomRequestDTO dto = new RoomRequestDTO("501", 2);
 
         mockMvc.perform(put("/api/rooms/12345")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isNotFound());
@@ -118,11 +169,12 @@ class RoomResourceTest {
     @Test
     void updateRoom_ReturnsServerError_WhenDuplicateNumber() throws Exception {
         roomRepository.save(new Room(null, "601", 2, null));
-        Room second = roomRepository.save(new Room(null, "602", 3,null));
+        Room second = roomRepository.save(new Room(null, "602", 3, null));
 
         RoomRequestDTO dto = new RoomRequestDTO("601", 3);
 
         mockMvc.perform(put("/api/rooms/" + second.getId())
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isConflict());
