@@ -44,6 +44,8 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             logger.warn("Erro na autenticação: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Falha na autenticação");
+            return;
         }
         filterChain.doFilter(request, response);
     }

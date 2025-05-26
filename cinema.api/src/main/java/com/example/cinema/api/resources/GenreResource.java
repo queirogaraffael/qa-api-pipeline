@@ -12,11 +12,13 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Gêneros")
 @RestController
 @RequestMapping("/api/genres")
+@EnableMethodSecurity
 public class GenreResource {
 
     private final GenreService genreService;
