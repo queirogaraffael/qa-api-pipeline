@@ -28,12 +28,11 @@ public class TicketResource {
         this.ticketService = ticketService;
     }
 
-
     @Operation(summary = "Criar novo ingresso", description = "Cria um novo ingresso")
     @ApiResponse(responseCode = "201", description = "Ingresso criado com sucesso")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<TicketResponseDTO> createTicket(@RequestBody TicketRequestDTO ticketDTO) {

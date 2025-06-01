@@ -1,8 +1,8 @@
 package com.example.cinema.api.shared.mappers;
 
+import com.example.cinema.api.domain.entities.Ticket;
 import com.example.cinema.api.shared.dtos.tickets.TicketRequestDTO;
 import com.example.cinema.api.shared.dtos.tickets.TicketResponseDTO;
-import com.example.cinema.api.domain.entities.Ticket;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 public interface TicketMapper {
 
     Ticket toEntity(TicketRequestDTO ticketRequestDTO);
-
 
     TicketResponseDTO toResponseDTO(Ticket ticket);
 }

@@ -3,16 +3,15 @@ package com.example.cinema.api.domain.services;
 import com.example.cinema.api.domain.entities.MovieSession;
 import com.example.cinema.api.domain.entities.Ticket;
 import com.example.cinema.api.domain.entities.User;
+import com.example.cinema.api.domain.enums.UserCategory;
 import com.example.cinema.api.domain.pricing.context.TicketPricingContext;
 import com.example.cinema.api.domain.pricing.strategy.*;
 import com.example.cinema.api.domain.repositories.MovieSessionRepository;
 import com.example.cinema.api.domain.repositories.TicketRepository;
 import com.example.cinema.api.shared.dtos.tickets.TicketRequestDTO;
 import com.example.cinema.api.shared.dtos.tickets.TicketResponseDTO;
-
-import com.example.cinema.api.domain.enums.UserCategory;
+import com.example.cinema.api.shared.exceptions.ResourceNotFoundException;
 import com.example.cinema.api.shared.mappers.TicketMapper;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +36,9 @@ public class TicketService {
     @Transactional
     public TicketResponseDTO criarTickt(TicketRequestDTO ticketRequestDTO) {
 
+        MovieSession movieSession = movieSessionRepository.findById(ticketRequestDTO.getMovieSessionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Sessão de filme não encontrada"));
+
         Integer roomCapacity = movieSessionRepository.findRoomCapacityByMovieSessionId(ticketRequestDTO.getMovieSessionId());
 
         if (ticketRequestDTO.getSeatNumber() > roomCapacity) {
@@ -48,9 +50,6 @@ public class TicketService {
         if (isSeatTaken) {
             throw new IllegalArgumentException("Assento já reservado");
         }
-
-        MovieSession movieSession = movieSessionRepository.findById(ticketRequestDTO.getMovieSessionId())
-                .orElseThrow(() -> new IllegalArgumentException("Sessão de filme não encontrada"));
 
         Ticket ticket = ticketMapper.toEntity(ticketRequestDTO);
 
