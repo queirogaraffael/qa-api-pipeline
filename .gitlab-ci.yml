@@ -1,0 +1,20 @@
+stages:
+  - build
+  - deploy_teste
+
+build_image:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+  script:
+    - echo "Fazendo build da imagem Docker..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - IMAGE_TAG=$CI_PIPELINE_ID 
+    - docker build -t raffaelqueiroga/nestjs-cinema:$IMAGE_TAG .
+    - docker push raffaelqueiroga/nestjs-cinema:$IMAGE_TAG
+    - docker tag raffaelqueiroga/nestjs-cinema:$IMAGE_TAG raffaelqueiroga/nestjs-cinema:latest
+    - docker push raffaelqueiroga/nestjs-cinema:latest
