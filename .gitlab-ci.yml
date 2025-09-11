@@ -1,100 +1,135 @@
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'
 
 stages:
-  - test_api_unit_integration
   - build
-  - provision_infrastructure
-  - setup_test_env
+  - test
+  - quality
+  - build_docker_image
+  - deploy_test
   - test_postman
   - test_k6
-  - cleanup
-  - deploy
 
-unit_and_integration_tests: 
-  stage: test_api_unit_integration
-  image: maven:3.8.6-openjdk-17
-  script:
-    - cd cinema-api
-    - mvn verify
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
 
-build_image:
+build:
   stage: build
+  tags:
+    - docker
+  image: node:20
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+# Job de testes unitários e E2E
+test:
+  stage: test
+  tags:
+    - docker
+  image: node:20
+  dependencies:
+    - build
+  script:
+    - npm test -- --coverage
+  artifacts:
+    paths:
+      - coverage/
+    expire_in: 1 hour
+
+# Job de análise no SonarCloud
+sonarcloud-check:
+  stage: quality
+  tags:
+    - docker
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  dependencies:
+    - test
+  script:
+    - >
+      sonar-scanner
+      -Dsonar.login=$SONAR_TOKEN
+      -Dsonar.projectKey=$CI_PROJECT_PATH_SLUG
+
+
+verificar-compose:
+  stage: quality
+  tags:
+    - shell
+  script:
+    - docker-compose config -q
+    - echo $?
+
+build_docker_image:
+  stage: build_docker_image
   needs:
-    - unit_and_integration_tests
+    - sonarcloud-check
+    - verificar-compose
   image: docker:24
   services:
     - docker:24-dind
   variables:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
+    IMAGE_NAME: raffaelqueiroga/cinema-api
   script:
     - echo "Fazendo build da imagem Docker..."
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
     - IMAGE_TAG=$CI_PIPELINE_ID 
-    - docker build -t raffaelqueiroga/cinema-api:$IMAGE_TAG .
-    - docker push raffaelqueiroga/cinema-api:$IMAGE_TAG
-    - docker tag raffaelqueiroga/cinema-api:$IMAGE_TAG raffaelqueiroga/cinema-api:latest
-    - docker push raffaelqueiroga/cinema-api:latest
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+    - docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
+    - docker push $IMAGE_NAME:latest
     - echo "Imagem Docker construída e enviada para o Docker Hub."
 
 
-provision_infrastructure:
-  stage: provision_infrastructure
-  image: hashicorp/terraform:1.6.6
-  script:
-    - echo "Provisionando infraestrutura com Terraform..."
-
-    - echo "Acesaando o diretório do Terraform..."
-    - cd infra/terraform
-
-    - echo ""Configurando o backend do Terraform..."
-    - terraform init
-
-    - echo ""Aplicando o Terraform..."
-    - terraform apply -auto-approve
-
-    - echo "Infraestrutura provisionada com sucesso!"
-  variables:
-    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-
-
-setup_test_env:
-  stage: setup_test_env
+deploy_to_test:
+  stage: deploy_test
   needs:
-    - build_image
+    - build_docker_image
+  tags:
+    - shell
   script:
     - set -e
 
+    - echo "Configurando chave SSH..."
     - echo "$PRIVATE_KEY" > my_key_pair.pem
     - chmod 600 my_key_pair.pem
     - mkdir -p ~/.ssh
+    - ssh-keyscan -H "$TEST_EC2_SSH_TARGET" >> ~/.ssh/known_hosts
 
-    - echo "Adicionando host ao known_hosts..."
-    - ssh-keyscan -H ec2-user@"$TEST_EC2_SSH_TARGET" >> ~/.ssh/known_hosts || { echo "Erro ao adicionar host"; exit 1; }
-
-    - echo "Criando diretório remoto e copiando arquivos..."
-    - ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" "mkdir -p /home/ec2-user/cinema-api" || { echo "Erro ao criar diretório remoto"; exit 1; }
-
-    - scp -i my_key_pair.pem docker-compose.yml ec2-user@"$TEST_EC2_SSH_TARGET":/home/ec2-user/cinema-api || { echo "Erro ao copiar docker-compose.yml"; exit 1; }
-
-    - echo "Executando comandos remotos..."
     - |
-      ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << 'EOF'
-        set -e  # <- Garante que falhas aqui dentro abortem
-
-        echo "Limpando Docker..."
+      ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << EOF
+        set -e
+        echo "Limpando ambiente Docker e diretório remoto..."
         docker system prune -a --volumes -f
-
+        rm -rf /home/ec2-user/cinema-api
+        echo "Criando diretório remoto..."
+        mkdir -p /home/ec2-user/cinema-api
         echo "Logando no Docker Hub..."
         echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+        echo "Baixando a imagem mais recente..."
+        docker pull raffaelqueiroga/cinema-api:latest
+      EOF
 
-        echo "Puxando imagem Docker..."
-        docker pull nome-da-imagem:latest
+    - echo "Copiando docker-compose.yml..."
+    - scp -i my_key_pair.pem docker-compose.yml ec2-user@"$TEST_EC2_SSH_TARGET":/home/ec2-user/cinema-api/docker-compose.yml
+
+    - |
+      ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << EOF
+        set -e
 
         echo "Subindo containers com Docker Compose..."
         cd /home/ec2-user/cinema-api
@@ -103,10 +138,9 @@ setup_test_env:
         echo "Aguardando containers ficarem saudáveis..."
         timeout=60
         while [ \$timeout -gt 0 ]; do
-          unhealthy=\$(docker ps --filter "health=unhealthy" --format '{{.Names}}')
-          starting=\$(docker ps --filter "health=starting" --format '{{.Names}}')
+          unhealthy_or_starting=\$(docker ps --filter "health=unhealthy" --filter "health=starting" --format '{{.Names}}')
 
-          if [ -z "\$unhealthy" ] && [ -z "\$starting" ]; then
+          if [ -z "\$unhealthy_or_starting" ]; then
             echo "Todos os containers estão saudáveis!"
             break
           fi
@@ -122,8 +156,8 @@ setup_test_env:
           exit 1
         fi
       EOF
-    
-    - echo "Salvando IP"
+
+    - echo "Salvando IP..."
     - mkdir -p artifacts
     - echo "$TEST_EC2_SSH_TARGET" > artifacts/ec2_ip.txt
   artifacts:
@@ -134,7 +168,7 @@ setup_test_env:
 test_postman:
   stage: test_postman
   needs:
-    - setup_test_env
+    - deploy_test
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: postman/newman
@@ -147,57 +181,10 @@ test_postman:
 test_k6:
   stage: test_k6
   needs:
-    - setup_test_env
+    - deploy_test
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: grafana/k6
   script:
     - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-001\ -\ Test\ Create\ Movies.js
     - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-002\ -\ Test\ List\ Movies.js
-
-
-cleanup_env:
-  stage: cleanup
-  needs:
-    - test_postman
-    - test_k6
-  script:
-    - set -e
-
-    - echo "$PRIVATE_KEY" > my_key_pair.pem
-    - chmod 600 my_key_pair.pem
-    - mkdir -p ~/.ssh
-
-    - echo "Adicionando host ao known_hosts..."
-    - ssh-keyscan -H ec2-user@"$TEST_EC2_SSH_TARGET" >> ~/.ssh/known_hosts || { echo "Erro ao adicionar host"; exit 1; }
-
-    - echo "Conectando à EC2 e limpando Docker..."
-    - |
-      ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << 'EOF'
-        set -e
-        echo "Parando todos os containers..."
-        docker stop \$(docker ps -aq) || true
-
-        echo "Removendo todos os containers..."
-        docker rm \$(docker ps -aq) || true
-
-        echo "Removendo todas as imagens..."
-        docker rmi \$(docker images -aq) || true
-
-        echo "Removendo todos os volumes..."
-        docker volume prune -f || true
-
-        echo "Removendo todas as redes não utilizadas..."
-        docker network prune -f || true
-
-        echo "Ambiente Docker limpo com sucesso!"
-      EOF
-
-deploy:
-  stage: deploy
-  needs:
-    - test_postman
-    - test_k6
-  script:
-    - aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment
-  when: manual 
