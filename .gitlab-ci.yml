@@ -168,7 +168,7 @@ deploy_to_test:
 test_postman:
   stage: test_postman
   needs:
-    - deploy_test
+    - deploy_to_test
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: postman/newman
@@ -181,7 +181,7 @@ test_postman:
 test_k6:
   stage: test_k6
   needs:
-    - deploy_test
+    - deploy_to_test
   before_script:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: grafana/k6
