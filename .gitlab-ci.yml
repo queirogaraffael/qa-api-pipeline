@@ -28,7 +28,7 @@ build:
       - node_modules/
     expire_in: 1 hour
 
-# Job de testes unitários e E2E
+
 test:
   stage: test
   tags:
@@ -43,7 +43,7 @@ test:
       - coverage/
     expire_in: 1 hour
 
-# Job de análise no SonarCloud
+
 sonarcloud-check:
   stage: quality
   tags:
