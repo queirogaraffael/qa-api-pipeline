@@ -65,8 +65,10 @@ Esse projeto visa não apenas garantir que a API funcione corretamente, mas tamb
 - **`nestjs-cinema/`**: Contém o código da API. A API foi construída com **NestJS** e oferece suporte a operações CRUD para:
     - Filmes (Movies)
     - Ingressos (Tickets)
-- **`.gitlab-ci.yml`**: Configuração de pipeline CI/CD para automatização dos testes.
-- **`docker-compose.yml`**: Arquivo Docker Compose para levantar a API e suas dependências.
+- **`Dockerfile`**: Arquivo usado para criar uma imagem Docker da aplicação. Ele usa um processo de construção em múltiplas etapas com duas fases: build e runtime. A fase build instala as dependências do npm, enquanto a fase runtime copia o aplicativo já construído e o executa na porta 3000.  
+- **`.gitlab-ci.yml`**: Configuração de pipeline de CI/CD para automatizar os testes e fazer o deploy da aplicação na AWS.  
+- **`sonar-project.properties`**: Arquivo que configura a análise de qualidade de código do projeto com o SonarCloud. Define o nome do projeto (`nestjs-cinema`), a versão (`1.0`) e a organização (`cinema-compass`). Também especifica os diretórios de código fonte (`src`), de testes (`test`), e os caminhos para relatórios de cobertura (`coverage/lcov.info`) e do ESLint (`eslint-report.json`).  
+- **`docker-compose.yml`**: Arquivo Docker Compose para levantar a API e suas dependências.  
 
 ---
 
