@@ -128,3 +128,11 @@ O script acessa a máquina EC2 remotamente com o usuário `ec2-user`. Antes do p
 <p>Meu principal interesse está no desenvolvimento em <strong>Java</strong>, linguagem que estudo há mais de dois anos, com foco em <strong>back-end</strong> e <strong>engenharia de software</strong>. Fiz estágio na <strong>Compass.UOL</strong>, onde trabalhi em projetos voltados para <strong>AWS</strong> e <strong>Performance for Software Quality Engineering</strong>.</p>
 
 <p>Sou de uma cidade do interior, perto de <strong>Campina Grande</strong>, e sou apaixonado por andar a cavalo e pela leitura. Além disso, possuo um bom nível de <strong>inglês</strong> e <strong>alemão</strong>, o que me permite explorar conhecimentos em diferentes idiomas.</p>
+
+---
+
+## Análise Arquitetural do Pipeline
+
+Se você tem interesse em entender o raciocínio técnico por trás desta automação, escrevi um **ADR (Architecture Decision Record)** detalhando as decisões, os trade-offs e o contexto que me levou a utilizar uma única instância EC2 como ambiente de execução simulado.
+
+🔗 **[Ler o ADR: Pipeline de CI/CD com EC2 como Ambiente Pseudo-Staging](https://raffaelqueiroga.notion.site/ADR-001-Pipeline-de-CI-CD-com-EC2-como-Ambiente-Pseudo-Staging-31e4a077442a801a9ad3c34bdd874beb?source=copy_link)**
