@@ -1,153 +1,130 @@
+# QA API Automation Pipeline
 
-# Visão Geral do Projeto
+Este repositório contém a suíte de testes e automações desenvolvida como desafio final do meu estágio na **Compass.UOL** como *Software Quality Engineer Intern* (Setembro 2024 - Fevereiro 2025).
 
-Este projeto é centrado na API **nestjs-cinema**, que gerencia filmes e ingressos. O objetivo principal foi criar e executar uma ampla gama de testes, garantindo a confiabilidade e robustez da API.
+> **Aviso Importante:** 
+> - **Projeto Original:** O pipeline e código originais com todo o histórico de execuções de CI/CD encontram-se no GitLab: [api-automation](https://gitlab.com/raffaelqueiroga/cinema-api-automation).
+> - **API Externa:** Este repositório foca **exclusivamente na automação de QA, CI/CD e testes**. A API testada (alocada na pasta `backend/` para facilitar a execução local dos testes) é externa e desenvolvida por terceiros. O código original da API pode ser encontrado em: [nestjs-api](https://github.com/juniorschmitz/nestjs-cinema/tree/main/src).
 
-O projeto inclui:
+## Visão Geral do Projeto
 
-1. Desenvolvimento de **testes automatizados** para a API utilizando diversas ferramentas e frameworks.
-2. Identificação de **bugs** e proposição de melhorias contínuas.
-3. **Documentação** de processos de planejamento e execução de testes, garantindo uma abordagem transparente e reutilizável.
-4. Criação de uma **pipeline CI/CD** para automatizar a execução dos testes e garantir a integração contínua do código com a API.
-5. **Testes de performance** para medir a escalabilidade e o desempenho da API, com ênfase em resposta rápida e uso eficiente de recursos.
-6. **Refatoração e otimização** da API durante os testes, visando melhorias no código e na estrutura para maior eficiência e manutenção a longo prazo.
-7. **Monitoramento e análises** dos testes ao longo do desenvolvimento, com insights sobre a saúde geral da API e recomendações de práticas de melhoria.
+O objetivo principal deste projeto foi implementar uma cultura de testes robusta e uma esteira de integração contínua (CI/CD) para uma API de gerenciamento de cinemas (filmes e ingressos). O foco esteve na garantia de qualidade, confiabilidade, análise estática e escalabilidade.
 
----
+Os pilares da entrega foram:
+- **Testes Automatizados:** Desenvolvimento de automação de testes funcionais e de contrato.
+- **Testes de Performance:** Avaliação de escalabilidade, resposta rápida e uso eficiente de recursos.
+- **Pipeline CI/CD:** Automação da execução de testes, análise de qualidade e deploy contínuo na nuvem (AWS EC2).
+- **Qualidade de Código:** Identificação de débitos técnicos e inspeção contínua através de análise estática.
+- **Documentação de QA:** Criação de matrizes de rastreabilidade, planos de teste, evidências de bugs e propostas de melhorias contínuas.
 
-Esse projeto visa não apenas garantir que a API funcione corretamente, mas também melhorar constantemente sua robustez e desempenho, implementando uma cultura de testes e integração contínua no ciclo de desenvolvimento.
+## Ferramentas e Tecnologias
 
-## Tecnologias Utilizadas
-- **Node.js** para o desenvolvimento da API.
-- **Postman** e **Newman** para automação de testes de API.
-- **k6** para testes de performance.
-- **GitLab CI/CD** para automação da pipeline de integração contínua.
+A stack de testes e infraestrutura foi cuidadosamente selecionada para simular um ambiente corporativo de alta performance:
 
-## Objetivos Futuros
-- Expandir a cobertura de testes para incluir testes de usabilidade e testes de ponta a ponta.
-- Dar continuidade ao desenvolvimento da API
-- Implementar monitoramento em tempo real para detectar falhas ou problemas durante a execução da API em produção.
-- Melhorar a documentação dos testes e processos, tornando-os mais acessíveis para futuros desenvolvedores.
+- **Postman & Newman:** Automação de testes de API funcionais.
+- **k6 (Grafana):** Automação e execução de testes de carga e performance.
+- **GitLab CI/CD:** Orquestração de toda a pipeline (build, análise estática, build Docker, deploy na EC2 e execução de testes automatizados).
+- **Docker & Docker Compose:** Padronização e conteinerização do ambiente de QA e da API.
+- **SonarCloud / SonarQube:** Análise estática de código (SAST) para cobertura de testes e identificação de <i>code smells</i> e bugs de segurança.
+- **Node.js:** Ambiente de execução base para a API e scripts de teste.
 
+## Estrutura do Projeto
 
+- **`docs/`**: Contém a documentação de QA:
+    - Evidências de bugs e sugestões de melhorias.
+    - Mapas mentais de planejamento.
+    - Testes Funcionais em BDD/Gherkin.
+    - User Stories, Plano de Teste e Matriz de Rastreabilidade.
+    - Relatórios de Testes Exploratórios e Performance.
+- **`tests/`**: Diretório principal da suíte de automação:
+    - **`k6/`**: Scripts em JavaScript e relatórios para os testes de performance.
+    - **`postman/`**: Coleções, variáveis de ambiente e relatórios gerados via Newman.
+- **`backend/`**: Código-fonte da API (fornecida para execução local dos testes).
+- **`Dockerfile` e `docker-compose.yml`**: Infraestrutura como código para levantamento da API.
+- **`.gitlab-ci.yml`**: Configuração da pipeline de CI/CD.
+- **`sonar-project.properties`**: Configuração da análise de qualidade no SonarCloud.
 
-##  Estrutura do projeto
-### Diretório Raiz
-
-- **`Docs/`**: Contém a documentação do projeto:
-    - **`Evidências Bug e Melhorias/`**: Relatórios detalhados de bugs e sugestões de melhorias.
-    - **`Mapas Mentais/`**: Mapas mentais usados no planejamento e análise do projeto.
-    - **`Testes Funcionais/Gherkin/`**: Testes funcionais descritos em formato Gherkin.
-    - **`User Stories/`**: Contém as User Stories para as funcionalidades da API.
-    - **`Matriz de Rastreabilidade.md`**: Documento para rastrear a cobertura de funcionalidades.
-    - **`Plano de Teste.md`**: Documento de planejamento de testes.
-    - **`Testes Exploratorios.md`** : Relatórios de testes exploratórios realizados.
-    - **`Testes Performance.md`**: Documentação sobre testes de performance.
-    - **`Bugs.md`**: Bugs encontrados na API
-    - **`Melhorias.md`**: Melhorias sugeridas pra API.
-
-
-- **`Tests/`**: Diretório para arquivos relacionados a testes, dividido em:
-    - **`k6/`**: Testes de performance usando K6.
-        - **`cinema-performance/`**:
-            - **`tests/`**: Contém os códigos de testes:
-                - **`movies/`**:
-                    - `PF-001 - Test Create Movies.js`: Teste de criação de filmes.
-                    - `PF-002 - Test List Movies.js`: Teste de listagem de filmes.
-                - **`tickets/`**:
-                    - `PF-003 - Ticket Life Cycle Test.js`: Teste do ciclo de vida de ingressos.
-                    - `PF-004 - Tickets Performance Test.js`: Teste de performance de ingressos.
-            - **`relatorios/`**: Contém os relatórios gerados pelos testes de performance.
-    - **`postman/`**: Testes de API usando Postman.
-        - **`collection/`**: Contém as coleção de testes do Postman.
-        - **`environment/`**: Contém io arquivo de variáveis de testes do Postman.
-        - **`relatorios/`**: Relatórios gerados pelos testes no Postman.
-- **`nestjs-cinema/`**: Contém o código da API. A API foi construída com **NestJS** e oferece suporte a operações CRUD para:
-    - Filmes (Movies)
-    - Ingressos (Tickets)
-- **`Dockerfile`**: Arquivo usado para criar uma imagem Docker da aplicação. Ele usa um processo de construção em múltiplas etapas com duas fases: build e runtime. A fase build instala as dependências do npm, enquanto a fase runtime copia o aplicativo já construído e o executa na porta 3000.  
-- **`.gitlab-ci.yml`**: Configuração de pipeline de CI/CD para automatizar os testes e fazer o deploy da aplicação na AWS.  
-- **`sonar-project.properties`**: Arquivo que configura a análise de qualidade de código do projeto com o SonarCloud. Define o nome do projeto (`nestjs-cinema`), a versão (`1.0`) e a organização (`cinema-compass`). Também especifica os diretórios de código fonte (`src`), de testes (`test`), e os caminhos para relatórios de cobertura (`coverage/lcov.info`) e do ESLint (`eslint-report.json`).  
-- **`docker-compose.yml`**: Arquivo Docker Compose para levantar a API e suas dependências.  
-
----
-
-
-## Como Executar o Projeto
+## Como Executar Localmente
 
 ### Pré-requisitos
-Certifique-se de ter os seguintes programas instalados em seu sistema:
+- [Node.js](https://nodejs.org/en/download)
+- [Newman](https://www.npmjs.com/package/newman)
+- [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)
 
-- **Node.js**
-    - [Guia de Download e Instalação](https://nodejs.org/en/download)
+### 1. Inicializando a API
 
-- **Newman**
-    - [Documentação Oficial do Newman](https://www.npmjs.com/package/newman)
+Para rodar os testes, você precisa primeiro iniciar a API:
 
-- **k6**
-    - [Guia Oficial de Instalação do k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)
+```bash
+# Clone o repositório
+git clone https://github.com/queirogaraffael/qa-api-pipeline.git
+cd qa-api-pipeline
 
-### Passo Inicial
+# Inicie o servidor da API
+cd backend
+npm install
+npm run start
+```
 
-1. Clone o repositório:
-   ```bash
-   git clone git@gitlab.com:raffaelqueiroga/cinema-api-automation.git
-   cd seu-diretorio-do-repositorio-aqui
-   ```
+### 2. Executando os Testes
 
-2. Instale as dependências e inicie o servidor da API:
-   ```bash
-   cd nestjs-cinema
-   npm install
-   npm run start
-   ```
+Com a API rodando (na porta 3000), abra um novo terminal. Cada pasta de teste possui um `README.md` dedicado com instruções detalhadas:
 
-## Executando os Testes
+- **[Testes de API com Postman/Newman](./tests/postman/README.md)**
+- **[Testes de Performance com k6](./tests/k6/README.md)**
 
-Após iniciar a API, navegue até a pasta de testes específica para executar os testes. Cada pasta de teste contém um `README.md` dedicado com instruções detalhadas:
+---
 
-- [Testes de API com Postman](./Tests/postman/README.md)
-- [Testes de Performance com k6](./Tests/k6/README.md)
+## Configuração da Infraestrutura (Pipeline CI/CD)
 
+Este projeto utiliza o GitLab CI/CD para automatizar a análise estática, o build e os testes automatizados. O pipeline depende de variáveis configuradas externamente e prepara dinamicamente uma instância AWS EC2.
 
-## 🤝 Agradecimentos Especiais
+**Qual é o intuito final do pipeline?**
+A arquitetura do CI/CD foi desenhada para realizar o deploy da API (o ambiente de testes) na instância EC2 e, logo em seguida, executar os testes de integração (Postman/Newman) e de performance (k6) a partir dos próprios containers do GitLab Runner. Esses testes são configurados dinamicamente para apontar para o IP público da máquina EC2 onde a aplicação acabou de ser levantada.
 
-<a href="https://gitlab.com/gizelegabriele"><img src="https://secure.gravatar.com/avatar/b94ba7dac285fb08332cd7f4001b8537ca4edd542e6995959b3f43092a0b832e?s=1600&d=identicon" width="100"></a>
-<a href="https://gitlab.com/ednosilva"><img src="https://gitlab.com/uploads/-/system/user/avatar/23011785/avatar.png?width=192" width="100"></a>
-<a href="https://gitlab.com/RafaBricia"><img src="https://gitlab.com/uploads/-/system/user/avatar/23014310/avatar.png?width=800" width="100"></a>
-<a href="https://gitlab.com/KaioPinto"><img src="https://gitlab.com/uploads/-/system/user/avatar/23013976/avatar.png?width=800" width="100"></a>
+### 1. Requisitos dos GitLab Runners
+
+O pipeline usa duas `tags` para rotear os jobs:
+- **Runner `docker`**: Requer o **Docker executor** configurado em modo privilegiado (necessário para o job `docker:24-dind`). É ele quem roda os testes locais, o scanner do SonarCloud, o Postman/Newman e o k6.
+- **Runner `shell`**: Requer o **Shell executor**. A máquina hospedeira deste runner precisa ter `docker-compose`, `ssh` e `scp` instalados, pois eles orquestram a verificação dos arquivos YAML e o deploy via acesso SSH remoto.
+
+### 2. Variáveis de Ambiente (CI/CD Variables)
+
+Para que o pipeline funcione, configure as seguintes variáveis nas configurações de CI/CD do repositório no GitLab:
+
+| Variável | Descrição |
+| :--- | :--- |
+| `SONAR_TOKEN` | Token de autenticação gerado no SonarCloud para análise estática. |
+| `PRIVATE_KEY` | Conteúdo da chave privada `.pem` usada para conectar na AWS EC2. |
+| `TEST_EC2_SSH_TARGET` | Endereço IP público ou DNS da instância EC2 (ex: `12.34.56.78`). |
+| `DOCKER_HUB_USERNAME` | Seu usuário no Docker Hub para enviar e baixar a imagem. |
+| `DOCKER_HUB_PASSWORD` | Token de acesso pessoal (Access Token) gerado no Docker Hub. |
+
+### 3. Preparação do Docker Hub
+
+- Crie um repositório chamado **`qa-api-pipeline`** em sua conta do Docker Hub.
+- Caso utilize outro nome de conta, atualize a variável `IMAGE_NAME` no arquivo `.gitlab-ci.yml` e o nome da imagem no `docker-compose.yml`.
+
+### 4. Configuração Inicial da AWS EC2
+
+O script acessa a máquina EC2 remotamente com o usuário `ec2-user`. Antes do primeiro deploy, sua EC2 deve estar pronta:
+
+1. **Pacotes necessários:** Instale o `docker` e o `docker-compose`. Inicie o serviço do Docker (`sudo systemctl start docker`).
+2. **Permissões de usuário:** Adicione o `ec2-user` ao grupo `docker` executando `sudo usermod -aG docker ec2-user`. Assim os comandos rodam sem necessitar de `sudo`.
+3. **Chave SSH:** O conteúdo público da sua `PRIVATE_KEY` deve estar presente no arquivo `~/.ssh/authorized_keys` do servidor.
+4. **Security Group:** Configure as regras de entrada (Inbound rules):
+   - **Porta 22 (TCP):** Liberada para conexões SSH (para o script fazer o deploy na EC2).
+   - **Porta 3000 (TCP):** Liberada para permitir que os jobs de teste executem o Newman e o k6 na API recém-implantada.
+
+---
  
-
- ## 👨‍💻 Autor
+## Autor
 <div style="text-align: center;">
   <img alt="Raffael Queiroga" height="150" width="150" src="https://avatars.githubusercontent.com/u/117753291?v=4" style="margin-right: 20px"/>
 </div>
 
-<p>Olá! Sou <strong>Raffael Queiroga</strong>, estudante de <strong>Sistemas de Informação</strong> na <strong>Unifacisa</strong>, atualmente no segundo período. Antes disso, estudei <strong>Engenharia Elétrica</strong> na <strong>Universidade Federal de Campina Grande</strong> por 2,5 anos, onde desenvolvi uma base sólida em linguagens de programação como <strong>C</strong>, <strong>C++</strong> e <strong>Python</strong>.</p>
+<p>Olá! Sou <strong>Raffael Queiroga</strong>, estudante de <strong>Sistemas de Informação</strong> na <strong>Unifacisa.</strong> Antes disso, estudei <strong>Engenharia Elétrica</strong> na <strong>Universidade Federal de Campina Grande</strong> por 2,5 anos, onde desenvolvi uma base sólida em linguagens de programação como <strong>C</strong>, <strong>C++</strong> e <strong>Python</strong>.</p>
 
-<p>Meu principal interesse está no desenvolvimento em <strong>Java</strong>, linguagem que estudo há mais de dois anos, com foco em <strong>back-end</strong> e <strong>engenharia de software</strong>. Atualmente, faço estágio na <strong>Compass.UOL</strong>, onde trabalho em projetos voltados para <strong>AWS</strong> e <strong>Performance for Software Quality Engineering</strong>.</p>
+<p>Meu principal interesse está no desenvolvimento em <strong>Java</strong>, linguagem que estudo há mais de dois anos, com foco em <strong>back-end</strong> e <strong>engenharia de software</strong>. Fiz estágio na <strong>Compass.UOL</strong>, onde trabalhi em projetos voltados para <strong>AWS</strong> e <strong>Performance for Software Quality Engineering</strong>.</p>
 
 <p>Sou de uma cidade do interior, perto de <strong>Campina Grande</strong>, e sou apaixonado por andar a cavalo e pela leitura. Além disso, possuo um bom nível de <strong>inglês</strong> e <strong>alemão</strong>, o que me permite explorar conhecimentos em diferentes idiomas.</p>
-
----
-
-## 💻 Stack Principal
-
-<div>
-    <img align="center" alt="Java" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg">
-    <img align="center" alt="Spring" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg">
-    <img align="center" alt="Docker" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original-wordmark.svg">
-    <img align="center" alt="MySQL" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg">
-    <img align="center" alt="NoSQL" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg">
-    
-</div>
-
----
-
-## ☎️ Contatos
-
-<div>
-  <a href="https://www.linkedin.com/in/raffaelqueiroga/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
-  <a href="https://github.com/queirogaraffael" target="_blank"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" target="_blank"></a>
-  <a href="mailto:raffael.queiroga@maisunifacisa.com.br" target="_blank"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"></a>
-</div>

@@ -22,10 +22,10 @@ build:
     - docker
   image: node:20
   script:
-    - npm install
+    - cd backend && npm install
   artifacts:
     paths:
-      - node_modules/
+      - backend/node_modules/
     expire_in: 1 hour
 
 
@@ -37,10 +37,10 @@ test:
   dependencies:
     - build
   script:
-    - npm test -- --coverage
+    - cd backend && npm test -- --coverage
   artifacts:
     paths:
-      - coverage/
+      - backend/coverage/
     expire_in: 1 hour
 
 
@@ -83,10 +83,10 @@ build_docker_image:
   variables:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
-    IMAGE_NAME: raffaelqueiroga/cinema-api
+    IMAGE_NAME: raffaelqueiroga/qa-api-pipeline
   script:
     - echo "Fazendo build da imagem Docker..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
     - IMAGE_TAG=$CI_PIPELINE_ID 
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
     - docker push $IMAGE_NAME:$IMAGE_TAG
@@ -115,24 +115,24 @@ deploy_to_test:
         set -e
         echo "Limpando ambiente Docker e diretório remoto..."
         docker system prune -a --volumes -f
-        rm -rf /home/ec2-user/cinema-api
+        rm -rf /home/ec2-user/qa-api-pipeline
         echo "Criando diretório remoto..."
-        mkdir -p /home/ec2-user/cinema-api
+        mkdir -p /home/ec2-user/qa-api-pipeline
         echo "Logando no Docker Hub..."
         echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
         echo "Baixando a imagem mais recente..."
-        docker pull raffaelqueiroga/cinema-api:latest
+        docker pull raffaelqueiroga/qa-api-pipeline:latest
       EOF
 
     - echo "Copiando docker-compose.yml..."
-    - scp -i my_key_pair.pem docker-compose.yml ec2-user@"$TEST_EC2_SSH_TARGET":/home/ec2-user/cinema-api/docker-compose.yml
+    - scp -i my_key_pair.pem docker-compose.yml ec2-user@"$TEST_EC2_SSH_TARGET":/home/ec2-user/qa-api-pipeline/docker-compose.yml
 
     - |
       ssh -i my_key_pair.pem ec2-user@"$TEST_EC2_SSH_TARGET" << EOF
         set -e
 
         echo "Subindo containers com Docker Compose..."
-        cd /home/ec2-user/cinema-api
+        cd /home/ec2-user/qa-api-pipeline
         docker-compose up -d
 
         echo "Aguardando containers ficarem saudáveis..."
@@ -173,8 +173,8 @@ test_postman:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: postman/newman
   script:
-    - newman run Tests/postman/collection/nestjs-cinema.postman_collection.json \
-      --environment Tests/postman/environment/environment-nestjs-cinema.postman_environment.json \
+    - newman run tests/postman/collection/qa-api-pipeline.postman_collection.json \
+      --environment tests/postman/environment/environment-qa-api-pipeline.postman_environment.json \
       --env-var "base_url=http://$PUBLIC_IP:3000"
 
 
@@ -186,5 +186,5 @@ test_k6:
     - PUBLIC_IP=$(cat artifacts/ec2_ip.txt)
   image: grafana/k6
   script:
-    - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-001\ -\ Test\ Create\ Movies.js
-    - k6 run -e API_URL=http://$PUBLIC_IP:3000 Tests/k6/cinema-performance/tests/movies/PF-002\ -\ Test\ List\ Movies.js
+    - k6 run -e API_URL=http://$PUBLIC_IP:3000 tests/k6/qa-api-pipeline-performance/tests/movies/PF-001\ -\ Test\ Create\ Movies.js
+    - k6 run -e API_URL=http://$PUBLIC_IP:3000 tests/k6/qa-api-pipeline-performance/tests/movies/PF-002\ -\ Test\ List\ Movies.js

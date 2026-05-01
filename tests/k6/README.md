@@ -18,14 +18,14 @@ Antes de executar os testes, certifique-se de ter o seguinte:
 Os scripts de teste estão organizados em diretórios baseados nos endpoints que avaliam:
 
 ### **Movies**
-- **`Tests/k6/cinema-performance/tests/movies/PF-001 - Test Create Movies.js`**  
+- **`tests/k6/qa-api-pipeline-performance/tests/movies/PF-001 - Test Create Movies.js`**  
   Testa a criação de novos filmes.
 
-- **`Tests/k6/cinema-performance/tests/movies/PF-002 - Test List Movies.js`**  
+- **`tests/k6/qa-api-pipeline-performance/tests/movies/PF-002 - Test List Movies.js`**  
   Avalia a listagem de filmes existentes.
 
 ### **Tickets**
-- **`Tests/k6/cinema-performance/tests/tickets/PF-003 - Ticket Life Cycle Test.js`**  
+- **`tests/k6/qa-api-pipeline-performance/tests/tickets/PF-003 - Ticket Life Cycle Test.js`**  
   Realiza um ciclo completo de testes em tickets, incluindo:
   - Carga
   - Estresse
@@ -34,7 +34,7 @@ Os scripts de teste estão organizados em diretórios baseados nos endpoints que
   - Resiliência
   Você pode escolher o tipo de teste utilizando uma variável de ambiente ou rodar todos os tipos de teste em paralelo.
 
-- **`Tests/k6/cinema-performance/tests/tickets/PF-004 - Tickets Performance Test.js`**  
+- **`tests/k6/qa-api-pipeline-performance/tests/tickets/PF-004 - Tickets Performance Test.js`**  
   Mede o desempenho da manipulação de tickets em diferentes condições.
 
 ---
@@ -43,7 +43,7 @@ Os scripts de teste estão organizados em diretórios baseados nos endpoints que
 
 Para executar os testes, siga estas etapas:
 
-1. Abra um terminal e navegue até o diretório `Tests/k6`.
+1. Abra um terminal e navegue até o diretório `tests/k6`.
 2. Execute scripts individuais diretamente utilizando o comando:
     ```bash
     k6 run <caminho-do-script>
