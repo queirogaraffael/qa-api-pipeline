@@ -1,5 +1,10 @@
 # QA API Automation Pipeline
 
+![GitLab CI](https://img.shields.io/badge/GitLab_CI-passing-brightgreen?style=flat&logo=gitlab)
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green?style=flat&logo=node.js)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue?style=flat&logo=docker)
+![AWS EC2](https://img.shields.io/badge/AWS-EC2-orange?style=flat&logo=amazon-aws)
+
 Este repositório contém a suíte de testes e automações desenvolvida como desafio final do meu estágio na **Compass.UOL** como *Software Quality Engineer Intern* (Setembro 2024 - Fevereiro 2025).
 
 > **Aviso Importante:** 
@@ -11,11 +16,11 @@ Este repositório contém a suíte de testes e automações desenvolvida como de
 O objetivo principal deste projeto foi implementar uma cultura de testes robusta e uma esteira de integração contínua (CI/CD) para uma API de gerenciamento de cinemas (filmes e ingressos). O foco esteve na garantia de qualidade, confiabilidade, análise estática e escalabilidade.
 
 Os pilares da entrega foram:
-- **Testes Automatizados:** Desenvolvimento de automação de testes funcionais e de contrato.
+- **Testes Automatizados:** Desenvolvimento de automação de testes funcionais e de contrato, guiados por processos formais de QA, incluindo BDD com Gherkin e criação de casos de teste detalhados.
 - **Testes de Performance:** Avaliação de escalabilidade, resposta rápida e uso eficiente de recursos.
 - **Pipeline CI/CD:** Automação da execução de testes, análise de qualidade e deploy contínuo na nuvem (AWS EC2).
 - **Qualidade de Código:** Identificação de débitos técnicos e inspeção contínua através de análise estática.
-- **Documentação de QA:** Criação de matrizes de rastreabilidade, planos de teste, evidências de bugs e propostas de melhorias contínuas.
+- **Documentação de QA:** Elaboração de artefatos essenciais como matriz de rastreabilidade, planos de teste e bug tracking formal.
 
 ## Ferramentas e Tecnologias
 
@@ -71,7 +76,15 @@ npm run start
 Com a API rodando (na porta 3000), abra um novo terminal. Cada pasta de teste possui um `README.md` dedicado com instruções detalhadas:
 
 - **[Testes de API com Postman/Newman](./tests/postman/README.md)**
+
+  ![Exemplo de execução real do Newman contra a EC2](docs/assets/newman-report.png)
+  *Exemplo de relatório de execução real do Newman contra a EC2.*
+
 - **[Testes de Performance com k6](./tests/k6/README.md)**
+
+  ![Exemplo de relatório do k6 (Teste de Carga)](docs/assets/k6-report.png)
+  *Métricas da execução: 2962 requisições totais, 0 thresholds violados, tempo médio de resposta de 173ms e p95 de 291ms.*
+  > **Nota de QA:** O relatório acima ilustra o resultado de um teste de carga. Os *failed checks* e requisições falhas observados na imagem **não** representam erros nos scripts de automação ou na configuração de testes, mas sim **bugs reais e pré-existentes na API** sob condições de estresse. O papel do analista de QA não é esconder problemas, mas sim identificá-los, documentá-los e rastreá-los formalmente para correção futura, o que foi exatamente o propósito deste trabalho.
 
 ---
 
@@ -81,6 +94,21 @@ Este projeto utiliza o GitLab CI/CD para automatizar a análise estática, o bui
 
 **Qual é o intuito final do pipeline?**
 A arquitetura do CI/CD foi desenhada para realizar o deploy da API (o ambiente de testes) na instância EC2 e, logo em seguida, executar os testes de integração (Postman/Newman) e de performance (k6) a partir dos próprios containers do GitLab Runner. Esses testes são configurados dinamicamente para apontar para o IP público da máquina EC2 onde a aplicação acabou de ser levantada.
+
+### Fluxo da Integração Contínua
+
+```mermaid
+graph TD
+    A[Git Push para GitLab] --> B[GitLab CI/CD]
+    B --> C[Build e Testes Unitários]
+    C --> D[Análise no SonarCloud]
+    D --> E[Build da Imagem Docker]
+    E --> F[Push para o Docker Hub]
+    F --> G[Deploy via SSH na EC2]
+    G --> H[Inicialização com Docker Compose]
+    H --> I[Testes Funcionais com Newman]
+    H --> J[Testes de Performance com k6]
+```
 
 ### 1. Requisitos dos GitLab Runners
 
