@@ -135,4 +135,8 @@ O script acessa a máquina EC2 remotamente com o usuário `ec2-user`. Antes do p
 
 Se você tem interesse em entender o raciocínio técnico por trás desta automação, escrevi um **ADR (Architecture Decision Record)** detalhando as decisões, os trade-offs e o contexto que me levou a utilizar uma única instância EC2 como ambiente de execução simulado.
 
-🔗 **[Ler o ADR: Pipeline de CI/CD com EC2 como Ambiente Pseudo-Staging](https://raffaelqueiroga.notion.site/ADR-001-Pipeline-de-CI-CD-com-EC2-como-Ambiente-Pseudo-Staging-31e4a077442a801a9ad3c34bdd874beb?source=copy_link)**
+**[Ler o ADR: Pipeline de CI/CD com EC2 como Ambiente Pseudo-Staging](https://raffaelqueiroga.notion.site/ADR-001-Pipeline-de-CI-CD-com-EC2-como-Ambiente-Pseudo-Staging-31e4a077442a801a9ad3c34bdd874beb?source=copy_link)**
+
+## Licença
+
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
