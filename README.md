@@ -128,6 +128,8 @@ Para que o pipeline funcione, configure as seguintes variáveis nas configuraç�
 | `DOCKER_HUB_USERNAME` | Seu usuário no Docker Hub para enviar e baixar a imagem. |
 | `DOCKER_HUB_PASSWORD` | Token de acesso pessoal (Access Token) gerado no Docker Hub. |
 
+> **Atenção (SonarCloud):** No arquivo `sonar-project.properties`, a propriedade `sonar.organization` está configurada com um *placeholder* (`seu-usuario-github`). Para que a análise estática funcione corretamente no seu próprio pipeline, você **deve obrigatoriamente** abrir o arquivo e alterar esse valor para a *Organization Key* correspondente à sua conta real no SonarCloud.
+
 ### 3. Preparação do Docker Hub
 
 - Crie um repositório chamado **`qa-api-pipeline`** em sua conta do Docker Hub.
